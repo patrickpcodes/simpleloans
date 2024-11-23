@@ -4,15 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import customersData from "../../../data/customers.json";
-
-interface Customer {
-  id: number;
-  name: string;
-  phone: string;
-  birthday: string;
-  email: string;
-  notes: string;
-}
+import { Customer } from "@/types/Customer";
 
 const CustomerDetail: React.FC = () => {
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -26,7 +18,9 @@ const CustomerDetail: React.FC = () => {
     }
   }, [id]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     if (customer) {
       setCustomer({ ...customer, [e.target.name]: e.target.value });
     }
@@ -70,7 +64,9 @@ const CustomerDetail: React.FC = () => {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Birthday</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Birthday
+        </label>
         <input
           type="date"
           name="birthday"
@@ -98,7 +94,9 @@ const CustomerDetail: React.FC = () => {
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         />
       </div>
-      <Button onClick={handleSave} className="mr-4">Save</Button>
+      <Button onClick={handleSave} className="mr-4">
+        Save
+      </Button>
       <Button onClick={handleCreateLoan}>Create New Loan</Button>
     </div>
   );

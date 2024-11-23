@@ -4,16 +4,15 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import customersData from "../../data/customers.json";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-interface Customer {
-  id: number;
-  name: string;
-  phone: string;
-  birthday: string;
-  email: string;
-  notes: string;
-}
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Customer } from "@/types/Customer";
 
 const CustomerTable: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -42,7 +41,11 @@ const CustomerTable: React.FC = () => {
         </TableHeader>
         <TableBody>
           {customers.map((customer) => (
-            <TableRow key={customer.id} onClick={() => handleRowClick(customer.id)} className="cursor-pointer">
+            <TableRow
+              key={customer.id}
+              onClick={() => handleRowClick(customer.id)}
+              className="cursor-pointer"
+            >
               <TableCell>{customer.name}</TableCell>
               <TableCell>{customer.phone}</TableCell>
               <TableCell>{customer.birthday}</TableCell>
