@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx" // Set to react-jsx for tests
+  },
+  "include": ["**/*.test.ts", "**/*.test.tsx"] // Include your test files
+}

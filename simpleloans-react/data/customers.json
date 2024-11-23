@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "phone": "123-456-7890",
+    "birthday": "1985-05-15",
+    "email": "john.doe@example.com",
+    "notes": "Preferred contact time: afternoon"
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "phone": "987-654-3210",
+    "birthday": "1990-08-25",
+    "email": "jane.smith@example.com",
+    "notes": "Interested in loan options"
+  },
+  {
+    "id": 3,
+    "name": "Alice Johnson",
+    "phone": "555-123-4567",
+    "birthday": "1975-12-30",
+    "email": "alice.johnson@example.com",
+    "notes": "Follow up next month"
+  }
+]
