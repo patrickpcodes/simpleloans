@@ -2,14 +2,9 @@
 
 // import type { Metadata } from "next";
 import "./globals.css";
-import React, { useState, createContext, useContext } from "react";
+import React, { useState } from "react";
 import Toolbar from "@/components/Toolbar";
 import { Toaster } from "@/components/ui/toaster";
-
-const TitleContext = createContext({
-  title: "Simple Loans",
-  setTitle: (title: string) => {},
-});
 
 export default function RootLayout({
   children,
@@ -17,7 +12,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [darkMode, setDarkMode] = useState(false);
-  const [title, setTitle] = useState("Simple Loans");
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -31,14 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <TitleContext.Provider value={{ title, setTitle }}>
-          <Toolbar title={title} toggleDarkMode={toggleDarkMode} />
-          {children}
-          <Toaster />
-        </TitleContext.Provider>
+        <Toolbar title={"Simple Loans"} toggleDarkMode={toggleDarkMode} />
+        {children}
+        <Toaster />
       </body>
     </html>
   );
 }
-
-export const useTitle = () => useContext(TitleContext);

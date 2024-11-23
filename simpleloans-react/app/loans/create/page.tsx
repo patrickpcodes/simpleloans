@@ -7,7 +7,6 @@ import customersData from "../../../data/customers.json";
 import { formatCurrency } from "@/lib/utils";
 import { Customer } from "@/types/Customer";
 import { Payment } from "@/types/Payment";
-import { useTitle } from "@/app/layout";
 import {
   Dialog,
   DialogContent,
@@ -33,11 +32,9 @@ const LoanCreate: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const customerId = searchParams.get("customerId");
-  const { setTitle } = useTitle();
 
   const frequencyOptions = ["Weekly", "Bi-Weekly", "Monthly"];
   const { toast } = useToast();
-  setTitle("Create New Loan");
 
   useEffect(() => {
     setCustomers(customersData);
@@ -87,11 +84,7 @@ const LoanCreate: React.FC = () => {
   };
 
   const handleSave = () => {
-    toast({
-      title: "Uh oh! Something went wrong.",
-      description: "There was a problem with your request.",
-    });
-    // setIsModalOpen(true);
+    setIsModalOpen(true);
   };
 
   const handleConfirmSave = () => {
@@ -115,11 +108,11 @@ const LoanCreate: React.FC = () => {
         router.push("/");
       } else {
         setIsLoading(false);
-        console.log("toasting");
-        setIsModalOpen(false);
         toast({
+          variant: "destructive",
           title: "Uh oh! Something went wrong.",
-          description: "There was a problem with your request.",
+          description:
+            "There was a problem with your request.  Please contact support.",
         });
       }
     }, 2000); // Simulate API call
@@ -127,6 +120,7 @@ const LoanCreate: React.FC = () => {
 
   return (
     <div className="p-8">
+      <h1 className="text-2xl mb-4">Create Loan Page</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
