@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import customersData from "../../../data/customers.json";
 import { Customer } from "@/types/Customer";
+import LoanManagementForm from "@/components/LoanManagementForm";
 
 const CustomerDetail: React.FC = () => {
   const [customer, setCustomer] = useState<Customer | null>(null);

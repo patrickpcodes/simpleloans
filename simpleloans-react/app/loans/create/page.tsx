@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
+import LoanManagementForm from "@/components/LoanManagementForm";
 
 const LoanCreate: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -32,6 +33,10 @@ const LoanCreate: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const customerId = searchParams.get("customerId");
+
+  const currentCustomer = customersData.find(
+    (c) => c.id === parseInt(customerId)
+  );
 
   const frequencyOptions = ["Weekly", "Bi-Weekly", "Monthly"];
   const { toast } = useToast();
@@ -81,6 +86,10 @@ const LoanCreate: React.FC = () => {
       }
     }
     setPayments(newPayments);
+  };
+
+  const handleFormSubmit = (values: any) => {
+    console.log("Form Submitted, back in page", values);
   };
 
   const handleSave = () => {
@@ -225,6 +234,7 @@ const LoanCreate: React.FC = () => {
       <Button onClick={handleGenerate} className="mb-4">
         Generate Payment Schedule
       </Button>
+
       {payments.length > 0 && (
         <Button onClick={handleClear} className="mb-4 ml-4 bg-red-500">
           Clear
@@ -303,6 +313,13 @@ const LoanCreate: React.FC = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <LoanManagementForm
+        customerOptions={customersData}
+        startingCustomer={currentCustomer}
+        frequencyOptions={frequencyOptions}
+        onFormSubmit={handleFormSubmit}
+      />
     </div>
   );
 };
