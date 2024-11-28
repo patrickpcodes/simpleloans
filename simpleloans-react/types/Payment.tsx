@@ -1,5 +1,8 @@
 export interface Payment {
-  date: string;
-  amount: number;
-  remainingAmount: number;
+  id: string;
+  dueDate: string; // "yyyy-MM-dd"
+  amountDue: number;
+  status: PaymentStatus;
 }
+
+export type PaymentStatus = "Pending" | "Paid" | "Missed";

@@ -3,6 +3,7 @@ using SimpleLoans.Server.Api.Cosmos;
 using SimpleLoans.Server.Api.Models;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using Newtonsoft.Json;
 
 namespace SimpleLoans.Server.Api.Controllers;
 
@@ -50,7 +51,7 @@ public class LoansController : ControllerBase
     }
 
     // 3. Generate payment schedule
-    [HttpPost( "generate-payment-schedule" )]
+    [HttpPost( "generate" )]
     public ActionResult<List<Payment>> GeneratePaymentSchedule( [FromBody] LoanDetails loanDetails )
     {
         if( loanDetails == null )
@@ -66,9 +67,8 @@ public class LoansController : ControllerBase
     private List<Payment> GeneratePayments( LoanDetails loanDetails )
     {
         var payments = new List<Payment>();
-        decimal remainingAmount = loanDetails.TotalToPayBack;
         decimal paymentAmount = loanDetails.TotalToPayBack / loanDetails.NumberOfWeeks;
-        DateTime currentDate = loanDetails.StartDate;
+        DateOnly currentDate = loanDetails.StartDate;
         int daysToAdd = loanDetails.Frequency switch
         {
             PaymentFrequency.Weekly => 7,
@@ -77,13 +77,30 @@ public class LoansController : ControllerBase
             _ => throw new ArgumentOutOfRangeException()
         };
 
+        decimal totalPaidSoFar = 0;
+
         for( int i = 0; i < loanDetails.NumberOfWeeks; i++ )
         {
+            decimal amountDue;
+
+            if( i == loanDetails.NumberOfWeeks - 1 )
+            {
+                // Last payment: Adjust the amount to account for any rounding errors
+                amountDue = loanDetails.TotalToPayBack - totalPaidSoFar;
+                amountDue = Math.Round( amountDue, 2, MidpointRounding.AwayFromZero );
+            }
+            else
+            {
+                amountDue = Math.Round( paymentAmount, 2, MidpointRounding.AwayFromZero );
+            }
+
+            totalPaidSoFar += amountDue;
+
             payments.Add( new Payment
             {
                 Id = Guid.NewGuid(),
                 DueDate = currentDate,
-                AmountDue = Math.Round( (double)paymentAmount, 2 ),
+                AmountDue = amountDue,
                 Status = PaymentStatus.Pending,
             } );
 
@@ -93,4 +110,9 @@ public class LoansController : ControllerBase
         return payments;
     }
 
+
+}
+public class LoanDetailsWrapper
+{
+    public LoanDetails LoanDetails { get; set; }
 }

@@ -33,7 +33,6 @@ public class Program
         builder.Services.AddSingleton<MongoDbService>();
 
 
-
         builder.Services.Configure<JwtSettings>( builder.Configuration.GetSection( "JwtSettings" ) );
         builder.Services.AddSingleton<IJwtService, JwtService>();
 

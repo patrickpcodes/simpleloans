@@ -20,7 +20,7 @@ public class DataSeeding
             .RuleFor( c => c.Name, f => f.Name.FullName() )
             .RuleFor( c => c.PhoneNumber, f => f.Phone.PhoneNumber() )
             .RuleFor( c => c.Email, f => f.Internet.Email() )
-            .RuleFor( c => c.Birthday, f => f.Date.Past( 40, DateTime.Now.AddYears( -20 ) ) ) // Age between 20 and 60
+            .RuleFor( c => c.Birthday, f => DateOnly.FromDateTime(f.Date.Past( 40, DateTime.Now.AddYears( -20 ) ))) // Age between 20 and 60
             .RuleFor( c => c.CanSendEmail, f => f.Random.Bool() )
             .RuleFor( c => c.Notes, f => f.Lorem.Sentence() );
 

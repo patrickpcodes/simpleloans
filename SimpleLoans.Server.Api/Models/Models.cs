@@ -1,12 +1,11 @@
-﻿namespace SimpleLoans.Server.Api.Models;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using System.Text.Json;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+namespace SimpleLoans.Server.Api.Models;
+
 // Enums
 public enum PaymentStatus
 {
@@ -42,7 +41,8 @@ public enum LoanStatus
     InProgress,
     Complete
 }
-public enum CustomerStatus {
+public enum CustomerStatus
+{
     Active,
     Inactive
 }
@@ -54,23 +54,25 @@ public class Customer
     public string Name { get; set; }
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
-    public DateTime Birthday { get; set; }
+    [JsonConverter(typeof(DateOnlyJsonConverter))]
+    public DateOnly Birthday { get; set; }
     public bool CanSendEmail { get; set; }
     public string Notes { get; set; }
-    [JsonConverter( typeof( StringEnumConverter ) )]
-    public CustomerStatus Status {get; set;} = CustomerStatus.Active;
+    [JsonConverter( typeof( JsonStringEnumConverter ) )]
+    public CustomerStatus Status { get; set; } = CustomerStatus.Active;
 }
 
 
 public class Payment
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public DateTime DueDate { get; set; } // Scheduled payment due date
+    [JsonConverter(typeof(DateOnlyJsonConverter))]
+    public DateOnly DueDate { get; set; } // Scheduled payment due date
     public DateTime? UpdatedDate { get; set; } // When payment was marked as Paid, PartiallyPaid, or Missed
-    public double AmountDue { get; set; } // The total amount expected for this payment
-    public double AmountPaid { get; set; } = 0; // The amount actually paid towards this payment
+    public decimal AmountDue { get; set; } // The total amount expected for this payment
+    public decimal AmountPaid { get; set; } = 0m; // The amount actually paid towards this payment
 
-    [JsonConverter( typeof( StringEnumConverter ) )]
+    [JsonConverter( typeof( JsonStringEnumConverter ) )]
     public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
 }
 
@@ -81,15 +83,15 @@ public class LoanActivity
     public DateTime Date { get; set; } // Date activity occurred
     public DateTime? UpdatedDate { get; set; } // When the activity was updated (e.g., marked as Completed)
 
-    [JsonConverter( typeof( StringEnumConverter ) )]
+    [JsonConverter( typeof( JsonStringEnumConverter ) )]
     public LoanActivityType Type { get; set; }
 
     public double Amount { get; set; }
 
-    [JsonConverter( typeof( StringEnumConverter ) )]
+    [JsonConverter( typeof( JsonStringEnumConverter ) )]
     public LoanActivityReason Reason { get; set; } = LoanActivityReason.Other;
 
-    [JsonConverter( typeof( StringEnumConverter ) )]
+    [JsonConverter( typeof( JsonStringEnumConverter ) )]
     public LoanActivityStatus Status { get; set; } = LoanActivityStatus.Pending;
 
     public string Notes { get; set; } // Detailed description of the activity
@@ -103,17 +105,71 @@ public class Loan
     public DateTime? ClosedDate { get; set; } // When the loan is fully repaid
     public double LoanAmount { get; set; }
     public int NumberOfWeeks { get; set; }
-    public string PaymentFrequency { get; set; }
+    [JsonConverter( typeof( JsonStringEnumConverter ) )]
+    public PaymentFrequency PaymentFrequency { get; set; }
     public double InterestRate { get; set; }
     public double OriginalTotalAmountToBeRepaid { get; set; } // Total at loan creation
     public double TotalAmountRepaid { get; set; } = 0; // Tracks the amount actually repaid, including fees or adjustments
 
-    [JsonConverter( typeof( StringEnumConverter ) )]
+    [JsonConverter( typeof( JsonStringEnumConverter ) )]
     public LoanStatus Status { get; set; } = LoanStatus.NotStarted; // Loan's overall status
 
     public List<Payment> Payments { get; set; } = new List<Payment>();
 }
 
+public class LoanDetails
+{
+    public Guid CustomerId { get; set; }
+    [JsonConverter(typeof(DateOnlyJsonConverter))]
+    public DateOnly StartDate { get; set; }
+    public int NumberOfWeeks { get; set; }
+    public decimal StartingAmount { get; set; }
+    public decimal Interest { get; set; }
+    public decimal TotalToPayBack { get; set; }
+
+    [JsonConverter( typeof( JsonStringEnumConverter ) )]
+    public PaymentFrequency Frequency { get; set; }
+}
+
+[JsonConverter( typeof( JsonStringEnumConverter ) )]
+public enum PaymentFrequency
+{
+    Weekly,
+    [EnumMember( Value = "Bi-Weekly" )]
+    BiWeekly,
+    Monthly
+}
+//public class PaymentFrequencyConverter : JsonConverter
+//{
+//    public override bool CanConvert( Type objectType )
+//    {
+//        return objectType == typeof( PaymentFrequency );
+//    }
+
+//    public override object ReadJson( JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer )
+//    {
+//        string orderStatusString = reader.Value.ToString();
+//        return orderStatusString switch
+//        {
+//            "Weekly" => PaymentFrequency.Weekly,
+//            "Bi-Weekly" => PaymentFrequency.BiWeekly,
+//            "Monthly" => PaymentFrequency.Monthly,
+//            _ => throw new ArgumentException( $"Invalid order status string: {orderStatusString}" )
+//        };
+//    }
+
+//    public override void WriteJson( JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer )
+//    {
+//        string orderStatusString = value switch
+//        {
+//            PaymentFrequency.Weekly => "Weekly",
+//            PaymentFrequency.BiWeekly => "Bi-Weekly",
+//            PaymentFrequency.Monthly => "Monthly",
+//            _ => throw new ArgumentException( $"Invalid order status value: {value}" )
+//        };
+//        writer.WriteValue( orderStatusString );
+//    }
+//}
 public class History
 {
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -131,4 +187,19 @@ public class Change
     public string Field { get; set; } // Field name that changed
     public string OldValue { get; set; } // Previous value
     public string NewValue { get; set; } // Updated value
+}
+
+public class DateOnlyJsonConverter : JsonConverter<DateOnly>
+{
+    private const string Format = "yyyy-MM-dd";
+
+    public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        return DateOnly.ParseExact(reader.GetString(), Format, null);
+    }
+
+    public override void Write(Utf8JsonWriter writer, DateOnly value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value.ToString(Format));
+    }
 }

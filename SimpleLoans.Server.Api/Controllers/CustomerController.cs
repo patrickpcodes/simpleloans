@@ -27,7 +27,7 @@ public class CustomersController : ControllerBase
             return NoContent(); // Returns 204 if no customers found
         }
 
-        return Ok( customers ); // Returns 200 with the list of customers
+        return Ok( customers.OrderBy(c=> c.Name).ToList() ); // Returns 200 with the list of customers
     }
 
     [HttpGet( "{id}" )]
@@ -105,7 +105,7 @@ public class CustomersController : ControllerBase
         {
             changes.Add( new Change { Field = "Email", OldValue = customer.Email, NewValue = updatedCustomer.Email } );
         }
-        if( customer.Birthday.Date != updatedCustomer.Birthday.Date )
+        if( customer.Birthday != updatedCustomer.Birthday )
         {
             changes.Add( new Change { Field = "Birthday", OldValue = customer.Birthday.ToString( "yyyy-MM-dd" ), NewValue = updatedCustomer.Birthday.ToString( "yyyy-MM-dd" ) } );
         }

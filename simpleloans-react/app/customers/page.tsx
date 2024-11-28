@@ -19,7 +19,13 @@ const fetchCustomers = async (): Promise<Customer[]> => {
   if (!response.ok) {
     throw new Error("Failed to fetch customers");
   }
-  return await response.json();
+  const customers = await response.json();
+
+  // Ensure dates are in YYYY-MM-DD format
+  return customers.map((customer: Customer) => ({
+    ...customer,
+    birthday: customer.birthday.split("T")[0], // Strip time if present
+  }));
 };
 
 const CustomerTable: React.FC = () => {

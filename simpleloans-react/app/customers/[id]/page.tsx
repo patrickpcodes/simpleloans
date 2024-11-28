@@ -23,7 +23,7 @@ const CustomerDetail: React.FC = () => {
 
   function updateCustomerBirthday(customer: Customer) {
     if (customer.birthday) {
-      customer.birthday = format(new Date(customer.birthday), "yyyy-MM-dd");
+      customer.birthday = customer.birthday.split("T")[0];
     }
   }
   async function fetchCustomerById(id: string): Promise<CustomerWithHistory> {

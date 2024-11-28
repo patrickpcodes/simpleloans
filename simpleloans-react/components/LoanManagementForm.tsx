@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useController, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,55 +32,52 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Customer } from "@/types/Customer";
+import {
+  loanDetailsSchema,
+  LoanDetailsFormValues,
+  PaymentFrequency,
+} from "@/types/LoanDetails";
 
-const formSchema = z.object({
-  customer: z.string(),
-  loanFrequency: z.string(),
-  numWeeks: z
-    .number()
-    .gt(0, { message: "Number of weeks must be greater than 0" }),
-  loanAmount: z
-    .number()
-    .gt(0, { message: "Loan Amount must be greater than 0" }),
-  interestRate: z
-    .number()
-    .gt(0, { message: "Interest Rate must be greater than 0" }),
-  totalPaidBack: z
-    .number()
-    .gt(0, { message: "Total Paid Back must be greater than 0" }),
-  startDate: z.coerce.date(),
-});
 interface LoanManagementFormProps {
   customerOptions: Customer[];
   startingCustomer?: Customer;
-  frequencyOptions: string[];
+  onGeneratePayments?: (values: LoanDetailsFormValues) => Promise<void>;
 
-  onFormSubmit: (values: z.infer<typeof formSchema>) => void; // Add this prop
+  onFormSubmit: (values: LoanDetailsFormValues) => void; // Add this prop
 }
 //TODO add in way to use this to handle both load creating and loan editing
 export default function LoanManagementForm({
   customerOptions,
   startingCustomer,
-  frequencyOptions,
+  onGeneratePayments,
   onFormSubmit,
 }: LoanManagementFormProps) {
   console.log("In code Loan Management Form");
+  console.log(customerOptions);
+  console.log(startingCustomer);
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<LoanDetailsFormValues>({
+    resolver: zodResolver(loanDetailsSchema),
     defaultValues: {
-      customer: startingCustomer?.name || "",
-      startDate: new Date(),
-      loanFrequency: frequencyOptions[0],
-      numWeeks: 8,
-      loanAmount: 1200,
-      interestRate: 0,
-      totalPaidBack: 0,
+      customerId: startingCustomer?.id,
+      startDate: "",
+      numberOfWeeks: 8,
+      startingAmount: 1000,
+      interest: 0,
+      totalToPayBack: 0,
+      frequency: PaymentFrequency.WEEKLY,
     },
   });
+  console.log("Form CustomerId", form.getValues("customerId"));
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  useEffect(() => {
+    if (startingCustomer) {
+      form.setValue("customerId", startingCustomer.id);
+    }
+  }, [startingCustomer, form]);
+
+  function onSubmit(values: LoanDetailsFormValues) {
     try {
       console.log(values);
       toast({
@@ -96,28 +93,18 @@ export default function LoanManagementForm({
     }
   }
 
-  const { field: customerField } = useController({
-    name: "customer",
-    control: form.control,
-  });
-
-  const handleCustomerChange = (value: string) => {
-    customerField.onChange(value);
-    console.log("Customer changed", value);
-  };
-
   async function handleInterestRateBlur(value: string) {
     console.log("Total Paid Back value:", value);
     // Example: Update another field based on the value
     const interestRate = parseFloat(value || "0");
-    const numWeeks = form.getValues("numWeeks");
-    const loanAmount = form.getValues("loanAmount");
+    const numWeeks = form.getValues("numberOfWeeks");
+    const loanAmount = form.getValues("startingAmount");
 
     if (!isNaN(interestRate) && numWeeks > 0 && loanAmount > 0) {
       const weeklyInterestRate = interestRate / 52 / 100;
       const totalPaidBack = loanAmount * (1 + weeklyInterestRate * numWeeks);
-      form.setValue("totalPaidBack", totalPaidBack); // Example calculation
-      form.setValue("interestRate", interestRate);
+      form.setValue("totalToPayBack", totalPaidBack); // Example calculation
+      form.setValue("interest", interestRate);
       await form.trigger();
       console.log("Updated interest rate based on total paid back");
     }
@@ -127,8 +114,8 @@ export default function LoanManagementForm({
     console.log("Total Paid Back value:", value);
     const totalPaidBack = parseFloat(value || "0");
     // Get the current value of numWeeks from the form
-    const numWeeks = form.getValues("numWeeks");
-    const loanAmount = form.getValues("loanAmount");
+    const numWeeks = form.getValues("numberOfWeeks");
+    const loanAmount = form.getValues("startingAmount");
     console.log("numWeeks value:", numWeeks);
 
     if (!isNaN(totalPaidBack) && numWeeks > 0 && loanAmount > 0) {
@@ -137,15 +124,33 @@ export default function LoanManagementForm({
         ((totalPaidBack / loanAmount - 1) / numWeeks) * 52 * 100;
 
       // Update the interestRate field in the form
-      form.setValue("interestRate", interestRate);
-      form.setValue("totalPaidBack", totalPaidBack);
+      form.setValue("interest", interestRate);
+      form.setValue("totalToPayBack", totalPaidBack);
       console.log("Calculated interest rate:", interestRate);
       await form.trigger();
     } else {
       console.warn("Invalid input for totalPaidBack or numWeeks");
     }
   }
+  async function handleGeneratePayments() {
+    // Trigger validation for all fields
+    form.clearErrors();
+    const isValid = await form.trigger();
 
+    if (isValid && onGeneratePayments) {
+      // If the form is valid, send values to the parent
+      const values = form.getValues();
+      console.log("Sending values to parent:", values);
+
+      onGeneratePayments(values);
+    } else {
+      // If not valid, errors are highlighted automatically
+      toast({
+        variant: "destructive",
+        title: "Fix errors before generating the loan payments",
+      });
+    }
+  }
   async function handleSendValues() {
     // Trigger validation for all fields
     form.clearErrors();
@@ -164,6 +169,25 @@ export default function LoanManagementForm({
       });
     }
   }
+  const handleValueChange = useCallback(
+    (value: string) => {
+      // Your custom code here
+      console.log("Selected customer ID:", value);
+
+      // You can perform any custom logic here, for example:
+      const selectedCustomer = customerOptions.find(
+        (customer) => customer.id === value
+      );
+      if (selectedCustomer) {
+        console.log("Selected customer name:", selectedCustomer.name);
+        // Perform any other actions with the selected customer
+      }
+
+      // Don't forget to update the form value
+      form.setValue("customerId", value);
+    },
+    [form, customerOptions]
+  );
 
   return (
     <Form {...form}>
@@ -175,59 +199,57 @@ export default function LoanManagementForm({
           <div className="col-span-6">
             <FormField
               control={form.control}
-              name="customer"
+              name="customerId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Customer</FormLabel>
                   <Select
-                    onValueChange={handleCustomerChange}
-                    defaultValue={field.value}
+                    onValueChange={handleValueChange}
+                    value={field.value} // This line is the update
+                    defaultValue={startingCustomer?.id}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Test Hard" />
+                        <SelectValue placeholder="Select a customer" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {customerOptions.map((customer) => (
-                        <SelectItem key={customer.id} value={customer.name}>
+                        <SelectItem key={customer.id} value={customer.id}>
                           {customer.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-
           <div className="col-span-6">
             <FormField
               control={form.control}
-              name="loanFrequency"
+              name="frequency"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Loan Frequency</FormLabel>
+                  <FormLabel>Payment Frequency</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Weekly" />
+                        <SelectValue placeholder="Select a payment frequency" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {frequencyOptions.map((frequency, index) => (
-                        <SelectItem key={index} value={frequency}>
-                          {frequency}
+                      {Object.values(PaymentFrequency).map((freq) => (
+                        <SelectItem key={freq} value={freq}>
+                          {freq}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>How often is the loan paid</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -239,7 +261,7 @@ export default function LoanManagementForm({
           <div className="col-span-6">
             <FormField
               control={form.control}
-              name="numWeeks"
+              name="numberOfWeeks"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Number of Weeks</FormLabel>
@@ -256,7 +278,7 @@ export default function LoanManagementForm({
           <div className="col-span-6">
             <FormField
               control={form.control}
-              name="loanAmount"
+              name="startingAmount"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Loan Amount</FormLabel>
@@ -275,7 +297,7 @@ export default function LoanManagementForm({
           <div className="col-span-6">
             <FormField
               control={form.control}
-              name="interestRate"
+              name="interest"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Interest Rate (%)</FormLabel>
@@ -299,7 +321,7 @@ export default function LoanManagementForm({
           <div className="col-span-6">
             <FormField
               control={form.control}
-              name="totalPaidBack"
+              name="totalToPayBack"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Amount Paid Back</FormLabel>
@@ -320,51 +342,34 @@ export default function LoanManagementForm({
             />
           </div>
         </div>
-
-        <FormField
-          control={form.control}
-          name="startDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Loan Start Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
+        <div className="grid grid-cols-12 gap-4">
+          <div className="col-span-6">
+            <FormField
+              control={form.control}
+              name="startDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Start Date</FormLabel>
                   <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
+                    <Input type="date" {...field} />
                   </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormDescription>
-                This is the Date the loan officially starts
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                  <FormDescription>
+                    Enter the start date in yyyy-MM-dd format
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
         <Button type="button" onClick={handleSendValues}>
           Callback
         </Button>
+        {handleGeneratePayments && (
+          <Button type="button" onClick={handleGeneratePayments}>
+            GeneratePayments
+          </Button>
+        )}
         <Button type="submit">Submit</Button>
       </form>
     </Form>
