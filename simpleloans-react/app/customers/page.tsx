@@ -54,9 +54,16 @@ const CustomerTable: React.FC = () => {
     router.push(`/customers/${id}`);
   };
 
+  const handleCreateNewCustomerClick = () => {
+    router.push("/customers/create");
+  };
+
   return (
     <div className="p-8">
       <h1 className="text-2xl mb-4">Customer Management</h1>
+      <Button onClick={handleCreateNewCustomerClick}>
+        Create New Customer
+      </Button>
       {loading ? (
         <p>Loading customers...</p>
       ) : error ? (

@@ -46,6 +46,13 @@ public enum CustomerStatus
     Active,
     Inactive
 }
+public enum PaymentReminderType
+{
+    Never,
+    DayOf,
+    DayBefore,
+    Daily
+}
 
 // Models
 public class Customer
@@ -56,8 +63,11 @@ public class Customer
     public string Email { get; set; }
     [JsonConverter(typeof(DateOnlyJsonConverter))]
     public DateOnly Birthday { get; set; }
-    public bool CanSendEmail { get; set; }
     public string Notes { get; set; }
+    public bool SendBirthdayEmail { get; set; }
+    
+    [JsonConverter( typeof( JsonStringEnumConverter ) )]
+    public PaymentReminderType PaymentReminderType { get; set; } 
     [JsonConverter( typeof( JsonStringEnumConverter ) )]
     public CustomerStatus Status { get; set; } = CustomerStatus.Active;
 }

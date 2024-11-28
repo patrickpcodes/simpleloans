@@ -109,9 +109,14 @@ public class CustomersController : ControllerBase
         {
             changes.Add( new Change { Field = "Birthday", OldValue = customer.Birthday.ToString( "yyyy-MM-dd" ), NewValue = updatedCustomer.Birthday.ToString( "yyyy-MM-dd" ) } );
         }
-        if( customer.CanSendEmail != updatedCustomer.CanSendEmail )
+        if( customer.SendBirthdayEmail != updatedCustomer.SendBirthdayEmail )
         {
-            changes.Add( new Change { Field = "CanSendEmail", OldValue = customer.CanSendEmail.ToString(), NewValue = updatedCustomer.CanSendEmail.ToString() } );
+            changes.Add( new Change { Field = "CanSendEmail", OldValue = customer.SendBirthdayEmail.ToString(), NewValue = updatedCustomer.SendBirthdayEmail.ToString() } );
+        }
+
+        if ( customer.PaymentReminderType != updatedCustomer.PaymentReminderType )
+        {
+            changes.Add(new Change{Field="PaymentRemindedType", OldValue = customer.PaymentReminderType.ToString(), NewValue = updatedCustomer.PaymentReminderType.ToString()});
         }
         if( customer.Notes != updatedCustomer.Notes )
         {
@@ -121,7 +126,7 @@ public class CustomersController : ControllerBase
         // Return 304 Not Modified if there are no changes
         if( !changes.Any() )
         {
-            return StatusCode( 304, new { message = "No changes detected." } );
+            return StatusCode( 304 );
         }
 
         // Save history if there are changes
