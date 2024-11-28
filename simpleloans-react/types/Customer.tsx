@@ -1,8 +1,15 @@
 export interface Customer {
-  id: number;
+  id: string;
   name: string;
-  phone: string;
+  phoneNumber: string;
   birthday: string;
   email: string;
+  canSendEmail: boolean;
   notes: string;
+}
+
+import { History } from "./History";
+export interface CustomerWithHistory {
+  customer: Customer;
+  history: History[];
 }

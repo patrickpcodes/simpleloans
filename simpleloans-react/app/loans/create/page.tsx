@@ -21,10 +21,6 @@ import LoanManagementForm from "@/components/LoanManagementForm";
 const LoanCreate: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
-  const [startDate, setStartDate] = useState<string>("2024-11-04");
-  const [numberOfWeeks, setNumberOfWeeks] = useState<number>(8);
-  const [frequency, setFrequency] = useState<string>("Bi-Weekly");
-  const [loanAmount, setAmount] = useState<number>(1000);
   const [interestRate, setInterestRate] = useState<number>(0);
   const [totalToPayBack, setTotalToPayBack] = useState<number>(0);
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -130,7 +126,7 @@ const LoanCreate: React.FC = () => {
   return (
     <div className="p-8">
       <h1 className="text-2xl mb-4">Create Loan Page</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
             Customer
@@ -230,17 +226,14 @@ const LoanCreate: React.FC = () => {
             ))}
           </select>
         </div>
-      </div>
-      <Button onClick={handleGenerate} className="mb-4">
-        Generate Payment Schedule
-      </Button>
+      </div> */}
 
       {payments.length > 0 && (
         <Button onClick={handleClear} className="mb-4 ml-4 bg-red-500">
           Clear
         </Button>
       )}
-      {payments.length > 0 && (
+      {/* {payments.length > 0 && (
         <div className="mt-8">
           <h2 className="text-xl mb-4">Payment Schedule</h2>
           <table className="min-w-full bg-white">
@@ -279,7 +272,7 @@ const LoanCreate: React.FC = () => {
             )}
           </div>
         </div>
-      )}
+      )} */}
       <br />
       <Button onClick={handleSave} disabled={payments.length == 0}>
         Save
@@ -320,6 +313,9 @@ const LoanCreate: React.FC = () => {
         frequencyOptions={frequencyOptions}
         onFormSubmit={handleFormSubmit}
       />
+      <Button onClick={handleGenerate} className="mb-4">
+        Generate Payment Schedule
+      </Button>
     </div>
   );
 };

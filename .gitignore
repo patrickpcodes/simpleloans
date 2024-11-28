@@ -1,2 +1,8 @@
 
 SimpleLoans.Server.Api/appsettings.Development.json
+
+SimpleLoans.Server.Api/bin/
+
+SimpleLoans.Server.Api/.vs/
+
+SimpleLoans.Server.Api/obj/

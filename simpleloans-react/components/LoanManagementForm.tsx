@@ -57,7 +57,7 @@ interface LoanManagementFormProps {
 
   onFormSubmit: (values: z.infer<typeof formSchema>) => void; // Add this prop
 }
-
+//TODO add in way to use this to handle both load creating and loan editing
 export default function LoanManagementForm({
   customerOptions,
   startingCustomer,
@@ -106,7 +106,7 @@ export default function LoanManagementForm({
     console.log("Customer changed", value);
   };
 
-  const handleInterestRateBlur = (value: string) => {
+  async function handleInterestRateBlur(value: string) {
     console.log("Total Paid Back value:", value);
     // Example: Update another field based on the value
     const interestRate = parseFloat(value || "0");
@@ -118,11 +118,12 @@ export default function LoanManagementForm({
       const totalPaidBack = loanAmount * (1 + weeklyInterestRate * numWeeks);
       form.setValue("totalPaidBack", totalPaidBack); // Example calculation
       form.setValue("interestRate", interestRate);
+      await form.trigger();
       console.log("Updated interest rate based on total paid back");
     }
-  };
+  }
 
-  const handleTotalPaidBackBlur = (value: string) => {
+  async function handleTotalPaidBackBlur(value: string) {
     console.log("Total Paid Back value:", value);
     const totalPaidBack = parseFloat(value || "0");
     // Get the current value of numWeeks from the form
@@ -139,10 +140,11 @@ export default function LoanManagementForm({
       form.setValue("interestRate", interestRate);
       form.setValue("totalPaidBack", totalPaidBack);
       console.log("Calculated interest rate:", interestRate);
+      await form.trigger();
     } else {
       console.warn("Invalid input for totalPaidBack or numWeeks");
     }
-  };
+  }
 
   async function handleSendValues() {
     // Trigger validation for all fields
