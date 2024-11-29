@@ -78,12 +78,15 @@ public class Payment
     public Guid Id { get; set; } = Guid.NewGuid();
     [JsonConverter(typeof(DateOnlyJsonConverter))]
     public DateOnly DueDate { get; set; } // Scheduled payment due date
+    public DateOnly? DatePaid { get; set; }
     public DateTime? UpdatedDate { get; set; } // When payment was marked as Paid, PartiallyPaid, or Missed
     public decimal AmountDue { get; set; } // The total amount expected for this payment
     public decimal AmountPaid { get; set; } = 0m; // The amount actually paid towards this payment
-
+    public decimal Fee { get; set; } = 0m;
     [JsonConverter( typeof( JsonStringEnumConverter ) )]
     public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
+
+    public string Notes { get; set; }
 }
 
 public class LoanActivity
@@ -113,13 +116,13 @@ public class Loan
     public Guid CustomerId { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime? ClosedDate { get; set; } // When the loan is fully repaid
-    public double LoanAmount { get; set; }
+    public decimal LoanAmount { get; set; }
+    public decimal InterestRate { get; set; }
     public int NumberOfWeeks { get; set; }
     [JsonConverter( typeof( JsonStringEnumConverter ) )]
     public PaymentFrequency PaymentFrequency { get; set; }
-    public double InterestRate { get; set; }
-    public double OriginalTotalAmountToBeRepaid { get; set; } // Total at loan creation
-    public double TotalAmountRepaid { get; set; } = 0; // Tracks the amount actually repaid, including fees or adjustments
+    public decimal OriginalTotalAmountToBeRepaid { get; set; } // Total at loan creation
+    public decimal TotalAmountRepaid { get; set; } = 0; // Tracks the amount actually repaid, including fees or adjustments
 
     [JsonConverter( typeof( JsonStringEnumConverter ) )]
     public LoanStatus Status { get; set; } = LoanStatus.NotStarted; // Loan's overall status

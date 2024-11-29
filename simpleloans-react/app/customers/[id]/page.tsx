@@ -10,12 +10,14 @@ import { History, HistoryChange } from "@/types/History";
 import { HistoryTimelineView } from "@/components/HistoryTimelineView";
 
 import { useToast } from "@/hooks/use-toast";
+import { Loan } from "@/types/Loan";
 
 const CustomerDetail: React.FC = () => {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [history, setHistory] = useState<History[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [loans, setLoans] = useState<Loan[]>([]);
   const router = useRouter();
   const { id } = useParams();
 
@@ -34,15 +36,21 @@ const CustomerDetail: React.FC = () => {
     const customerWithHistory: CustomerWithHistory = await response.json();
 
     updateCustomerBirthday(customerWithHistory.customer);
-    // Convert the birthday to "YYYY-MM-DD"
-    // if (customerWithHistory.customer.birthday) {
-    //   customerWithHistory.customer.birthday = format(
-    //     new Date(customerWithHistory.customer.birthday),
-    //     "yyyy-MM-dd"
-    //   );
-    // }
-
     return customerWithHistory;
+  }
+  async function fetchLoansById(id: string): Promise<Loan[]> {
+    const response = await fetch(
+      `https://localhost:7238/api/loans/customer/${id}`
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to fetch customer with ID ${id}`);
+    }
+    if (response.status === 204) {
+      return [];
+    }
+    const customerLoans: Loan[] = await response.json();
+
+    return customerLoans;
   }
 
   useEffect(() => {
@@ -56,6 +64,10 @@ const CustomerDetail: React.FC = () => {
           updateCustomerBirthday(data.customer);
           setCustomer(data.customer);
           setHistory(data.history);
+          const customerLoans = await fetchLoansById(id as string);
+          if (customerLoans) {
+            setLoans(customerLoans);
+          }
         } catch (err: any) {
           setError(
             err.message || "An error occurred while fetching the customer."
@@ -238,6 +250,39 @@ const CustomerDetail: React.FC = () => {
       ) : (
         <p>No history found for this customer.</p>
       )} */}
+      {loans.length > 0 ? (
+        <div>
+          <h2>Loans</h2>
+          <ul>
+            {loans.map((loan) => (
+              <li key={loan.id}>
+                <p>
+                  <strong>Loan Amount:</strong> {loan.loanAmount}
+                </p>
+                <p>
+                  <strong>Start Date:</strong>{" "}
+                  {format(new Date(loan.creationDate), "MM/dd/yyyy")}
+                </p>
+                <p>
+                  <strong>Number of Weeks:</strong> {loan.numberOfWeeks}
+                </p>
+                <p>
+                  <strong>Frequency:</strong> {loan.paymentFrequency}
+                </p>
+                <p>
+                  <strong>Interest Rate:</strong> {loan.interestRate}
+                </p>
+                <p>
+                  <strong>Total to Pay Back:</strong>{" "}
+                  {loan.originalTotalAmountToBeRepaid}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p>No loans found for this customer.</p>
+      )}
       {history.length > 0 ? (
         <HistoryTimelineView history={history} />
       ) : (

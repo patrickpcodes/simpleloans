@@ -21,6 +21,7 @@ import {
   LoanDetails,
   LoanDetailsFormValues,
 } from "@/types/LoanDetails";
+import { DetailedPaymentCard } from "@/components/DetailedPaymentCard";
 
 const LoanCreate: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -94,15 +95,6 @@ const LoanCreate: React.FC = () => {
   ): Promise<Payment[]> {
     console.log("In Generate Payments");
     const loanDets = convertFormValuesToLoanDetails(loanDetails);
-    console.log(loanDets);
-    // const formattedDetails = {
-    //   loanDetails: {
-    //     ...loanDets,
-    //     customerId: loanDets.customerId,
-    //     startDate: new Date(loanDets.startDate).toISOString().split("T")[0], // Format as YYYY-MM-DD
-    //   },
-    // // };
-    // console.log(formattedDetails);
     const response = await fetch("https://localhost:7238/api/loans/generate", {
       method: "POST",
       headers: {
@@ -129,87 +121,78 @@ const LoanCreate: React.FC = () => {
     }
   }
 
-  const handleFormSubmit = (values: LoanDetailsFormValues) => {
+  async function handleFormSubmit(values: LoanDetailsFormValues) {
     console.log("Form Submitted, back in page", values);
-  };
+    const loanDets = convertFormValuesToLoanDetails(values);
+    try {
+      const result = await createLoan(loanDets);
+      toast({
+        title: `Loan created successfully!`,
+      });
+    } catch (err: any) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! An error occurred",
+        description: err.message || "The Loan Could not be created",
+      });
+    }
+  }
 
   const handleSave = () => {
     setIsModalOpen(true);
   };
 
-  const handleConfirmSave = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      // Simulate API call
-      const success = Math.random() > 0.999001; // Randomly simulate success or failure
-      if (success) {
-        console.log("Loan created:", {
-          selectedCustomer,
-          startDate,
-          numberOfWeeks,
-          frequency,
-          loanAmount,
-          interestRate,
-          totalToPayBack,
-          payments,
-        });
-        setIsLoading(false);
-        setIsModalOpen(false);
-        router.push("/");
-      } else {
-        setIsLoading(false);
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description:
-            "There was a problem with your request.  Please contact support.",
-        });
-      }
-    }, 2000); // Simulate API call
-  };
+  async function createLoan(newLoan: LoanDetails): Promise<LoanDetails> {
+    const response = await fetch("https://localhost:7238/api/loans", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newLoan),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to create loan.");
+    }
+
+    return await response.json();
+  }
+
+  // const handleConfirmSave = () => {
+  //   setIsLoading(true);
+  //   setTimeout(() => {
+  //     // Simulate API call
+  //     const success = Math.random() > 0.999001; // Randomly simulate success or failure
+  //     if (success) {
+  //       console.log("Loan created:", {
+  //         selectedCustomer,
+  //         startDate,
+  //         numberOfWeeks,
+  //         frequency,
+  //         loanAmount,
+  //         interestRate,
+  //         totalToPayBack,
+  //         payments,
+  //       });
+  //       setIsLoading(false);
+  //       setIsModalOpen(false);
+  //       router.push("/");
+  //     } else {
+  //       setIsLoading(false);
+  //       toast({
+  //         variant: "destructive",
+  //         title: "Uh oh! Something went wrong.",
+  //         description:
+  //           "There was a problem with your request.  Please contact support.",
+  //       });
+  //     }
+  //   }, 2000); // Simulate API call
+  // };
 
   return (
     <div className="p-8">
       <h1 className="text-2xl mb-4">Create Loan Page</h1>
-
-      {/* {payments.length > 0 && (
-        <Button onClick={handleClear} className="mb-4 ml-4 bg-red-500">
-          Clear
-        </Button>
-      )}
-      <br />
-      <Button onClick={handleSave} disabled={payments.length == 0}>
-        Save
-      </Button> */}
-      {/* <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Loan Details</DialogTitle>
-          </DialogHeader>
-          <div className="mb-4">
-            <strong>Customer: </strong>
-            {customers.find((c) => c.id === selectedCustomer)?.name}
-          </div>
-          <div className="mb-4">
-            <strong>Total Amount: </strong>
-            {formatCurrency(loanAmount)}
-          </div>
-          <div className="mb-4">
-            <strong>Number of Weeks: </strong>
-            {numberOfWeeks}
-          </div>
-          <div className="mb-4">
-            <strong>Total to be Paid Back: </strong>
-            {formatCurrency(totalToPayBack)}
-          </div>
-          <DialogFooter>
-            <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleConfirmSave} disabled={isLoading}>
-              {isLoading ? <Spinner /> : "Confirm"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog> */}
 
       <LoanManagementForm
         customerOptions={customers}
@@ -221,15 +204,15 @@ const LoanCreate: React.FC = () => {
       {payments && (
         <div>
           <h2>Generated Payments</h2>
-          <ul>
-            {payments.map((payment) => (
-              <li key={payment.id}>
-                <strong>Due Date:</strong> {payment.dueDate},{" "}
-                <strong>Amount:</strong> ${payment.amountDue.toFixed(2)},{" "}
-                <strong>Status:</strong> {payment.status}
-              </li>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {payments.map((payment, index) => (
+              <DetailedPaymentCard
+                payment={payment}
+                paymentNumber={index + 1}
+                key={index}
+              />
             ))}
-          </ul>
+          </div>
         </div>
       )}
       {/* <Button onClick={handleGeneratePayments} className="mb-4">

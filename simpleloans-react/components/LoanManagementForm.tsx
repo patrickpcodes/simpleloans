@@ -23,20 +23,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { format } from "date-fns";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
 import { Customer } from "@/types/Customer";
-import {
-  loanDetailsSchema,
-  LoanDetailsFormValues,
-  PaymentFrequency,
-} from "@/types/LoanDetails";
+import { loanDetailsSchema, LoanDetailsFormValues } from "@/types/LoanDetails";
+import DateFormSelector from "@/components/DateFormSelector";
+import { Textarea } from "./ui/textarea";
 
 interface LoanManagementFormProps {
   customerOptions: Customer[];
@@ -67,6 +57,7 @@ export default function LoanManagementForm({
       interest: 0,
       totalToPayBack: 0,
       frequency: PaymentFrequency.WEEKLY,
+      notes: "",
     },
   });
   console.log("Form CustomerId", form.getValues("customerId"));
@@ -131,6 +122,11 @@ export default function LoanManagementForm({
     } else {
       console.warn("Invalid input for totalPaidBack or numWeeks");
     }
+  }
+  async function handleDateChanged() {
+    console.log("Date Changed");
+    console.log("date", form.getValues("startDate"));
+    await form.trigger();
   }
   async function handleGeneratePayments() {
     // Trigger validation for all fields
@@ -344,17 +340,27 @@ export default function LoanManagementForm({
         </div>
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-6">
-            <FormField
+            <DateFormSelector
               control={form.control}
               name="startDate"
+              label="First Payment Date"
+              onValueChange={handleDateChanged}
+            />
+          </div>
+          <div className="col-span-6">
+            <FormField
+              control={form.control}
+              name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Start Date</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
+                  <FormLabel>Notes</FormLabel>
+                  <Textarea
+                    placeholder="Enter notes here..."
+                    className="min-h-[120px] resize-y"
+                    {...field}
+                  />
                   <FormDescription>
-                    Enter the start date in yyyy-MM-dd format
+                    Any customer notes, references, history.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

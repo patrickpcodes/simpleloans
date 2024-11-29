@@ -6,15 +6,11 @@ export interface LoanDetails {
   interest: number;
   totalToPayBack: number;
   frequency: PaymentFrequency;
-}
-
-export enum PaymentFrequency {
-  WEEKLY = "Weekly",
-  BIWEEKLY = "Bi-Weekly",
-  MONTHLY = "Monthly",
+  notes: string;
 }
 
 import { z } from "zod";
+import { PaymentFrequency } from "./PaymentFrequency";
 
 export const loanDetailsSchema = z.object({
   customerId: z.string(),
@@ -26,20 +22,22 @@ export const loanDetailsSchema = z.object({
   interest: z.number().min(0),
   totalToPayBack: z.number().positive(),
   frequency: z.nativeEnum(PaymentFrequency),
+  notes: z.string().optional(),
 });
 
 export type LoanDetailsFormValues = z.infer<typeof loanDetailsSchema>;
 
-
-export function convertFormValuesToLoanDetails(formValues: LoanDetailsFormValues): LoanDetails {
-    return {
-      customerId: formValues.customerId,
-      startDate: formValues.startDate,
-      numberOfWeeks: formValues.numberOfWeeks,
-      startingAmount: formValues.startingAmount,
-      interest: formValues.interest,
-      totalToPayBack: formValues.totalToPayBack,
-      frequency: formValues.frequency,
-    };
-  }
-  
+export function convertFormValuesToLoanDetails(
+  formValues: LoanDetailsFormValues
+): LoanDetails {
+  return {
+    customerId: formValues.customerId,
+    startDate: formValues.startDate,
+    numberOfWeeks: formValues.numberOfWeeks,
+    startingAmount: formValues.startingAmount,
+    interest: formValues.interest,
+    totalToPayBack: formValues.totalToPayBack,
+    frequency: formValues.frequency,
+    notes: formValues.notes,
+  };
+}
