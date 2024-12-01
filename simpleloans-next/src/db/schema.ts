@@ -79,8 +79,8 @@ export const payments = pgTable("payments", {
   amountPaid: decimal("amount_paid", {
     precision: 10,
     scale: 2,
-  }),
-  feeAmount: decimal("fee_amount", { precision: 10, scale: 2 }),
+  }).notNull(),
+  feeAmount: decimal("fee_amount", { precision: 10, scale: 2 }).notNull(),
   paymentStatus: paymentStatusesEnum("payment_status").notNull(),
   dueDate: timestamp("due_date").notNull(),
   paymentDate: timestamp("payment_date"),

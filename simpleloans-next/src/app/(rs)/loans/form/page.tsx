@@ -4,6 +4,7 @@ import { getLoan } from "@/lib/queries/getLoan";
 import * as Sentry from "@sentry/nextjs";
 import LoanForm from "./LoanForm";
 import { PaymentTableView } from "@/components/PaymentTableView";
+import { PaymentCard } from "@/components/PaymentCard";
 
 export async function generateMetadata({
   searchParams,
@@ -48,7 +49,25 @@ export default async function CustomerFormPage({
       console.log(result.loan);
       return (
         <div>
-          <LoanForm loan={result.loan} customers={customers} />
+          <LoanForm
+            loan={result.loan}
+            customers={customers}
+            payments={result.payments}
+          />
+          {result.payments && (
+            <div>
+              <h2>Generated Payments</h2>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {result.payments.map((payment, index) => (
+                  <PaymentCard
+                    payment={payment}
+                    paymentNumber={index + 1}
+                    key={index}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           <PaymentTableView payments={result.payments} />
           {JSON.stringify(result.loan)} {JSON.stringify(result.payments)}
         </div>

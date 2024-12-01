@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { customers, loans, payments } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 
 export async function getLoan(loanId: number) {
   try {
@@ -21,7 +21,8 @@ export async function getLoan(loanId: number) {
     const loanPayments = await db
       .select()
       .from(payments)
-      .where(eq(payments.loanId, loanId));
+      .where(eq(payments.loanId, loanId))
+      .orderBy(asc(payments.dueDate));
 
     // Query to fetch the associated customer by customerId
     const customer = await db
