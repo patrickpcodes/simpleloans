@@ -7,10 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { customers } from "@/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
+import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
+import { selectCustomerSchemaType } from "@/zod-schemas/customer";
 
-type Customer = InferSelectModel<typeof customers>;
+type Customer = selectCustomerSchemaType;
 
 type Props = {
   customers: Customer[];
@@ -40,7 +40,9 @@ export function CustomerTableView({ customers, onRowClick }: Props) {
             <TableCell>{customer.id}</TableCell>
             <TableCell>{customer.name}</TableCell>
             <TableCell>{customer.phone}</TableCell>
-            <TableCell>{customer.birthdate.toString()}</TableCell>
+            <TableCell>
+              {formatDateToMonthDayYear(customer.birthdate)}
+            </TableCell>
             <TableCell>{customer.email}</TableCell>
             <TableCell>{customer.notes}</TableCell>
           </TableRow>

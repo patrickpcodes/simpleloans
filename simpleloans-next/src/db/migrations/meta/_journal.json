@@ -5,22 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1732917040775,
-      "tag": "0000_boring_wiccan",
+      "when": 1733045363408,
+      "tag": "0000_charming_salo",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1733020522642,
-      "tag": "0001_orange_valkyrie",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1733023131633,
-      "tag": "0002_old_zaladane",
+      "when": 1733048788777,
+      "tag": "0001_bouncy_vance_astro",
       "breakpoints": true
     }
   ]

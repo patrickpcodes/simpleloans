@@ -1,11 +1,13 @@
 import { db } from "@/db";
 import { customers } from "@/db/schema";
+import { getCustomers } from "@/lib/queries/getCustomers";
 import { eq } from "drizzle-orm";
+import { updateCustomer } from "@/lib/queries/updateCustomer";
 
 export async function GET() {
   try {
     // Fetch all customers from the database
-    const allCustomers = await db.select().from(customers);
+    const allCustomers = await getCustomers();
     console.log("allCustomers", allCustomers);
     // Return the data as a JSON response
     return new Response(JSON.stringify(allCustomers), {
@@ -85,23 +87,23 @@ export async function PUT(req) {
         }
       );
     }
+    const result = await updateCustomer(data, "p@p.com", "Patrick");
+    // const updatedCustomer = await db
+    //   .update(customers)
+    //   .set({
+    //     name: data.name,
+    //     email: data.email,
+    //     phone: data.phone,
+    //     birthdate: data.birthdate ? new Date(data.birthdate) : undefined,
+    //     references: data.references,
+    //     notes: data.notes,
+    //     canSendSpecialEmails: data.canSendSpecialEmails,
+    //     active: data.active,
+    //     updatedAt: new Date(), // Ensure updatedAt is updated
+    //   })
+    //   .where(eq(customers.id, data.id));
 
-    const updatedCustomer = await db
-      .update(customers)
-      .set({
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        birthdate: data.birthdate ? new Date(data.birthdate) : undefined,
-        references: data.references,
-        notes: data.notes,
-        canSendSpecialEmails: data.canSendSpecialEmails,
-        active: data.active,
-        updatedAt: new Date(), // Ensure updatedAt is updated
-      })
-      .where(eq(customers.id, data.id));
-
-    return new Response(JSON.stringify(updatedCustomer), {
+    return new Response(JSON.stringify(result), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });

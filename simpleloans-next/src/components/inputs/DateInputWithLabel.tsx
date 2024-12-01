@@ -24,6 +24,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Calendar as CalendarIcon, FormInput } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
 
 type Props<S> = {
   fieldTitle: string;
@@ -49,9 +50,6 @@ export function DateInputWithLabel<S>({
 
     return format(startOfDayDate, "PPP");
   };
-  const formatDateForInput = (date: Date) => {
-    return date.toISOString().split("T")[0];
-  };
 
   return (
     <FormField
@@ -64,7 +62,7 @@ export function DateInputWithLabel<S>({
             <FormControl>
               <Input
                 type="date"
-                value={formatDateForInput(value)}
+                value={formatDateToDateOnly(value)}
                 onChange={(e) => {
                   console.log(e.target.value);
                   onChange(new Date(e.target.value));

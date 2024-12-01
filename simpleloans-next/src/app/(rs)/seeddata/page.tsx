@@ -12,10 +12,10 @@ export default function Seed() {
   const [shouldRefresh, setShouldRefresh] = useState(false); // State to trigger re-fetch
 
   // Function to seed customers
-  const seedCustomers = async () => {
-    console.log("seedCustomers");
+  const seedData = async () => {
+    console.log("seed");
     try {
-      const response = await fetch("/api/seedCustomers", {
+      const response = await fetch("/api/seed", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -32,7 +32,25 @@ export default function Seed() {
       setMessage("Failed to seed customers");
     }
   };
+  const deleteData = async () => {
+    try {
+      const response = await fetch("/api/seed", {
+        method: "DELETE",
+      });
 
+      if (!response.ok) {
+        throw new Error("Failed to delete data.");
+      }
+
+      const result = await response.json();
+      setShouldRefresh(true); // Trigger re-fetch of customers
+      // setSuccess(result.message);
+    } catch (err: any) {
+      // setError(err.message);
+    } finally {
+      // setLoading(false);
+    }
+  };
   // Function to fetch all customers
   const fetchCustomers = async () => {
     try {
@@ -57,7 +75,10 @@ export default function Seed() {
   return (
     <div>
       <h2>Seed Page</h2>
-      <Button onClick={seedCustomers}>Seed Customers</Button>
+      <Button onClick={seedData}>Seed Customers</Button>
+      <Button variant="destructive" onClick={deleteData}>
+        Delete Data
+      </Button>
       {message && <p>{message}</p>}
       {customerList && (
         <CustomerTableView

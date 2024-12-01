@@ -2,6 +2,10 @@ import { getCustomer } from "@/lib/queries/getCustomer";
 import { BackButton } from "@/components/BackButton";
 import * as Sentry from "@sentry/nextjs";
 import CustomerForm from "@/app/(rs)/customers/form/CustomerForm";
+import { getLoansByCustomerId } from "@/lib/queries/getLoansByCustomerId";
+import { LoanTableView } from "@/components/LoanTableView";
+import { getHistoriesByItem } from "@/lib/queries/getHistoriesByItem";
+import { HistoryTimelineView } from "@/components/HistoryTimelineView";
 
 export async function generateMetadata({
   searchParams,
@@ -25,7 +29,12 @@ export default async function CustomerFormPage({
     // Edit customer form
     if (customerId) {
       const customer = await getCustomer(parseInt(customerId));
-
+      const loans = await getLoansByCustomerId(parseInt(customerId));
+      const histories = await getHistoriesByItem(
+        "Customer",
+        parseInt(customerId)
+      );
+      console.log(histories);
       if (!customer) {
         return (
           <>
@@ -37,8 +46,17 @@ export default async function CustomerFormPage({
         );
       }
       console.log(customer);
+      console.log(loans);
       // put customer form component
-      return <CustomerForm customer={customer} />;
+      return (
+        <div>
+          <CustomerForm customer={customer} />
+          {loans.length > 0 && <LoanTableView loans={loans} />}
+          {histories.length > 0 && (
+            <HistoryTimelineView histories={histories} />
+          )}
+        </div>
+      );
     } else {
       // new customer form component
       return <CustomerForm />;

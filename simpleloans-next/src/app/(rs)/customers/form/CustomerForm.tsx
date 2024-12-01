@@ -93,6 +93,7 @@ export default function CustomerForm({ customer }: Props) {
       const result = await response.json();
       console.log("This is my result from call");
       console.log(result);
+
       if (method == "PUT") {
         router.push(`/customers/form?customerId=${data.id}`);
       } else {
