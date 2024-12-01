@@ -12,7 +12,12 @@ import type { InferSelectModel } from "drizzle-orm";
 
 type Customer = InferSelectModel<typeof customers>;
 
-export function CustomerTableView({ customers }: { customers: Customer[] }) {
+type Props = {
+  customers: Customer[];
+  onRowClick: (id: number) => void;
+};
+
+export function CustomerTableView({ customers, onRowClick }: Props) {
   return (
     <Table>
       <TableHeader>
@@ -29,7 +34,7 @@ export function CustomerTableView({ customers }: { customers: Customer[] }) {
         {customers.map((customer) => (
           <TableRow
             key={customer.id}
-            // onClick={() => handleRowClick(customer.id)}
+            onClick={() => onRowClick(customer.id)}
             className="cursor-pointer"
           >
             <TableCell>{customer.id}</TableCell>

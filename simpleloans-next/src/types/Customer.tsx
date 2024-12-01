@@ -14,10 +14,7 @@ export const customerFormSchema = z.object({
   phone: z
     .string()
     .min(7, "Phone number must be at least 7 digits")
-    .regex(
-      /^[\d()+-]+$/,
-      "Phone number can only contain digits, parentheses, hyphens, and plus signs"
-    ),
+    .regex(/^[\d()+-]+$/, "Phone number can only contain digits, parentheses, hyphens, and plus signs"),
   birthdate: z.string().nonempty("Birthdate is required"), // Expecting YYYY-MM-DD format
   notes: z.string().optional(),
   canSendSpecialEmails: z.boolean().default(false),

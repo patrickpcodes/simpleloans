@@ -18,7 +18,7 @@ export default function Seed() {
   const fetchCustomers = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/getCustomers", {
+      const response = await fetch("/api/customers", {
         method: "GET", // Ensure the method is GET
       });
       const data = await response.json();
@@ -37,15 +37,22 @@ export default function Seed() {
     }
   }, [shouldRefresh]);
 
+  const handleRowClick = (id: number) => {
+    router.push(`/customers/form?customerId=${id}`);
+  };
+
   return (
     <div>
       <h2>Customer Page</h2>
-      <Button onClick={() => router.push("/customers/create")}>
+      <Button onClick={() => router.push("/customers/form")}>
         Create New Customer
       </Button>
       {isLoading && <p>Loading...</p>}
       {customerList.length > 0 && (
-        <CustomerTableView customers={customerList} />
+        <CustomerTableView
+          customers={customerList}
+          onRowClick={handleRowClick}
+        />
       )}
     </div>
   );

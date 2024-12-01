@@ -13,6 +13,7 @@ export default function Seed() {
 
   // Function to seed customers
   const seedCustomers = async () => {
+    console.log("seedCustomers");
     try {
       const response = await fetch("/api/seedCustomers", {
         method: "POST",
@@ -35,7 +36,7 @@ export default function Seed() {
   // Function to fetch all customers
   const fetchCustomers = async () => {
     try {
-      const response = await fetch("/api/getCustomers", {
+      const response = await fetch("/api/customers", {
         method: "GET", // Ensure the method is GET
       });
       const data = await response.json();
@@ -58,7 +59,12 @@ export default function Seed() {
       <h2>Seed Page</h2>
       <Button onClick={seedCustomers}>Seed Customers</Button>
       {message && <p>{message}</p>}
-      {customerList && <CustomerTableView customers={customerList} />}
+      {customerList && (
+        <CustomerTableView
+          customers={customerList}
+          onRowClick={() => console.log("Clicked to Generate")}
+        />
+      )}
     </div>
   );
 }

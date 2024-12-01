@@ -7,12 +7,16 @@ export async function POST() {
     const randomCustomers = [];
 
     // Generate 5 random customers
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
       randomCustomers.push({
         name: faker.name.fullName(),
         email: faker.internet.email(),
         phone: faker.phone.number("+1-###-###-####"),
-        birthdate: faker.date.past(30, new Date(2000, 0, 1)), // Random birthdate in the past 30 years
+        birthdate: faker.date.past(
+          30,
+          new Date(2000, 0, 1).setHours(0, 0, 0, 0)
+        ), // Random birthdate in the past 30 years
+        references: faker.lorem.paragraph(),
         notes: faker.lorem.sentence(),
         canSendSpecialEmails: faker.datatype.boolean(),
         active: true, // Default value

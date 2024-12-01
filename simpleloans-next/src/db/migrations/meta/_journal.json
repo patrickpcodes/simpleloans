@@ -8,6 +8,20 @@
       "when": 1732917040775,
       "tag": "0000_boring_wiccan",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1733020522642,
+      "tag": "0001_orange_valkyrie",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1733023131633,
+      "tag": "0002_old_zaladane",
+      "breakpoints": true
     }
   ]
 }
