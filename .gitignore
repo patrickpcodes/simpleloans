@@ -6,3 +6,5 @@ SimpleLoans.Server.Api/bin/
 SimpleLoans.Server.Api/.vs/
 
 SimpleLoans.Server.Api/obj/
+
+.idea/

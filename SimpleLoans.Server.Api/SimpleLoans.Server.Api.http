@@ -1,6 +1,0 @@
-@SimpleLoans.Server.Api_HostAddress = http://localhost:5293
-
-GET {{SimpleLoans.Server.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
