@@ -1,4 +1,3 @@
-import { LOAN_PAYMENT_FREQUENCIES } from "@/types/LoanPaymentFrequency";
 import { selectLoanSchemaType } from "@/zod-schemas/loan";
 import { selectPaymentSchemaType } from "@/zod-schemas/payment";
 
@@ -10,7 +9,7 @@ export function generatePayments(loan: Loan): Payment[] {
   const payments: Payment[] = [];
   const paymentAmount =
     parseFloat(loan.initialDueAmount) / loan.numberOfPayments;
-  let currentDate = new Date(loan.firstPaymentDate);
+  const currentDate = new Date(loan.firstPaymentDate);
   console.log("Loan Payment Frequency", loan.paymentFrequency);
   const daysToAdd = (() => {
     switch (loan.paymentFrequency) {

@@ -8,14 +8,10 @@ import {
   text,
   pgEnum,
   decimal,
-  numeric,
   jsonb,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
-import { number } from "zod";
 import { LOAN_PAYMENT_FREQUENCIES } from "@/types/LoanPaymentFrequency";
 import { PAYMENT_STATUSES } from "@/types/PaymentStatus";
-import { Changes } from "@/zod-schemas/changes";
 
 export const customers = pgTable("customers", {
   id: serial("id").primaryKey(),

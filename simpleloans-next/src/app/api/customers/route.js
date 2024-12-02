@@ -1,7 +1,6 @@
 import { db } from "@/db";
 import { customers } from "@/db/schema";
 import { getCustomers } from "@/lib/queries/getCustomers";
-import { eq } from "drizzle-orm";
 import { updateCustomer } from "@/lib/queries/updateCustomer";
 
 export async function GET() {

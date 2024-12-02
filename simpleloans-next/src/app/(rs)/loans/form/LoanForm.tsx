@@ -1,16 +1,11 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { useController, useForm } from "react-hook-form";
-import { Checkbox } from "@/components/ui/checkbox";
+
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,33 +18,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { format } from "date-fns";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
-import DateFormSelector from "@/components/DateFormSelector";
-import { CustomerFormValues, customerFormSchema } from "@/types/Customer";
-import { Textarea } from "../../../../components/ui/textarea";
-import {
-  insertCustomerSchema,
-  insertCustomerSchemaType,
-  selectCustomerSchemaType,
-} from "@/zod-schemas/customer";
+import { selectCustomerSchemaType } from "@/zod-schemas/customer";
 import {
   insertLoanSchema,
   insertLoanSchemaType,
   selectLoanSchemaType,
 } from "@/zod-schemas/loan";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
-import { DateInputWithLabel } from "@/components/inputs/DateInputWithLabel";
-import { CheckboxWithLabel } from "@/components/inputs/CheckboxWithLabel";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { LOAN_PAYMENT_FREQUENCIES } from "@/types/LoanPaymentFrequency";
 import { selectPaymentSchemaType } from "@/zod-schemas/payment";
 import { formatNumberToDollar } from "@/utils/formatStringToDollar";
@@ -61,7 +38,7 @@ type Props = {
 };
 
 export default function LoanForm({ loan, customers, payments }: Props) {
-  const router = useRouter();
+  // const router = useRouter();
   const defaultValues: insertLoanSchemaType = {
     id: loan?.id ?? 0,
     customerId: loan?.customerId ?? 0,
@@ -160,7 +137,7 @@ export default function LoanForm({ loan, customers, payments }: Props) {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {LOAN_PAYMENT_FREQUENCIES.map((freq, index) => (
+                            {LOAN_PAYMENT_FREQUENCIES.map((freq) => (
                               <SelectItem
                                 key={`paymentFreq_${freq}`}
                                 value={freq}

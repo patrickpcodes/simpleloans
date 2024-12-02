@@ -42,13 +42,14 @@ export default function Seed() {
         throw new Error("Failed to delete data.");
       }
 
-      const result = await response.json();
+      //   const result = await response.json();
       setShouldRefresh(true); // Trigger re-fetch of customers
       // setSuccess(result.message);
-    } catch (err: any) {
-      // setError(err.message);
     } finally {
-      // setLoading(false);
+      // catch (err: any) {
+      // setError(err.message);
+      // }
+      //   setLoading(false);
     }
   };
   // Function to fetch all customers

@@ -1,6 +1,5 @@
 import {
   HomeIcon,
-  File,
   UsersRound,
   LogOut,
   Database,

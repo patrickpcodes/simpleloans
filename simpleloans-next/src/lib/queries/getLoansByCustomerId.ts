@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { customers, loans } from "@/db/schema";
+import { loans } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export async function getLoansByCustomerId(customerId: number) {

@@ -1,40 +1,8 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { useController, useForm } from "react-hook-form";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { format } from "date-fns";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
-import DateFormSelector from "@/components/DateFormSelector";
-import { CustomerFormValues, customerFormSchema } from "@/types/Customer";
-import { Textarea } from "../../../../components/ui/textarea";
+import { Form } from "@/components/ui/form";
 import {
   insertCustomerSchema,
   insertCustomerSchemaType,

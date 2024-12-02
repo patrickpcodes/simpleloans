@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,10 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { customers } from "@/db/schema";
-import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
 import { selectLoanSchemaType } from "@/zod-schemas/loan";
-import type { InferSelectModel } from "drizzle-orm";
 import { useRouter } from "next/navigation";
 
 type Loan = selectLoanSchemaType;

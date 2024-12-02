@@ -7,7 +7,7 @@ export const insertLoanSchema = createInsertSchema(loans, {
   customerId: (schema) => schema.customerId.min(1, "Customer ID is required"),
   numberOfPayments: (schema) =>
     schema.numberOfPayments.min(1, "Number of Payments is required"),
-  paymentFrequency: (schema) =>
+  paymentFrequency: () =>
     z
       .enum(LOAN_PAYMENT_FREQUENCIES)
       .refine((value) => LOAN_PAYMENT_FREQUENCIES.includes(value), {

@@ -3,10 +3,11 @@ import { customers, history } from "@/db/schema";
 import { selectCustomerSchemaType } from "@/zod-schemas/customer";
 import { desc, eq } from "drizzle-orm";
 import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
+import { Change } from "@/zod-schemas/changes";
 
 function trackChanges(
-  existing: Record<string, any>,
-  updated: Record<string, any>,
+  existing: Record<string, string | null>,
+  updated: Record<string, string | null>,
   fields: string[]
 ): Change[] {
   return fields.reduce<Change[]>((changes, field) => {

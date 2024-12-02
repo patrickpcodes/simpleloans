@@ -1,16 +1,12 @@
-import { faker, fakerTH } from "@faker-js/faker"; // Ensure faker is imported
+import { faker } from "@faker-js/faker"; // Ensure faker is imported
 import { db } from "@/db";
 import { loans, customers, payments } from "@/db/schema";
 import { LOAN_PAYMENT_FREQUENCIES } from "@/types/LoanPaymentFrequency";
-import { PAYMENT_STATUSES } from "@/types/PaymentStatus";
 import { generatePayments } from "@/lib/queries/generatePayments";
-import { selectLoanSchemaType } from "@/zod-schemas/loan";
-
-type Loan = selectLoanSchemaType;
 
 export async function POST() {
   try {
-    const numToCreate = 1; // Number of customers to create
+    const numToCreate = 0; // Number of customers to create
     const customerIds = []; // Store created customer IDs
 
     // Generate and insert customers one at a time
@@ -48,19 +44,19 @@ export async function POST() {
         const initialDueAmount =
           initialBorrowedAmount + faker.number.int({ min: 1000, max: 3000 });
 
-        const loanToCreate: Loan = {
-          customerId,
-          numberOfPayments: faker.number.int({ min: 6, max: 36 }),
-          paymentFrequency: faker.helpers.arrayElement(
-            LOAN_PAYMENT_FREQUENCIES
-          ),
-          initialBorrowedAmount: initialBorrowedAmount.toString(),
-          initialDueAmount: initialDueAmount.toString(),
-          firstPaymentDate: faker.date.future(),
-          notes: faker.lorem.sentence(),
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
+        // const loanToCreate: Loan = {
+        //   customerId,
+        //   numberOfPayments: faker.number.int({ min: 6, max: 36 }),
+        //   paymentFrequency: faker.helpers.arrayElement(
+        //     LOAN_PAYMENT_FREQUENCIES
+        //   ),
+        //   initialBorrowedAmount: initialBorrowedAmount.toString(),
+        //   initialDueAmount: initialDueAmount.toString(),
+        //   firstPaymentDate: faker.date.future(),
+        //   notes: faker.lorem.sentence(),
+        //   createdAt: new Date(),
+        //   updatedAt: new Date(),
+        // };
         // Insert loan and get the ID
         const newLoan = await db
           .insert(loans)

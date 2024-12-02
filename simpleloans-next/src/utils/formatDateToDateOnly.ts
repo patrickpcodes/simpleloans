@@ -1,4 +1,4 @@
-import { format, startOfDay } from "date-fns";
+import { format } from "date-fns";
 
 export const formatDateToDateOnly = (date: unknown) => {
   // Ensure the input is a Date object

@@ -6,7 +6,7 @@ import { z } from "zod";
 export const insertPaymentSchema = createInsertSchema(payments, {
   loanId: (schema) => schema.loanId.min(1, "Loan ID is required"),
   amountDue: (schema) => schema.amountDue.min(1, "Amount is required"),
-  paymentStatus: (schema) =>
+  paymentStatus: () =>
     z
       .enum(PAYMENT_STATUSES)
       .refine((value) => PAYMENT_STATUSES.includes(value), {

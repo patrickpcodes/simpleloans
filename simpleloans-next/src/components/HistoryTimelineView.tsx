@@ -1,6 +1,5 @@
 import { CalendarIcon, UserIcon } from "lucide-react";
 import { selectHistorySchemaType } from "@/zod-schemas/history";
-import { Change } from "@/zod-schemas/changes";
 
 type History = selectHistorySchemaType;
 
