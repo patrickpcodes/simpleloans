@@ -1,15 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { customers } from "@/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
-import { CustomerTableView } from "@/components/CustomerTableView";
 import { useRouter } from "next/navigation";
+import { CustomerDetail } from "@/types/CustomerDetail";
+import { MultiCustomerDisplay } from "@/components/customer/MultiCustomerDisplay";
 
-type Customer = InferSelectModel<typeof customers>;
 export default function Seed() {
-  const [customerList, setCustomers] = useState<Customer[]>([]);
+  const [customerList, setCustomers] = useState<CustomerDetail[]>([]);
   const [shouldRefresh, setShouldRefresh] = useState(false); // State to trigger re-fetch
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -49,11 +47,17 @@ export default function Seed() {
       </Button>
       {isLoading && <p>Loading...</p>}
       {customerList.length > 0 && (
+        <MultiCustomerDisplay
+          customerDetails={customerList}
+          onRowClick={handleRowClick}
+        />
+      )}
+      {/* {customerList.length > 0 && (
         <CustomerTableView
           customers={customerList}
           onRowClick={handleRowClick}
         />
-      )}
+      )} */}
     </div>
   );
 }

@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
-import { customers } from "@/db/schema";
-import type { InferSelectModel } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
-import { CustomerTableView } from "@/components/CustomerTableView";
+import { CustomerDetail } from "@/types/CustomerDetail";
+import { MultiCustomerDisplay } from "@/components/customer/MultiCustomerDisplay";
+import { useRouter } from "next/navigation";
 
-type Customer = InferSelectModel<typeof customers>;
 export default function Seed() {
-  const [customerList, setCustomers] = useState<Customer[]>([]);
+  const [customerList, setCustomers] = useState<CustomerDetail[]>([]);
   const [message, setMessage] = useState("");
   const [shouldRefresh, setShouldRefresh] = useState(false); // State to trigger re-fetch
+  const router = useRouter();
 
   // Function to seed customers
   const seedData = async () => {
@@ -64,7 +64,9 @@ export default function Seed() {
       console.error("Error fetching customers:", error);
     }
   };
-
+  const handleRowClick = (id: number) => {
+    router.push(`/customers/form?customerId=${id}`);
+  };
   // Fetch customers on initial load and when `shouldRefresh` changes
   useEffect(() => {
     fetchCustomers();
@@ -82,9 +84,9 @@ export default function Seed() {
       </Button>
       {message && <p>{message}</p>}
       {customerList && (
-        <CustomerTableView
-          customers={customerList}
-          onRowClick={() => console.log("Clicked to Generate")}
+        <MultiCustomerDisplay
+          customerDetails={customerList}
+          onRowClick={handleRowClick}
         />
       )}
     </div>

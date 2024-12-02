@@ -17,14 +17,14 @@ export async function generateMetadata({
 
   return { title: `Edit Loan #${loanId}` };
 }
-export default async function CustomerFormPage({
+export default async function LoanFormPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   try {
     const customers = await getCustomers();
-    const { loanId } = await searchParams;
+    const { loanId, customerId } = await searchParams;
 
     // Edit customer form
     if (loanId) {
@@ -69,14 +69,19 @@ export default async function CustomerFormPage({
             </div>
           )}
           <PaymentTableView payments={result.payments} />
-          {JSON.stringify(result.loan)} {JSON.stringify(result.payments)}
         </div>
       );
       // put customer form component
       return <div>{/* <CustomerForm customer={customer} /> */}</div>;
     } else {
+      if (customerId) {
+        console.log(customerId);
+        return (
+          <LoanForm customers={customers} customerId={parseInt(customerId)} />
+        );
+      }
       // new customer form component
-      //   return <CustomerForm />;
+      return <LoanForm customers={customers} />;
     }
   } catch (e) {
     if (e instanceof Error) {

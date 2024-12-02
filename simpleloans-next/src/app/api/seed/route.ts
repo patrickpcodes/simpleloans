@@ -6,7 +6,7 @@ import { generatePayments } from "@/lib/queries/generatePayments";
 
 export async function POST() {
   try {
-    const numToCreate = 0; // Number of customers to create
+    const numToCreate = 2; // Number of customers to create
     const customerIds = []; // Store created customer IDs
 
     // Generate and insert customers one at a time
@@ -31,7 +31,7 @@ export async function POST() {
     }
     // For each customer, generate 0-3 loans
     for (const customerId of customerIds) {
-      const numLoans = faker.number.int({ min: 1, max: 3 }); // Random number of loans
+      const numLoans = faker.number.int({ min: 1, max: 1 }); // Random number of loans
 
       for (let i = 0; i < numLoans; i++) {
         // Generate the initial borrowed amount
@@ -62,7 +62,7 @@ export async function POST() {
           .insert(loans)
           .values({
             customerId: customerId,
-            numberOfPayments: faker.number.int({ min: 6, max: 36 }),
+            numberOfPayments: faker.number.int({ min: 4, max: 12 }),
             paymentFrequency: faker.helpers.arrayElement(
               LOAN_PAYMENT_FREQUENCIES
             ),

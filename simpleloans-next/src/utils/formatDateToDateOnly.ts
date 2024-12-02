@@ -11,7 +11,7 @@ export const formatDateStringToDateOnly = (date: string) => {
 
   // Check if the resulting Date is valid
   if (isNaN(validDate.getTime())) {
-    throw new Error("Invalid Date");
+    return date;
   }
 
   // Format the date to YYYY-MM-DD
@@ -27,7 +27,7 @@ export const formatDateStringToMonthDayYear = (date: string) => {
 
   // Check if the resulting Date is valid
   if (isNaN(validDate.getTime())) {
-    throw new Error("Invalid Date");
+    return date;
   }
 
   return format(validDate, "PPP");

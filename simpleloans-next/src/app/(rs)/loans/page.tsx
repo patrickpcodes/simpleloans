@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { LoanDetail } from "@/types/LoanDetail";
+import { MultiLoanDisplay } from "@/components/loan/MultiLoanDisplay";
 
 export default function Seed() {
-  // const [loanList, setLoans] = useState<Loan[]>([]);
+  const [loanDetails, setLoanDetails] = useState<LoanDetail[]>([]);
   const [shouldRefresh, setShouldRefresh] = useState(false); // State to trigger re-fetch
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -19,7 +21,7 @@ export default function Seed() {
       });
       const data = await response.json();
       console.log(data);
-      // setLoans(data);
+      setLoanDetails(data);
     } catch (error) {
       console.error("Error fetching customers:", error);
     }
@@ -34,9 +36,9 @@ export default function Seed() {
     }
   }, [shouldRefresh]);
 
-  // const handleRowClick = (id: number) => {
-  //   router.push(`/loans/form?loanId=${id}`);
-  // };
+  const handleRowClick = (id: number) => {
+    router.push(`/loans/form?loanId=${id}`);
+  };
 
   return (
     <div>
@@ -45,12 +47,13 @@ export default function Seed() {
         Create New Loan
       </Button>
       {isLoading && <p>Loading...</p>}
-      {/* {customerList.length > 0 && (
-        <CustomerTableView
-          customers={customerList}
+      <div className="h-px bg-gray-300 w-full my-4"></div>
+      {loanDetails.length > 0 && (
+        <MultiLoanDisplay
+          loanDetails={loanDetails}
           onRowClick={handleRowClick}
         />
-      )} */}
+      )}
     </div>
   );
 }

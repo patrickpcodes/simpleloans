@@ -13,6 +13,8 @@ export default withAuth(
 export const config = {
   matcher: [
     "/customers",
+    "/loans",
+    "/seeddata",
     /*
      * Match all request paths except for the ones starting with:
      * - api (API routes)

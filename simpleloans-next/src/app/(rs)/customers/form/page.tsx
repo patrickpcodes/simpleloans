@@ -1,10 +1,8 @@
-import { getCustomer } from "@/lib/queries/getCustomer";
 import { BackButton } from "@/components/BackButton";
 import * as Sentry from "@sentry/nextjs";
 import CustomerForm from "@/app/(rs)/customers/form/CustomerForm";
-import { getLoansByCustomerId } from "@/lib/queries/getLoansByCustomerId";
-import { LoanTableView } from "@/components/LoanTableView";
-import { getHistoriesByItem } from "@/lib/queries/getHistoriesByItem";
+import { getCustomerData } from "@/lib/queries/getCustomerData";
+import { CustomerDetail } from "@/types/CustomerDetail";
 // import { HistoryTimelineView } from "@/components/HistoryTimelineView";
 
 export async function generateMetadata({
@@ -28,14 +26,15 @@ export default async function CustomerFormPage({
 
     // Edit customer form
     if (customerId) {
-      const customer = await getCustomer(parseInt(customerId));
-      const loans = await getLoansByCustomerId(parseInt(customerId));
-      const histories = await getHistoriesByItem(
-        "Customer",
+      const customerDetailResponse: CustomerDetail[] = await getCustomerData(
         parseInt(customerId)
       );
-      console.log(histories);
-      if (!customer) {
+      // const histories = await getHistoriesByItem(
+      //   "Customer",
+      //   parseInt(customerId)
+      // );
+      // console.log(histories);
+      if (!customerDetailResponse || customerDetailResponse.length != 1) {
         return (
           <>
             <h2 className="text-2xl mb-2">
@@ -45,13 +44,22 @@ export default async function CustomerFormPage({
           </>
         );
       }
-      console.log(customer);
-      console.log(loans);
+      const customerDetail = customerDetailResponse[0];
+      console.log(customerDetail);
+      // const loanDetails: LoanDetail[] = customerDetails.loansWithPayments.map(
+      //   (loanWithPayments) => {
+      //     return {
+      //       loan: loanWithPayments.loan,
+      //       payments: loanWithPayments.payments,
+      //       customer: customerDetails.customer,
+      //     };
+      //   }
+      // );
+      // console.log("loanDetails", loanDetails);
       // put customer form component
       return (
         <div>
-          <CustomerForm customer={customer} />
-          {loans.length > 0 && <LoanTableView loans={loans} />}
+          <CustomerForm customerDetail={customerDetail} />
           {/* {histories.length > 0 && (
             <HistoryTimelineView histories={histories} />
           )} */}

@@ -30,30 +30,81 @@ import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
 import { LOAN_PAYMENT_FREQUENCIES } from "@/types/LoanPaymentFrequency";
 import { selectPaymentSchemaType } from "@/zod-schemas/payment";
 import { formatNumberToDollar } from "@/utils/formatStringToDollar";
+import { DateInputWithLabel } from "@/components/inputs/DateInputWithLabel";
+import { useRouter } from "next/navigation";
 
 type Props = {
   loan?: selectLoanSchemaType;
   customers: selectCustomerSchemaType[];
   payments?: selectPaymentSchemaType[];
+  customerId?: number;
 };
 
-export default function LoanForm({ loan, customers, payments }: Props) {
+export default function LoanForm({
+  loan,
+  customers,
+  payments,
+  customerId,
+}: Props) {
+  const router = useRouter();
+  if (customerId) {
+  }
   // const router = useRouter();
   const defaultValues: insertLoanSchemaType = {
     id: loan?.id ?? 0,
-    customerId: loan?.customerId ?? 0,
+    customerId: loan?.customerId ?? customerId ?? 0,
     numberOfPayments: loan?.numberOfPayments ?? 0,
-    paymentFrequency: loan?.paymentFrequency ?? LOAN_PAYMENT_FREQUENCIES[1],
+    paymentFrequency: loan?.paymentFrequency ?? LOAN_PAYMENT_FREQUENCIES[0],
     initialBorrowedAmount: loan?.initialBorrowedAmount ?? "0",
     initialDueAmount: loan?.initialDueAmount ?? "0",
     firstPaymentDate: loan?.firstPaymentDate ?? new Date(),
     notes: loan?.notes ?? "",
   };
+
   const form = useForm<insertLoanSchemaType>({
     mode: "onBlur",
     resolver: zodResolver(insertLoanSchema),
     defaultValues,
   });
+
+  async function submitForm(data: insertLoanSchemaType) {
+    console.log("submit", data);
+    let method = "";
+    if (data.id && data.id > 0) {
+      method = "PUT";
+      return;
+    } else {
+      method = "POST";
+    }
+    try {
+      const response = await fetch("/api/loans", {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to save loan");
+      }
+
+      const result = await response.json();
+      console.log("This is my result from call");
+      console.log(result);
+
+      if (method == "PUT") {
+        router.push(`/loans/form?loanId=${data.id}`);
+      } else {
+        router.push(`/loans/form?loanId=${result[0].id}`);
+      }
+    } catch (err) {
+      console.error(err);
+      // setError(err.message);
+    } finally {
+      console.log("finally");
+      // setLoading(false);
+    }
+  }
 
   const totalPaid = payments
     ? payments.reduce((sum, item) => sum + parseFloat(item.amountPaid), 0)
@@ -66,9 +117,6 @@ export default function LoanForm({ loan, customers, payments }: Props) {
   //   useEffect(() => {
   //     form.reset(defaultValues);
   //   }, [loan, customers, form.reset]);
-  async function submitForm(data: insertLoanSchemaType) {
-    console.log(data);
-  }
   return (
     <div className="flex flex-col gap-1 sm:px-8">
       <div>
@@ -162,6 +210,14 @@ export default function LoanForm({ loan, customers, payments }: Props) {
                     disabled={loan?.id ? true : false}
                   />
                 </div>
+
+                <div className="col-span-6">
+                  <DateInputWithLabel<insertLoanSchemaType>
+                    fieldTitle="First Payment Date"
+                    nameInSchema="firstPaymentDate"
+                    disabled={loan?.id ? true : false}
+                  />
+                </div>
               </div>
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-6">
@@ -216,7 +272,6 @@ export default function LoanForm({ loan, customers, payments }: Props) {
           <h3>Total Fees : {formatNumberToDollar(totalFees)}</h3>
         </div>
       </div>
-      {JSON.stringify(form.getValues())}
     </div>
   );
 }

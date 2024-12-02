@@ -6,19 +6,23 @@ import { Form } from "@/components/ui/form";
 import {
   insertCustomerSchema,
   insertCustomerSchemaType,
-  selectCustomerSchemaType,
 } from "@/zod-schemas/customer";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { DateInputWithLabel } from "@/components/inputs/DateInputWithLabel";
 import { CheckboxWithLabel } from "@/components/inputs/CheckboxWithLabel";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
 import { useRouter } from "next/navigation";
+import { CustomerDetail } from "@/types/CustomerDetail";
+import { LoanDetail } from "@/types/LoanDetail";
+import { MultiLoanDisplay } from "@/components/loan/MultiLoanDisplay";
 
 type Props = {
-  customer?: selectCustomerSchemaType;
+  customerDetail?: CustomerDetail;
 };
-export default function CustomerForm({ customer }: Props) {
+
+export default function CustomerForm({ customerDetail }: Props) {
   const router = useRouter();
+  const customer = customerDetail?.customer;
 
   const defaultValues: insertCustomerSchemaType = {
     id: customer?.id ?? 0,
@@ -76,7 +80,17 @@ export default function CustomerForm({ customer }: Props) {
       // setLoading(false);
     }
   }
-
+  const loanDetails: LoanDetail[] | undefined =
+    customerDetail?.loansWithPayments.map((loanWithPayments) => {
+      return {
+        loan: loanWithPayments.loan,
+        payments: loanWithPayments.payments,
+        customer: customerDetail?.customer,
+      };
+    });
+  const handleRowClick = (id: number) => {
+    router.push(`/loans/form?loanId=${id}`);
+  };
   return (
     <div className="flex flex-col gap-1 sm:px-8">
       <div>
@@ -161,10 +175,27 @@ export default function CustomerForm({ customer }: Props) {
             >
               Reset
             </Button>
+            {customer?.id && (
+              <Button
+                type="button"
+                variant="secondary"
+                title="New Loan"
+                onClick={() =>
+                  router.push(`/loans/form?customerId=${customer.id}`)
+                }
+              >
+                Create New Loan
+              </Button>
+            )}
           </div>
         </form>
       </Form>
-      {JSON.stringify(form.getValues())}
+      {customer?.id && loanDetails && loanDetails.length > 0 && (
+        <MultiLoanDisplay
+          loanDetails={loanDetails}
+          onRowClick={handleRowClick}
+        />
+      )}
     </div>
   );
 }

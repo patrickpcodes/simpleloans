@@ -52,6 +52,7 @@ export const loans = pgTable("loans", {
     precision: 10,
     scale: 2,
   }).notNull(),
+  //TODO add a status field
   firstPaymentDate: timestamp("first_payment_date").notNull(),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
