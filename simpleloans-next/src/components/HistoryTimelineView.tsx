@@ -42,7 +42,7 @@ export function HistoryTimelineView({ histories }: Props) {
                   {formatDateTime(item.timestamp)}
                 </span>
               </div>
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 {Array.isArray(item.changes) &&
                   item.changes.map((change, changeIndex) => (
                     <div key={changeIndex} className="text-sm">
@@ -55,7 +55,7 @@ export function HistoryTimelineView({ histories }: Props) {
                       </span>
                     </div>
                   ))}
-              </div>
+              </div> */}
             </div>
           </div>
         ))}

@@ -1,12 +1,12 @@
 import { selectLoanSchemaType } from "@/zod-schemas/loan";
-import { selectPaymentSchemaType } from "@/zod-schemas/payment";
+import { insertPaymentSchemaType } from "@/zod-schemas/payment";
 
-type Payment = selectPaymentSchemaType;
+type PaymentInsert = insertPaymentSchemaType;
 type Loan = selectLoanSchemaType;
 
-export function generatePayments(loan: Loan): Payment[] {
+export function generatePayments(loan: Loan): PaymentInsert[] {
   console.log("Generating payments for loan", loan);
-  const payments: Payment[] = [];
+  const payments: PaymentInsert[] = [];
   const paymentAmount =
     parseFloat(loan.initialDueAmount) / loan.numberOfPayments;
   const currentDate = new Date(loan.firstPaymentDate);
@@ -40,7 +40,7 @@ export function generatePayments(loan: Loan): Payment[] {
 
     totalPaidSoFar += amountDue;
 
-    const payment: Payment = {
+    const payment: PaymentInsert = {
       loanId: loan.id,
       dueDate: new Date(currentDate),
       paymentDate: null,

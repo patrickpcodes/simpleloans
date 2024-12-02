@@ -1,6 +1,5 @@
-"use client"
+"use client";
 
 export default function Page() {
-
-    throw new Error("Sentry Test Frontend Error")
+  //throw new Error("Sentry Test Frontend Error")
 }

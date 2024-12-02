@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
+import { formatDateStringToDateOnly } from "@/utils/formatDateToDateOnly";
 
 type Props<S> = {
   fieldTitle: string;
@@ -50,7 +50,7 @@ export function DateInputWithLabel<S>({
             <FormControl>
               <Input
                 type="date"
-                value={formatDateToDateOnly(value)}
+                value={formatDateStringToDateOnly(value)}
                 onChange={(e) => {
                   console.log(e.target.value);
                   onChange(new Date(e.target.value));
