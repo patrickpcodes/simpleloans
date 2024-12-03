@@ -1,7 +1,6 @@
 import { BackButton } from "@/components/BackButton";
 import { getCustomers } from "@/lib/queries/getCustomers";
 import { getLoan } from "@/lib/queries/getLoan";
-import * as Sentry from "@sentry/nextjs";
 import LoanForm from "./LoanForm";
 import { PaymentTableView } from "@/components/PaymentTableView";
 import { PaymentCard } from "@/components/PaymentCard";
@@ -84,9 +83,6 @@ export default async function LoanFormPage({
       return <LoanForm customers={customers} />;
     }
   } catch (e) {
-    if (e instanceof Error) {
-      Sentry.captureException(e);
-      throw e;
-    }
+    console.log(e);
   }
 }

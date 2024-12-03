@@ -1,9 +1,9 @@
 import { BackButton } from "@/components/BackButton";
-import * as Sentry from "@sentry/nextjs";
 import CustomerForm from "@/app/(rs)/customers/form/CustomerForm";
 import { getCustomerData } from "@/lib/queries/getCustomerData";
 import { CustomerDetail } from "@/types/CustomerDetail";
-// import { HistoryTimelineView } from "@/components/HistoryTimelineView";
+import { getHistoriesByItem } from "@/lib/queries/getHistoriesByItem";
+import { HistoryTimelineView } from "@/components/HistoryTimelineView";
 
 export async function generateMetadata({
   searchParams,
@@ -29,10 +29,10 @@ export default async function CustomerFormPage({
       const customerDetailResponse: CustomerDetail[] = await getCustomerData(
         parseInt(customerId)
       );
-      // const histories = await getHistoriesByItem(
-      //   "Customer",
-      //   parseInt(customerId)
-      // );
+      const histories = await getHistoriesByItem(
+        "Customer",
+        parseInt(customerId)
+      );
       // console.log(histories);
       if (!customerDetailResponse || customerDetailResponse.length != 1) {
         return (
@@ -60,9 +60,9 @@ export default async function CustomerFormPage({
       return (
         <div>
           <CustomerForm customerDetail={customerDetail} />
-          {/* {histories.length > 0 && (
+          {histories.length > 0 && (
             <HistoryTimelineView histories={histories} />
-          )} */}
+          )}
         </div>
       );
     } else {
@@ -70,9 +70,6 @@ export default async function CustomerFormPage({
       return <CustomerForm />;
     }
   } catch (e) {
-    if (e instanceof Error) {
-      Sentry.captureException(e);
-      throw e;
-    }
+    console.log(e);
   }
 }

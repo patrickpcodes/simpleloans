@@ -26,6 +26,7 @@ export function DateInputWithLabel<S>({
   fieldTitle,
   nameInSchema,
   className,
+  //TODO make sure its disabled
   disabled = false,
 }: Props<S>) {
   const form = useFormContext();
