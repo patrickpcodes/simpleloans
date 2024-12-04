@@ -36,7 +36,8 @@ export default function Seed() {
     }
   }, [shouldRefresh]);
 
-  const handleRowClick = (id: number) => {
+  const handleRowClick = (id: number | undefined) => {
+    if (!id) return;
     router.push(`/loans/form?loanId=${id}`);
   };
 

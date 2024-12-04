@@ -8,7 +8,7 @@ export function MultiLoanDisplay({
   onRowClick,
 }: {
   loanDetails: LoanDetail[];
-  onRowClick: (id: number) => void;
+  onRowClick: (id: number | undefined) => void;
 }) {
   return (
     <div>

@@ -3,6 +3,7 @@ import { customers, history } from "@/db/schema";
 import { selectCustomerSchemaType } from "@/zod-schemas/customer";
 import { desc, eq, and } from "drizzle-orm";
 import { generateChanges } from "@/utils/generateChanges";
+import { getCustomer } from "./getCustomer";
 type Customer = selectCustomerSchemaType;
 
 export async function updateCustomer(
@@ -10,27 +11,12 @@ export async function updateCustomer(
   userEmail: string,
   displayName: string
 ) {
-  const existingCustomers = await db
-    .select()
-    .from(customers)
-    .where(eq(customers.id, updatedCustomer.id))
-    .limit(1);
-  console.log("in update customer", updatedCustomer);
-  if (!existingCustomers) {
+  const existingCustomer = await getCustomer(updatedCustomer.id);
+
+  if (!existingCustomer) {
     throw new Error(`Customer with ID ${updatedCustomer.id} not found.`);
   }
 
-  const existingCustomer: Customer = existingCustomers[0];
-  console.log(
-    "in updateCustomer : type of existingCustomer",
-    typeof existingCustomer
-  );
-  console.log("in updateCustomer : existingCustomer", existingCustomer);
-  console.log(
-    "in updateCustomer: type of updatedCustomer",
-    typeof updatedCustomer
-  );
-  console.log("in updateCustomer : updatedCustomer", updatedCustomer);
   // Fields to track
   const trackedFields: (keyof Customer)[] = [
     "name",

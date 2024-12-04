@@ -23,12 +23,16 @@ export function DetailedLoanDisplay({
   onRowClick,
 }: {
   loanDetail: LoanDetail;
-  onRowClick: (id: number) => void;
+  onRowClick: (id: number | undefined) => void;
 }) {
   return (
     <div
       className="cursor-pointer" // Add a pointer cursor to indicate clickability
-      onClick={() => onRowClick(loanDetail.loan.id)} // Call the onRowClick function
+      onClick={() => {
+        if (loanDetail.loan) {
+          onRowClick(loanDetail.loan?.id);
+        } // Call the onRowClick function
+      }}
     >
       <Card>
         <CardHeader>

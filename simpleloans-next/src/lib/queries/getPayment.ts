@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { payments } from "@/db/schema";
-import { eq, asc } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export async function getPayment(paymentId: number) {
   try {

@@ -14,7 +14,7 @@ export function SimpleLoanDisplay({
   onRowClick,
 }: {
   loanDetail: LoanDetail;
-  onRowClick: (id: number) => void;
+  onRowClick: (id: number | undefined) => void;
 }) {
   return (
     <div

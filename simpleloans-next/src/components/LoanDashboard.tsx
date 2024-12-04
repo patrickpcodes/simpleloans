@@ -12,6 +12,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 
+export interface HealthItem {
+  name: string;
+  status: "red" | "yellow" | "green";
+}
+
 interface LoanDashboardProps {
   status: string;
   initialAmount: number;
@@ -24,10 +29,7 @@ interface LoanDashboardProps {
   completionDate: string;
   warningMessage?: string;
   errorMessage?: string;
-  healthItems: {
-    name: string;
-    status: "red" | "yellow" | "green";
-  }[];
+  healthItems: HealthItem[];
 }
 
 export function LoanDashboard({

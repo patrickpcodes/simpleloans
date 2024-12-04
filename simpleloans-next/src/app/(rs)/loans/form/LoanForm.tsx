@@ -3,21 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 import { selectCustomerSchemaType } from "@/zod-schemas/customer";
 import {
   insertLoanSchema,
@@ -29,10 +15,10 @@ import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
 // import { useRouter } from "next/navigation";
 import { LOAN_PAYMENT_FREQUENCIES } from "@/types/LoanPaymentFrequency";
 import { selectPaymentSchemaType } from "@/zod-schemas/payment";
-import { formatNumberToDollar } from "@/utils/formatStringToDollar";
 import { DateInputWithLabel } from "@/components/inputs/DateInputWithLabel";
 import { useRouter } from "next/navigation";
 import { SelectInputWithLabel } from "@/components/inputs/SelectInputWithLabel";
+import { formatDateToYYYYMMDD } from "@/utils/formatDateToDateOnly";
 
 type Props = {
   loan?: selectLoanSchemaType;
@@ -41,12 +27,7 @@ type Props = {
   customerId?: number;
 };
 
-export default function LoanForm({
-  loan,
-  customers,
-  payments,
-  customerId,
-}: Props) {
+export default function LoanForm({ loan, customers, customerId }: Props) {
   const router = useRouter();
   if (customerId) {
   }
@@ -58,7 +39,9 @@ export default function LoanForm({
     paymentFrequency: loan?.paymentFrequency ?? LOAN_PAYMENT_FREQUENCIES[0],
     initialBorrowedAmount: loan?.initialBorrowedAmount ?? "0",
     initialDueAmount: loan?.initialDueAmount ?? "0",
-    firstPaymentDate: loan?.firstPaymentDate ?? new Date(),
+    firstPaymentDate:
+      loan?.firstPaymentDate ??
+      formatDateToYYYYMMDD(new Date(new Date().getDate() + 7)),
     notes: loan?.notes ?? "",
   };
 
@@ -106,13 +89,6 @@ export default function LoanForm({
       // setLoading(false);
     }
   }
-
-  const totalPaid = payments
-    ? payments.reduce((sum, item) => sum + parseFloat(item.amountPaid), 0)
-    : 0;
-  const totalFees = payments
-    ? payments.reduce((sum, item) => sum + parseFloat(item.feeAmount), 0)
-    : 0;
 
   //   // Reset the form whenever `loan` or `customers` change
   //   useEffect(() => {

@@ -10,20 +10,6 @@ import {
   Payment,
 } from "@/zod-schemas/payment";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@radix-ui/react-popover";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@radix-ui/react-select";
-import { format } from "date-fns";
-import { DollarSign, CreditCard, CalendarIcon, Calendar } from "lucide-react";
 import { DateInputWithLabel } from "@/components/inputs/DateInputWithLabel";
 import { formatDateToYYYYMMDD } from "@/utils/formatDateToDateOnly";
 // import { Input } from "postcss";
@@ -34,6 +20,7 @@ type Props = {
 };
 
 export default function PaymentForm({ payment, onSubmit }: Props) {
+  console.log(onSubmit);
   const defaultValues: insertPaymentSchemaType = {
     id: payment?.id ?? 0,
     loanId: payment?.loanId ?? 0,
@@ -52,7 +39,7 @@ export default function PaymentForm({ payment, onSubmit }: Props) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <InputWithLabel<insertPaymentSchemaType>
             fieldTitle="Amount to Pay"

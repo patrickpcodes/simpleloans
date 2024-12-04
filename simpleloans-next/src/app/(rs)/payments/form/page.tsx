@@ -1,9 +1,6 @@
-import GlobalError from "@/app/global-error";
 import { BackButton } from "@/components/BackButton";
 import { getPayment } from "@/lib/queries/getPayment";
-import router from "next/router";
 import PaymentForm from "./PaymentForm";
-import { Payment } from "@/zod-schemas/payment";
 
 export async function generateMetadata({
   searchParams,

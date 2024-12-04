@@ -15,7 +15,7 @@ export function ModernLoanDisplay({
   onRowClick,
 }: {
   loanDetail: LoanDetail;
-  onRowClick: (id: number) => void;
+  onRowClick: (id: number | undefined) => void;
 }) {
   return (
     <div

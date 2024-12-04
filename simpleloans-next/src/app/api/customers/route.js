@@ -89,20 +89,6 @@ export async function PUT(req) {
       );
     }
     const result = await updateCustomer(data, "p@p.com", "Patrick");
-    // const updatedCustomer = await db
-    //   .update(customers)
-    //   .set({
-    //     name: data.name,
-    //     email: data.email,
-    //     phone: data.phone,
-    //     birthdate: data.birthdate ? new Date(data.birthdate) : undefined,
-    //     references: data.references,
-    //     notes: data.notes,
-    //     canSendSpecialEmails: data.canSendSpecialEmails,
-    //     active: data.active,
-    //     updatedAt: new Date(), // Ensure updatedAt is updated
-    //   })
-    //   .where(eq(customers.id, data.id));
 
     return new Response(JSON.stringify(result), {
       status: 200,

@@ -3,7 +3,7 @@ import { getCustomers } from "@/lib/queries/getCustomers";
 import { getLoan } from "@/lib/queries/getLoan";
 import LoanForm from "./LoanForm";
 import { PaymentCard } from "@/components/PaymentCard";
-import { LoanDashboard } from "@/components/LoanDashboard";
+import { HealthItem, LoanDashboard } from "@/components/LoanDashboard";
 
 export async function generateMetadata({
   searchParams,
@@ -44,7 +44,7 @@ export default async function LoanFormPage({
           </>
         );
       }
-      const healthItems = [
+      const healthItems: HealthItem[] = [
         { name: "Payment History", status: "green" },
         { name: "Loan-to-Value", status: "yellow" },
         { name: "Credit Score", status: "red" },

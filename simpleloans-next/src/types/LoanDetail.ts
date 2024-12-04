@@ -1,6 +1,6 @@
+import { Loan } from "@/zod-schemas/loan";
 import { Customer } from "./Customer";
-import { Loan } from "./Loan";
-import { Payment } from "./Payment";
+import { Payment } from "@/zod-schemas/payment";
 
 export type LoanDetail = {
   loan: Loan;

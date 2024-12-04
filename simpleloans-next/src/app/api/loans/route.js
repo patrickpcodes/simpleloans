@@ -2,7 +2,6 @@ import { db } from "@/db";
 import { loans, payments } from "@/db/schema";
 import { getAllLoans } from "@/lib/queries/getLoans";
 import { generatePayments } from "@/lib/queries/generatePayments";
-import { Loan } from "@/zod-schemas/loan";
 
 export async function GET() {
   try {
@@ -25,7 +24,7 @@ export async function GET() {
     );
   }
 }
-export async function POST(req: { json: () => any }) {
+export async function POST(req) {
   console.log("GOt POST");
   try {
     const data = await req.json();
@@ -38,7 +37,7 @@ export async function POST(req: { json: () => any }) {
         }
       );
     }
-    const loanToInsert: Loan = {
+    const loanToInsert = {
       customerId: data.customerId,
       numberOfPayments: data.numberOfPayments,
       paymentFrequency: data.paymentFrequency,
