@@ -38,13 +38,13 @@ export async function POST(req: { json: () => any }) {
         }
       );
     }
-    var loanToInsert: Loan = {
+    const loanToInsert: Loan = {
       customerId: data.customerId,
       numberOfPayments: data.numberOfPayments,
       paymentFrequency: data.paymentFrequency,
       initialBorrowedAmount: data.initialBorrowedAmount,
       initialDueAmount: data.initialDueAmount,
-      firstPaymentDate: new Date(data.firstPaymentDate),
+      firstPaymentDate: data.firstPaymentDate,
       notes: data.notes,
       createdAt: new Date(),
       updatedAt: new Date(),

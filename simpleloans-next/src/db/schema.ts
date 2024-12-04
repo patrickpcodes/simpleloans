@@ -18,7 +18,7 @@ export const customers = pgTable("customers", {
   name: varchar("name").unique().notNull(),
   email: varchar("email").unique().notNull(),
   phone: varchar("phone").unique().notNull(),
-  birthdate: timestamp("birthdate").notNull(),
+  birthdate: varchar("birthdate").notNull(),
   references: text("references"),
   notes: text("notes"),
   canSendSpecialEmails: boolean("can_send_special_emails")
@@ -53,7 +53,7 @@ export const loans = pgTable("loans", {
     scale: 2,
   }).notNull(),
   //TODO add a status field
-  firstPaymentDate: timestamp("first_payment_date").notNull(),
+  firstPaymentDate: varchar("first_payment_date").notNull(),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")
@@ -79,8 +79,8 @@ export const payments = pgTable("payments", {
   }).notNull(),
   feeAmount: decimal("fee_amount", { precision: 10, scale: 2 }).notNull(),
   paymentStatus: paymentStatusesEnum("payment_status").notNull(),
-  dueDate: timestamp("due_date").notNull(),
-  paymentDate: timestamp("payment_date"),
+  dueDate: varchar("due_date").notNull(),
+  paymentDate: varchar("payment_date"),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")

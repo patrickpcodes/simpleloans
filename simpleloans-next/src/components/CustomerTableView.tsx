@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
+import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 import { selectCustomerSchemaType } from "@/zod-schemas/customer";
 
 type Customer = selectCustomerSchemaType;
@@ -40,7 +40,7 @@ export function CustomerTableView({ customers, onRowClick }: Props) {
             <TableCell>{customer.name}</TableCell>
             <TableCell>{customer.phone}</TableCell>
             <TableCell>
-              {formatDateToMonthDayYear(customer.birthdate)}
+              {formatDateStringToMonthDayYear(customer.birthdate)}
             </TableCell>
             <TableCell>{customer.email}</TableCell>
             <TableCell>{customer.notes}</TableCell>

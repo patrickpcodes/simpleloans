@@ -13,7 +13,7 @@ import {
   getNextPaymentAmount,
 } from "@/utils/loanChecks";
 import { Mail, Phone, CalendarIcon } from "lucide-react";
-import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
+import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 import { formatStringToDollar } from "@/utils/formatStringToDollar";
 export function DetailedCustomerDisplay({
   customerDetail,
@@ -63,7 +63,7 @@ export function DetailedCustomerDisplay({
                   <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">
                     Next Payment:{" "}
-                    {formatDateToMonthDayYear(
+                    {formatDateStringToMonthDayYear(
                       getNextPaymentDate(customerDetail.loansWithPayments)
                     )}
                   </span>

@@ -12,8 +12,8 @@ import {
   formatStringToDollar,
   formatNumberToDollar,
 } from "@/utils/formatStringToDollar";
-import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
-import { useRouter } from "next/navigation";
+import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
+// import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PaymentModal } from "@/components/PaymentModal";
 import { Payment } from "@/zod-schemas/payment";
@@ -25,7 +25,7 @@ interface Props {
 
 export function PaymentCard({ payment, paymentNumber }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
   console.log(payment);
   const totalDue =
     parseFloat(payment.amountDue) + parseFloat(payment.feeAmount);
@@ -69,7 +69,7 @@ export function PaymentCard({ payment, paymentNumber }: Props) {
           <div className="space-y-4">
             <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">Due Date:</span>
-              <span>{formatDateToMonthDayYear(payment.dueDate)}</span>
+              <span>{formatDateStringToMonthDayYear(payment.dueDate)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">Due Amount:</span>

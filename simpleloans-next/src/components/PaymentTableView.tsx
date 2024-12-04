@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
+import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 import { selectPaymentSchemaType } from "@/zod-schemas/payment";
 import { useRouter } from "next/navigation";
 
@@ -43,7 +43,9 @@ export function PaymentTableView({ payments }: Props) {
           >
             <TableCell>{payment.id}</TableCell>
             <TableCell>{payment.loanId}</TableCell>
-            <TableCell>{formatDateToMonthDayYear(payment.dueDate)}</TableCell>
+            <TableCell>
+              {formatDateStringToMonthDayYear(payment.dueDate)}
+            </TableCell>
             <TableCell>{payment.amountDue}</TableCell>
             <TableCell>{payment.paymentStatus}</TableCell>
             <TableCell>{payment.notes}</TableCell>

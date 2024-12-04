@@ -18,9 +18,7 @@ export async function POST() {
           name: faker.name.fullName(),
           email: faker.internet.email(),
           phone: faker.phone.number(),
-          birthdate: new Date(
-            formatDateToDateOnly(faker.date.past({ years: 40 }))
-          ), // Random birthdate in the past 30 years
+          birthdate: formatDateToDateOnly(faker.date.past({ years: 40 })), // Random birthdate in the past 30 years
           references: faker.lorem.paragraph(),
           notes: faker.lorem.sentence(),
           canSendSpecialEmails: faker.datatype.boolean(),
@@ -66,19 +64,15 @@ export async function POST() {
           .values({
             customerId: customerId,
             numberOfPayments: faker.number.int({ min: 4, max: 12 }),
-            paymentFrequency: faker.helpers.arrayElement(
-              LOAN_PAYMENT_FREQUENCIES
-            ),
+            paymentFrequency: LOAN_PAYMENT_FREQUENCIES[0],
             initialBorrowedAmount: initialBorrowedAmount.toString(),
             initialDueAmount: initialDueAmount.toString(),
             // Random date in the next 30 days
-            firstPaymentDate: new Date(
-              formatDateToDateOnly(
-                faker.date.between({
-                  from: Date.now(),
-                  to: Date.now() + 1000 * 60 * 60 * 24 * 30,
-                })
-              )
+            firstPaymentDate: formatDateToDateOnly(
+              faker.date.between({
+                from: Date.now(),
+                to: Date.now() + 1000 * 60 * 60 * 24 * 30,
+              })
             ),
             notes: faker.lorem.sentence(),
             createdAt: new Date(),

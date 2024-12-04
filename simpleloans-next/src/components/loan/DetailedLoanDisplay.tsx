@@ -7,7 +7,7 @@ import {
   CardContent,
 } from "../ui/card";
 import { formatStringToDollar } from "@/utils/formatStringToDollar";
-import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
+import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 import {
   CalendarIcon,
   CreditCard,
@@ -88,7 +88,7 @@ export function DetailedLoanDisplay({
               First Payment Date:
             </span>
             <span className="font-medium">
-              {formatDateToMonthDayYear(loanDetail.loan.firstPaymentDate)}
+              {formatDateStringToMonthDayYear(loanDetail.loan.firstPaymentDate)}
             </span>
           </div>
         </CardContent>

@@ -8,7 +8,7 @@ import {
   CardFooter,
 } from "../ui/card";
 import { formatStringToDollar } from "@/utils/formatStringToDollar";
-import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
+import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 
 export function ModernLoanDisplay({
   loanDetail,
@@ -17,7 +17,6 @@ export function ModernLoanDisplay({
   loanDetail: LoanDetail;
   onRowClick: (id: number) => void;
 }) {
- 
   return (
     <div
       className="cursor-pointer" // Add a pointer cursor to indicate clickability
@@ -71,7 +70,7 @@ export function ModernLoanDisplay({
               First Payment Date
             </div>
             <div className="text-lg font-semibold">
-              {formatDateToMonthDayYear(loanDetail.loan.firstPaymentDate)}
+              {formatDateStringToMonthDayYear(loanDetail.loan.firstPaymentDate)}
             </div>
           </div>
         </CardFooter>

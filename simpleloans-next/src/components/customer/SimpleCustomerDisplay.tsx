@@ -11,7 +11,7 @@ import {
   getNextPaymentDate,
   getNextPaymentAmount,
 } from "@/utils/loanChecks";
-import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
+import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 import { formatStringToDollar } from "@/utils/formatStringToDollar";
 
 export function SimpleCustomerDisplay({
@@ -45,7 +45,7 @@ export function SimpleCustomerDisplay({
               <>
                 <div>Next Payment Date:</div>
                 <div>
-                  {formatDateToMonthDayYear(
+                  {formatDateStringToMonthDayYear(
                     getNextPaymentDate(customerDetail.loansWithPayments)
                   )}
                 </div>

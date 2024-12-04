@@ -45,7 +45,7 @@ export function generatePayments(loan: Loan): PaymentInsert[] {
 
     const payment: PaymentInsert = {
       loanId: loan.id,
-      dueDate: new Date(formatDateToDateOnly(currentDate)),
+      dueDate: formatDateToDateOnly(currentDate),
       paymentDate: null,
       amountDue: amountDue.toString(),
       amountPaid: "0",

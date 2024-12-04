@@ -29,7 +29,7 @@ export async function GET() {
 export async function POST(req) {
   try {
     const data = await req.json();
-
+    console.log("in customer POST", date);
     // Validate input
     if (!data.name || !data.email || !data.phone || !data.birthdate) {
       return new Response(
@@ -47,7 +47,7 @@ export async function POST(req) {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        birthdate: new Date(data.birthdate),
+        birthdate: data.birthdate,
         references: data.references || null,
         notes: data.notes || null,
         canSendSpecialEmails: data.canSendSpecialEmails ?? false,
@@ -73,8 +73,10 @@ export async function POST(req) {
 
 // PUT: Update an existing customer
 export async function PUT(req) {
+  console.log("in customer PUT");
   try {
     const data = await req.json();
+    console.log("in customer PUT", data);
 
     // Validate input
     if (!data.id) {

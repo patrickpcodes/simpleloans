@@ -6,7 +6,7 @@ export function hasActiveLoan(loansWithPayments: LoanWithPayments[]): boolean {
 
 export function getNextPaymentDate(
   loansWithPayments: LoanWithPayments[]
-): Date {
+): string {
   //From active loan, get the earliest payment with status Pending
   const activeLoan = loansWithPayments[0];
 
@@ -16,7 +16,7 @@ export function getNextPaymentDate(
   );
   if (pendingPayments.length === 0) {
     //TODO FIX THIS
-    return new Date();
+    return "";
   }
   //get minimum date
   return pendingPayments.reduce((min, payment) =>

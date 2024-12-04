@@ -29,7 +29,7 @@ export default function CustomerForm({ customerDetail }: Props) {
     name: customer?.name ?? "",
     email: customer?.email ?? "",
     phone: customer?.phone ?? "",
-    birthdate: customer?.birthdate ?? new Date(),
+    birthdate: customer?.birthdate ?? "",
     references: customer?.references ?? "",
     notes: customer?.notes ?? "",
     canSendSpecialEmails: customer?.canSendSpecialEmails ?? false,
@@ -49,6 +49,8 @@ export default function CustomerForm({ customerDetail }: Props) {
       method = "POST";
     }
     //TODO add TOAST for Errors
+    console.log("about to submit form", data, method);
+    console.log("data stringified", JSON.stringify(data));
     try {
       const response = await fetch("/api/customers", {
         method: method,
@@ -191,6 +193,7 @@ export default function CustomerForm({ customerDetail }: Props) {
           </div>
         </form>
       </Form>
+      {JSON.stringify(customer)}
       {customer?.id && loanDetails && loanDetails.length > 0 && (
         <MultiLoanDisplay
           loanDetails={loanDetails}

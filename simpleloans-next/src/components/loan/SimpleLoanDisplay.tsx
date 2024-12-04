@@ -7,7 +7,7 @@ import {
   CardContent,
 } from "../ui/card";
 import { formatStringToDollar } from "@/utils/formatStringToDollar";
-import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
+import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 
 export function SimpleLoanDisplay({
   loanDetail,
@@ -42,7 +42,7 @@ export function SimpleLoanDisplay({
             <div>{formatStringToDollar(loanDetail.loan.initialDueAmount)}</div>
             <div>First Payment Date:</div>
             <div>
-              {formatDateToMonthDayYear(loanDetail.loan.firstPaymentDate)}
+              {formatDateStringToMonthDayYear(loanDetail.loan.firstPaymentDate)}
             </div>
           </div>
         </CardContent>

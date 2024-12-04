@@ -10,7 +10,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { formatDateToMonthDayYear } from "@/utils/formatDateToDateOnly";
+import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 
 interface LoanDashboardProps {
   status: string;
@@ -18,10 +18,10 @@ interface LoanDashboardProps {
   totalFees: number;
   currentAmount: number;
   paymentsLeft: number;
-  nextPaymentDate: Date;
+  nextPaymentDate: string;
   nextPaymentAmount: number;
   expectedProfit: number;
-  completionDate: Date;
+  completionDate: string;
   warningMessage?: string;
   errorMessage?: string;
   healthItems: {
@@ -131,7 +131,7 @@ export function LoanDashboard({
               <div className="flex flex-col">
                 <span className="text-sm font-medium">Next Payment</span>
                 <span className="text-lg font-semibold">
-                  {formatDateToMonthDayYear(nextPaymentDate)}
+                  {formatDateStringToMonthDayYear(nextPaymentDate)}
                 </span>
               </div>
             </div>
@@ -171,7 +171,7 @@ export function LoanDashboard({
                 </span>
                 <span className="text-lg font-semibold">
                   {" "}
-                  {formatDateToMonthDayYear(completionDate)}
+                  {formatDateStringToMonthDayYear(completionDate)}
                 </span>
               </div>
             </div>

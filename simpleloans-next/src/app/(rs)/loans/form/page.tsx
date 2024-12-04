@@ -75,10 +75,10 @@ export default async function LoanFormPage({
                   totalFees={456}
                   currentAmount={789}
                   paymentsLeft={10}
-                  nextPaymentDate={new Date()}
+                  nextPaymentDate={"2022-04-05"}
                   nextPaymentAmount={123}
                   expectedProfit={123}
-                  completionDate={new Date()}
+                  completionDate={"2022-04-05"}
                   warningMessage="This loan has a high interest rate. Consider refinancing options."
                   errorMessage="This loan is invalid, this is my error"
                   healthItems={healthItems}

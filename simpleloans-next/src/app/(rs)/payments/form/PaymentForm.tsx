@@ -25,6 +25,7 @@ import {
 import { format } from "date-fns";
 import { DollarSign, CreditCard, CalendarIcon, Calendar } from "lucide-react";
 import { DateInputWithLabel } from "@/components/inputs/DateInputWithLabel";
+import { formatDateToYYYYMMDD } from "@/utils/formatDateToDateOnly";
 // import { Input } from "postcss";
 
 type Props = {
@@ -40,7 +41,7 @@ export default function PaymentForm({ payment, onSubmit }: Props) {
     amountPaid: payment?.amountPaid ?? "0",
     feeAmount: payment?.feeAmount ?? "0",
     paymentStatus: payment.paymentStatus,
-    paymentDate: payment?.paymentDate ?? new Date(),
+    paymentDate: payment?.paymentDate ?? formatDateToYYYYMMDD(new Date()),
     dueDate: payment.dueDate,
   };
 

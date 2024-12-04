@@ -2,7 +2,6 @@ import { db } from "@/db";
 import { customers, history } from "@/db/schema";
 import { selectCustomerSchemaType } from "@/zod-schemas/customer";
 import { desc, eq, and } from "drizzle-orm";
-import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
 import { generateChanges } from "@/utils/generateChanges";
 type Customer = selectCustomerSchemaType;
 
@@ -16,25 +15,10 @@ export async function updateCustomer(
     .from(customers)
     .where(eq(customers.id, updatedCustomer.id))
     .limit(1);
-
+  console.log("in update customer", updatedCustomer);
   if (!existingCustomers) {
     throw new Error(`Customer with ID ${updatedCustomer.id} not found.`);
   }
-  updatedCustomer.birthdate = new Date(updatedCustomer.birthdate);
-  //TODO better way to manage Date
-  console.log(
-    "in updateCustomer : updatedCustomer.birthdate",
-    updatedCustomer.birthdate
-  );
-  console.log("type of date", typeof updatedCustomer.birthdate);
-
-  const formattedDate = formatDateToDateOnly(updatedCustomer.birthdate);
-  console.log("type of formattedDate", typeof formattedDate);
-  console.log("in updateCustomer : formattedDate", formattedDate);
-
-  updatedCustomer.birthdate = new Date(
-    formatDateToDateOnly(updatedCustomer.birthdate)
-  );
 
   const existingCustomer: Customer = existingCustomers[0];
   console.log(
