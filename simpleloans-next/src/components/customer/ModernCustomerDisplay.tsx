@@ -56,7 +56,7 @@ export function ModernCustomerDisplay({
                     Active Loan
                   </span>
                   <Badge variant="outline" className="ml-2">
-                    Next Payment: $
+                    Next Payment:
                     {formatStringToDollar(
                       getNextPaymentAmount(customerDetail.loansWithPayments)
                     )}

@@ -1,10 +1,13 @@
-import { selectLoanSchemaType } from "@/zod-schemas/loan";
 import { insertPaymentSchemaType } from "@/zod-schemas/payment";
+import { Loan } from "@/zod-schemas/loan";
+import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
 
 type PaymentInsert = insertPaymentSchemaType;
-type Loan = selectLoanSchemaType;
 
 export function generatePayments(loan: Loan): PaymentInsert[] {
+  if (loan.id === undefined) {
+    throw new Error("Loan ID is required.");
+  }
   console.log("Generating payments for loan", loan);
   const payments: PaymentInsert[] = [];
   const paymentAmount =
@@ -42,7 +45,7 @@ export function generatePayments(loan: Loan): PaymentInsert[] {
 
     const payment: PaymentInsert = {
       loanId: loan.id,
-      dueDate: new Date(currentDate),
+      dueDate: new Date(formatDateToDateOnly(currentDate)),
       paymentDate: null,
       amountDue: amountDue.toString(),
       amountPaid: "0",

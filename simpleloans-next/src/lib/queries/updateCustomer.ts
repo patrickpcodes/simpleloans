@@ -1,38 +1,15 @@
 import { db } from "@/db";
 import { customers, history } from "@/db/schema";
 import { selectCustomerSchemaType } from "@/zod-schemas/customer";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
-import { Change } from "@/zod-schemas/changes";
-
-function trackChanges<
-  T extends Record<string, string | number | boolean | Date | null>
->(existing: T, updated: T, fields: (keyof T)[]): Change[] {
-  return fields.reduce<Change[]>((changes, field) => {
-    console.log("in trackChanges : field", field);
-    console.log("in trackChanges : existing[field]", existing[field]);
-    console.log("in trackChanges : updated[field]", updated[field]);
-
-    const existingValue = existing[field]?.toString() ?? null;
-    const updatedValue = updated[field]?.toString() ?? null;
-
-    if (existingValue !== updatedValue) {
-      changes.push({
-        field: field as string,
-        oldValue: existingValue,
-        newValue: updatedValue,
-      });
-    }
-    return changes;
-  }, []);
-}
-
+import { generateChanges } from "@/utils/generateChanges";
 type Customer = selectCustomerSchemaType;
 
 export async function updateCustomer(
-  updatedCustomer: Customer
-  // userEmail: string,
-  // displayName: string
+  updatedCustomer: Customer,
+  userEmail: string,
+  displayName: string
 ) {
   const existingCustomers = await db
     .select()
@@ -83,7 +60,7 @@ export async function updateCustomer(
   ];
 
   // Track changes
-  const changes = trackChanges(
+  const changes = generateChanges(
     existingCustomer,
     updatedCustomer,
     trackedFields
@@ -99,8 +76,8 @@ export async function updateCustomer(
     type: "Customer",
     referenceId: updatedCustomer.id,
     changes: changes,
-    userEmail: "p@p.com",
-    displayName: "Patrick P",
+    userEmail,
+    displayName,
     timestamp: new Date(),
   });
 
@@ -115,7 +92,12 @@ export async function updateCustomer(
   const updatedHistory = await db
     .select()
     .from(history)
-    .where(eq(history.referenceId, updatedCustomer.id))
+    .where(
+      and(
+        eq(history.referenceId, updatedCustomer.id),
+        eq(history.type, "Customer")
+      )
+    )
     .orderBy(desc(history.timestamp));
 
   return {

@@ -1,6 +1,8 @@
 import { db } from "@/db";
-import { loans } from "@/db/schema";
+import { loans, payments } from "@/db/schema";
 import { getAllLoans } from "@/lib/queries/getLoans";
+import { generatePayments } from "@/lib/queries/generatePayments";
+import { Loan } from "@/zod-schemas/loan";
 
 export async function GET() {
   try {
@@ -23,7 +25,7 @@ export async function GET() {
     );
   }
 }
-export async function POST(req) {
+export async function POST(req: { json: () => any }) {
   console.log("GOt POST");
   try {
     const data = await req.json();
@@ -36,25 +38,28 @@ export async function POST(req) {
         }
       );
     }
+    var loanToInsert: Loan = {
+      customerId: data.customerId,
+      numberOfPayments: data.numberOfPayments,
+      paymentFrequency: data.paymentFrequency,
+      initialBorrowedAmount: data.initialBorrowedAmount,
+      initialDueAmount: data.initialDueAmount,
+      firstPaymentDate: new Date(data.firstPaymentDate),
+      notes: data.notes,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
     const newLoan = await db
       .insert(loans)
-      .values({
-        customerId: data.customerId,
-        numberOfPayments: data.numberOfPayments,
-        paymentFrequency: data.paymentFrequency,
-        initialBorrowedAmount: data.initialBorrowedAmount,
-        initialDueAmount: data.initialDueAmount,
-        firstPaymentDate: new Date(data.firstPaymentDate),
-        notes: data.notes,
-        // endDate: new Date(data.endDate),
-        // status: data.status || 'active',
-      })
+      .values(loanToInsert)
       .returning({ id: loans.id });
     console.log("newLoan", newLoan);
+
     // loanToCreate.id = newLoan; // Store the loan ID for payments
 
-    const paymentList = generatePayments(newLoan[0]); // Generate payments for the loan
+    const paymentList = generatePayments(loanToInsert); // Generate payments for the loan
     console.log("paymentList", paymentList);
+
     await db.insert(payments).values(paymentList); // Insert payments in bulk
     return new Response(JSON.stringify(newLoan), {
       status: 201,

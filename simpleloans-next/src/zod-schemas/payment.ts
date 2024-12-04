@@ -19,3 +19,7 @@ export const selectPaymentSchema = createSelectSchema(payments);
 export type insertPaymentSchemaType = typeof insertPaymentSchema._type;
 
 export type selectPaymentSchemaType = typeof selectPaymentSchema._type;
+
+//A way to handle both, now the loan object has id, created and updated as optional
+export type Payment = Partial<selectPaymentSchemaType> &
+  insertPaymentSchemaType;

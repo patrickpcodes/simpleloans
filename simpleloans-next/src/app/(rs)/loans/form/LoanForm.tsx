@@ -32,6 +32,7 @@ import { selectPaymentSchemaType } from "@/zod-schemas/payment";
 import { formatNumberToDollar } from "@/utils/formatStringToDollar";
 import { DateInputWithLabel } from "@/components/inputs/DateInputWithLabel";
 import { useRouter } from "next/navigation";
+import { SelectInputWithLabel } from "@/components/inputs/SelectInputWithLabel";
 
 type Props = {
   loan?: selectLoanSchemaType;
@@ -133,70 +134,30 @@ export default function LoanForm({
             >
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-6">
-                  <FormField
-                    control={form.control}
-                    name="customerId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Customer</FormLabel>
-                        <Select
-                          onValueChange={(value) =>
-                            field.onChange(Number(value))
-                          } // Convert selected value back to number
-                          defaultValue={field.value?.toString()} // Ensure initial value is a string
-                          disabled={loan?.id ? true : false}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select Customer" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {customers.map((customer, index) => (
-                              <SelectItem
-                                key={`customer_${index}`}
-                                value={customer.id.toString()} // Convert number to string
-                              >
-                                {customer.id.toString()} - {customer.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                  <SelectInputWithLabel<insertLoanSchemaType>
+                    fieldTitle="Customer"
+                    nameInSchema="customerId"
+                    placeholder="Select Customer"
+                    // onValueChange={(value) => form.setValue("customerId", value)}
+                    selectProps={customers.map((customer, index) => ({
+                      key: `customer_${index}`,
+                      value: customer.id.toString(),
+                      displayString: `${customer.id} - ${customer.name}`,
+                    }))}
                   />
                 </div>
                 <div className="col-span-6">
-                  <FormField
-                    control={form.control}
-                    name="paymentFrequency"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Payment Frequency</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          disabled={loan?.id ? true : false}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a payment frequency" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {LOAN_PAYMENT_FREQUENCIES.map((freq) => (
-                              <SelectItem
-                                key={`paymentFreq_${freq}`}
-                                value={freq}
-                              >
-                                {freq}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
+                  <SelectInputWithLabel<insertLoanSchemaType>
+                    fieldTitle="Payment Frequncy"
+                    nameInSchema="paymentFrequency"
+                    placeholder="Select Payment Frequency"
+                    // onValueChange={(value) => form.setValue("paymentFrequency", value)}
+                    selectProps={LOAN_PAYMENT_FREQUENCIES.map(
+                      (freq, index) => ({
+                        key: `paymentFreq_${index}`,
+                        value: freq,
+                        displayString: freq,
+                      })
                     )}
                   />
                 </div>
@@ -215,7 +176,8 @@ export default function LoanForm({
                   <DateInputWithLabel<insertLoanSchemaType>
                     fieldTitle="First Payment Date"
                     nameInSchema="firstPaymentDate"
-                    disabled={loan?.id ? true : false}
+                    //disabled={loan?.id ? true : false}
+                    description="The date the first payment will be scheduled"
                   />
                 </div>
               </div>
@@ -272,6 +234,7 @@ export default function LoanForm({
           <h3>Total Fees : {formatNumberToDollar(totalFees)}</h3>
         </div>
       </div>
+      {JSON.stringify(loan)}
     </div>
   );
 }

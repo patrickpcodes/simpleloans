@@ -1,10 +1,10 @@
 import { db } from "@/db";
 import { customers, loans, payments } from "@/db/schema";
 import { CustomerDetail } from "@/types/CustomerDetail";
-import { Loan } from "@/types/Loan";
 import { eq } from "drizzle-orm";
 import { LoanWithPayments } from "@/types/LoanWithPayments";
 import { inArray, asc } from "drizzle-orm";
+import { Loan } from "@/zod-schemas/loan";
 
 export async function getCustomerData(id?: number): Promise<CustomerDetail[]> {
   try {

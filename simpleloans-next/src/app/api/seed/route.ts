@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker"; // Ensure faker is imported
 import { db } from "@/db";
-import { loans, customers, payments } from "@/db/schema";
+import { loans, customers, payments, history } from "@/db/schema";
 import { LOAN_PAYMENT_FREQUENCIES } from "@/types/LoanPaymentFrequency";
 import { generatePayments } from "@/lib/queries/generatePayments";
+import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
 
 export async function POST() {
   try {
@@ -17,7 +18,9 @@ export async function POST() {
           name: faker.name.fullName(),
           email: faker.internet.email(),
           phone: faker.phone.number(),
-          birthdate: faker.date.past({ years: 30 }), // Random birthdate in the past 30 years
+          birthdate: new Date(
+            formatDateToDateOnly(faker.date.past({ years: 40 }))
+          ), // Random birthdate in the past 30 years
           references: faker.lorem.paragraph(),
           notes: faker.lorem.sentence(),
           canSendSpecialEmails: faker.datatype.boolean(),
@@ -68,7 +71,15 @@ export async function POST() {
             ),
             initialBorrowedAmount: initialBorrowedAmount.toString(),
             initialDueAmount: initialDueAmount.toString(),
-            firstPaymentDate: faker.date.future(),
+            // Random date in the next 30 days
+            firstPaymentDate: new Date(
+              formatDateToDateOnly(
+                faker.date.between({
+                  from: Date.now(),
+                  to: Date.now() + 1000 * 60 * 60 * 24 * 30,
+                })
+              )
+            ),
             notes: faker.lorem.sentence(),
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -109,6 +120,7 @@ export async function POST() {
 }
 export async function DELETE() {
   try {
+    await db.delete(history).execute();
     // Delete all payments first to avoid foreign key constraint issues
     await db.delete(payments).execute();
     // Delete all loans first to avoid foreign key constraint issues

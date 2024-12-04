@@ -19,6 +19,7 @@ type Props<S> = {
   fieldTitle: string;
   nameInSchema: keyof S & string;
   className?: string;
+  description?: string;
   disabled?: boolean;
 } & InputHTMLAttributes<HTMLInputElement>;
 
@@ -26,6 +27,7 @@ export function DateInputWithLabel<S>({
   fieldTitle,
   nameInSchema,
   className,
+  description,
   //TODO make sure its disabled
   disabled = false,
 }: Props<S>) {
@@ -60,13 +62,12 @@ export function DateInputWithLabel<S>({
                   onChange(new Date(e.target.value));
                   console.log("I changed Date to ", value);
                 }}
+                disabled={disabled}
                 className={`w-[240px] ${className}`}
               />
             </FormControl>
           </div>
-          <FormDescription>
-            Your date of birth is used to calculate your age.
-          </FormDescription>
+          <FormDescription>{description}</FormDescription>
           <FormMessage />
         </FormItem>
       )}

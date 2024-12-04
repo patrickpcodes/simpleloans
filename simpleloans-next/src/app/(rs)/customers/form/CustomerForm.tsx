@@ -131,6 +131,7 @@ export default function CustomerForm({ customerDetail }: Props) {
               <DateInputWithLabel<insertCustomerSchemaType>
                 fieldTitle="Birthdate"
                 nameInSchema="birthdate"
+                description="Your date of birth is used to calculate your age."
               />
             </div>
             <div className="col-span-6">

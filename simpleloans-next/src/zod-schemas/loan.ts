@@ -24,3 +24,6 @@ export const selectLoanSchema = createSelectSchema(loans);
 export type insertLoanSchemaType = typeof insertLoanSchema._type;
 
 export type selectLoanSchemaType = typeof selectLoanSchema._type;
+
+//A way to handle both, now the loan object has id, created and updated as optional
+export type Loan = Partial<selectLoanSchemaType> & insertLoanSchemaType;
