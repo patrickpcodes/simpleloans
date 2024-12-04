@@ -62,7 +62,7 @@ export function DateInputWithLabel<S>({
                   onChange(new Date(e.target.value));
                   console.log("I changed Date to ", value);
                 }}
-                disabled={disabled}
+                readOnly={disabled}
                 className={`w-[240px] ${className}`}
               />
             </FormControl>

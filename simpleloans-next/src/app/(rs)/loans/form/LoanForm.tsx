@@ -119,122 +119,108 @@ export default function LoanForm({
   //     form.reset(defaultValues);
   //   }, [loan, customers, form.reset]);
   return (
-    <div className="flex flex-col gap-1 sm:px-8">
-      <div>
-        <h2 className="text-2xl font-bold">
-          {loan?.id ? "Edit" : "New"} loan {loan?.id ? `#${loan.id}` : "Form"}
-        </h2>
-      </div>
-      <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-6">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(submitForm)}
-              className="space-y-8 max-w-3xl mx-auto py-10"
+    <div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(submitForm)}
+          className="space-y-8 max-w-3xl mx-auto py-10"
+        >
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <SelectInputWithLabel<insertLoanSchemaType>
+                fieldTitle="Customer"
+                nameInSchema="customerId"
+                placeholder="Select Customer"
+                // onValueChange={(value) => form.setValue("customerId", value)}
+                selectProps={customers.map((customer, index) => ({
+                  key: `customer_${index}`,
+                  value: customer.id.toString(),
+                  displayString: `${customer.id} - ${customer.name}`,
+                }))}
+                disabled={loan?.id ? true : false}
+              />
+            </div>
+            <div className="col-span-6">
+              <SelectInputWithLabel<insertLoanSchemaType>
+                fieldTitle="Payment Frequncy"
+                nameInSchema="paymentFrequency"
+                placeholder="Select Payment Frequency"
+                // onValueChange={(value) => form.setValue("paymentFrequency", value)}
+                selectProps={LOAN_PAYMENT_FREQUENCIES.map((freq, index) => ({
+                  key: `paymentFreq_${index}`,
+                  value: freq,
+                  displayString: freq,
+                }))}
+                disabled={loan?.id ? true : false}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <InputWithLabel<insertLoanSchemaType>
+                fieldTitle="Number of Payments"
+                nameInSchema="numberOfPayments"
+                isNumber={true}
+                disabled={loan?.id ? true : false}
+              />
+            </div>
+
+            <div className="col-span-6">
+              <DateInputWithLabel<insertLoanSchemaType>
+                fieldTitle="First Payment Date"
+                nameInSchema="firstPaymentDate"
+                disabled={loan?.id ? true : false}
+                description={
+                  loan?.id ? "" : "The date the first payment will be scheduled"
+                }
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <InputWithLabel<insertLoanSchemaType>
+                fieldTitle="Initial Borrowed Amount"
+                nameInSchema="initialBorrowedAmount"
+                disabled={loan?.id ? true : false}
+              />
+            </div>
+            <div className="col-span-6">
+              <InputWithLabel<insertLoanSchemaType>
+                fieldTitle="Initial Due Amount"
+                nameInSchema="initialDueAmount"
+                disabled={loan?.id ? true : false}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <TextAreaWithLabel<insertLoanSchemaType>
+                fieldTitle="Notes"
+                nameInSchema="notes"
+                className="min-h-[120px] resize-y"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              type="submit"
+              className="w-3/4"
+              variant="default"
+              title="Save"
             >
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-6">
-                  <SelectInputWithLabel<insertLoanSchemaType>
-                    fieldTitle="Customer"
-                    nameInSchema="customerId"
-                    placeholder="Select Customer"
-                    // onValueChange={(value) => form.setValue("customerId", value)}
-                    selectProps={customers.map((customer, index) => ({
-                      key: `customer_${index}`,
-                      value: customer.id.toString(),
-                      displayString: `${customer.id} - ${customer.name}`,
-                    }))}
-                  />
-                </div>
-                <div className="col-span-6">
-                  <SelectInputWithLabel<insertLoanSchemaType>
-                    fieldTitle="Payment Frequncy"
-                    nameInSchema="paymentFrequency"
-                    placeholder="Select Payment Frequency"
-                    // onValueChange={(value) => form.setValue("paymentFrequency", value)}
-                    selectProps={LOAN_PAYMENT_FREQUENCIES.map(
-                      (freq, index) => ({
-                        key: `paymentFreq_${index}`,
-                        value: freq,
-                        displayString: freq,
-                      })
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-6">
-                  <InputWithLabel<insertLoanSchemaType>
-                    fieldTitle="Number of Payments"
-                    nameInSchema="numberOfPayments"
-                    isNumber={true}
-                    disabled={loan?.id ? true : false}
-                  />
-                </div>
-
-                <div className="col-span-6">
-                  <DateInputWithLabel<insertLoanSchemaType>
-                    fieldTitle="First Payment Date"
-                    nameInSchema="firstPaymentDate"
-                    //disabled={loan?.id ? true : false}
-                    description="The date the first payment will be scheduled"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-6">
-                  <InputWithLabel<insertLoanSchemaType>
-                    fieldTitle="Initial Borrowed Amount"
-                    nameInSchema="initialBorrowedAmount"
-                    disabled={loan?.id ? true : false}
-                  />
-                </div>
-                <div className="col-span-6">
-                  <InputWithLabel<insertLoanSchemaType>
-                    fieldTitle="Initial Due Amount"
-                    nameInSchema="initialDueAmount"
-                    disabled={loan?.id ? true : false}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-6">
-                  <TextAreaWithLabel<insertLoanSchemaType>
-                    fieldTitle="Notes"
-                    nameInSchema="notes"
-                    className="min-h-[120px] resize-y"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  type="submit"
-                  className="w-3/4"
-                  variant="default"
-                  title="Save"
-                >
-                  Save
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  title="Reset"
-                  onClick={() => form.reset(defaultValues)}
-                >
-                  Reset
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </div>
-
-        <div className="col-span-6">
-          <h2>Calculated Values</h2>
-          <h3>Total Amount Paid : {formatNumberToDollar(totalPaid)}</h3>
-          <h3>Total Fees : {formatNumberToDollar(totalFees)}</h3>
-        </div>
-      </div>
-      {JSON.stringify(loan)}
+              Save
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              title="Reset"
+              onClick={() => form.reset(defaultValues)}
+            >
+              Reset
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }

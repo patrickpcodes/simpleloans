@@ -2,8 +2,8 @@ import { BackButton } from "@/components/BackButton";
 import { getCustomers } from "@/lib/queries/getCustomers";
 import { getLoan } from "@/lib/queries/getLoan";
 import LoanForm from "./LoanForm";
-import { PaymentTableView } from "@/components/PaymentTableView";
 import { PaymentCard } from "@/components/PaymentCard";
+import { LoanDashboard } from "@/components/LoanDashboard";
 
 export async function generateMetadata({
   searchParams,
@@ -44,18 +44,51 @@ export default async function LoanFormPage({
           </>
         );
       }
+      const healthItems = [
+        { name: "Payment History", status: "green" },
+        { name: "Loan-to-Value", status: "yellow" },
+        { name: "Credit Score", status: "red" },
+      ];
       console.log(loanId);
       console.log(result.loan);
       return (
         <div>
-          <LoanForm
-            loan={result.loan}
-            customers={customers}
-            payments={result.payments}
-          />
+          <div className="flex flex-col gap-1 sm:px-8">
+            <div>
+              <h2 className="text-2xl font-bold text-center">
+                {result.loan?.id ? "Edit" : "New"} loan{" "}
+                {result.loan?.id ? `#${result.loan.id}` : "Form"}
+              </h2>
+            </div>
+            <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-6">
+                <LoanForm
+                  loan={result.loan}
+                  customers={customers}
+                  payments={result.payments}
+                />
+              </div>
+              <div className="col-span-6">
+                <LoanDashboard
+                  status="status"
+                  initialAmount={123}
+                  totalFees={456}
+                  currentAmount={789}
+                  paymentsLeft={10}
+                  nextPaymentDate={new Date()}
+                  nextPaymentAmount={123}
+                  expectedProfit={123}
+                  completionDate={new Date()}
+                  warningMessage="This loan has a high interest rate. Consider refinancing options."
+                  errorMessage="This loan is invalid, this is my error"
+                  healthItems={healthItems}
+                />
+              </div>
+            </div>
+          </div>
           {result.payments && (
             <div>
-              <h2>Generated Payments</h2>
+              <h2 className="text-2xl font-bold text-center">Payments</h2>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {result.payments.map((payment, index) => (
                   <PaymentCard
@@ -67,11 +100,8 @@ export default async function LoanFormPage({
               </div>
             </div>
           )}
-          <PaymentTableView payments={result.payments} />
         </div>
       );
-      // put customer form component
-      return <div>{/* <CustomerForm customer={customer} /> */}</div>;
     } else {
       if (customerId) {
         console.log(customerId);

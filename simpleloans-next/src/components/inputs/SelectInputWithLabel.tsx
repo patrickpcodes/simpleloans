@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { InputHTMLAttributes } from "react";
 
 type SelectProps = {
@@ -28,8 +27,8 @@ type SelectProps = {
 type Props<S> = {
   fieldTitle: string;
   nameInSchema: keyof S & string;
-  className?: string;
-  onValueChange?: (value: string) => void;
+  // className?: string;
+  // onValueChange?: (value: string) => void;
   defaultValue?: string;
   placeholder: string;
   selectProps: SelectProps[];
@@ -39,14 +38,14 @@ type Props<S> = {
 export function SelectInputWithLabel<S>({
   fieldTitle,
   nameInSchema,
-  className,
-  onValueChange,
+  // className,
+  // onValueChange,
   defaultValue,
   placeholder,
   selectProps,
   disabled = false,
-  ...props
-}: Props<S>) {
+}: // ...props
+Props<S>) {
   const form = useFormContext();
   return (
     <FormField
@@ -73,7 +72,7 @@ export function SelectInputWithLabel<S>({
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {selectProps.map((prop, index) => (
+              {selectProps.map((prop) => (
                 <SelectItem
                   key={prop.key}
                   value={prop.value} // Convert number to string
