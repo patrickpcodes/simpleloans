@@ -9,11 +9,14 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { CustomerDetail } from "@/types/CustomerDetail";
 import {
   hasActiveLoan,
-  getNextPaymentDate,
+  getNextPaymentDateForPendingPayments,
   getNextPaymentAmount,
 } from "@/utils/loanChecks";
 import { Mail, Phone, CalendarIcon } from "lucide-react";
-import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
+import {
+  formatDateStringToMonthDayYear,
+  formatDateToMonthDayYear,
+} from "@/utils/formatDateToDateOnly";
 import { formatStringToDollar } from "@/utils/formatStringToDollar";
 export function DetailedCustomerDisplay({
   customerDetail,
@@ -62,9 +65,11 @@ export function DetailedCustomerDisplay({
                 <div className="flex items-center space-x-2">
                   <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">
-                    Next Payment:{" "}
+                    Next Payment:
                     {formatDateStringToMonthDayYear(
-                      getNextPaymentDate(customerDetail.loansWithPayments)
+                      getNextPaymentDateForPendingPayments(
+                        customerDetail.loansWithPayments[0].payments
+                      )
                     )}
                   </span>
                 </div>

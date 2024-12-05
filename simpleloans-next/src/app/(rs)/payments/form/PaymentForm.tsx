@@ -4,14 +4,19 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   insertPaymentSchema,
   insertPaymentSchemaType,
   Payment,
 } from "@/zod-schemas/payment";
+import { AlertTriangle } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DateInputWithLabel } from "@/components/inputs/DateInputWithLabel";
 import { formatDateToYYYYMMDD } from "@/utils/formatDateToDateOnly";
+import { SelectInputWithLabel } from "@/components/inputs/SelectInputWithLabel";
+import { PAYMENT_STATUSES } from "@/types/PaymentStatus";
+import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
 // import { Input } from "postcss";
 
 type Props = {
@@ -21,6 +26,7 @@ type Props = {
 
 export default function PaymentForm({ payment, onSubmit }: Props) {
   console.log(onSubmit);
+  const warningMessage = "This is a warning message";
   const defaultValues: insertPaymentSchemaType = {
     id: payment?.id ?? 0,
     loanId: payment?.loanId ?? 0,
@@ -41,6 +47,18 @@ export default function PaymentForm({ payment, onSubmit }: Props) {
     <Form {...form}>
       <form className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
+          <SelectInputWithLabel<insertPaymentSchemaType>
+            fieldTitle="Payment Status"
+            nameInSchema="paymentStatus"
+            placeholder="Payment Status"
+            selectProps={PAYMENT_STATUSES.map((freq, index) => ({
+              key: `payment-status-${index}`,
+              value: freq,
+              displayString: freq,
+            }))}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
           <InputWithLabel<insertPaymentSchemaType>
             fieldTitle="Amount to Pay"
             nameInSchema="amountDue"
@@ -60,97 +78,25 @@ export default function PaymentForm({ payment, onSubmit }: Props) {
             nameInSchema="paymentDate"
           />
         </div>
-        {/* <FormField
-          control={form.control}
-          name="fee"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fee</FormLabel>
-              <FormControl>
-                <Input {...field} type="number" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+        <div className="grid grid-cols-2 gap-4">
+          <InputWithLabel<insertPaymentSchemaType>
+            fieldTitle="Fee Amount"
+            nameInSchema="feeAmount"
+          />
+          <TextAreaWithLabel<insertPaymentSchemaType>
+            fieldTitle="Notes"
+            nameInSchema="notes"
+          />
+        </div>
+        <div>
+          {warningMessage && (
+            <Alert variant="default">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Warning</AlertTitle>
+              <AlertDescription>{warningMessage}</AlertDescription>
+            </Alert>
           )}
-        />
-        <FormField
-          control={form.control}
-          name="paymentType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Payment Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a payment type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="cash">
-                    <div className="flex items-center">
-                      <DollarSign className="mr-2 h-4 w-4" />
-                      Cash
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="card">
-                    <div className="flex items-center">
-                      <CreditCard className="mr-2 h-4 w-4" />
-                      Card
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="bank_transfer">
-                    <div className="flex items-center">
-                      <Bank className="mr-2 h-4 w-4" />
-                      Bank Transfer
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-        {/* <FormField
-          control={form.control}
-          name="paymentDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Payment Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
+        </div>
         <DialogFooter>
           <Button type="submit" className="w-full">
             Submit Payment

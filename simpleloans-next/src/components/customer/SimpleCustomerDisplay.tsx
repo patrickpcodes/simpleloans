@@ -8,7 +8,7 @@ import {
 import { CustomerDetail } from "@/types/CustomerDetail";
 import {
   hasActiveLoan,
-  getNextPaymentDate,
+  getNextPaymentDateForPendingPayments,
   getNextPaymentAmount,
 } from "@/utils/loanChecks";
 import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
@@ -46,7 +46,9 @@ export function SimpleCustomerDisplay({
                 <div>Next Payment Date:</div>
                 <div>
                   {formatDateStringToMonthDayYear(
-                    getNextPaymentDate(customerDetail.loansWithPayments)
+                    getNextPaymentDateForPendingPayments(
+                      customerDetail.loansWithPayments[0].payments
+                    )
                   )}
                 </div>
                 <div>Next Payment Amount:</div>

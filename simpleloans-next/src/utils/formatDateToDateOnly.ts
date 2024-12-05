@@ -30,9 +30,13 @@ export const formatDateToYYYYMMDD = (date: Date) => {
   return formatInTimeZone(utcDate, "UTC", "yyyy-MM-dd");
 };
 
-export const formatDateStringToMonthDayYear = (date: string) => {
+export const formatDateStringToMonthDayYear = (date: string | null) => {
+  if (!date) return "";
   console.log("date string", date);
   const [year, month, day] = date.split("-").map(Number);
   const utcDate = new Date(Date.UTC(year, month - 1, day));
   return formatInTimeZone(utcDate, "UTC", "PPP"); // 'PPP' is a human-readable date format like 'Dec 4, 2024'
+};
+export const formatDateToMonthDayYear = (date: Date) => {
+  return formatInTimeZone(date, "UTC", "PPP");
 };

@@ -75,24 +75,27 @@ export function PaymentCard({ payment, paymentNumber }: Props) {
               <span className="text-sm text-muted-foreground">Due Amount:</span>
               <span>{formatStringToDollar(payment.amountDue)}</span>
             </div>
-            {payment.feeAmount && parseFloat(payment.feeAmount) > 0 && (
-              <div className="flex justify-between text-destructive">
-                <span className="text-sm">Late Fee:</span>
-                <span>{formatStringToDollar(payment.feeAmount)}</span>
-              </div>
-            )}
-            {payment.amountPaid && parseFloat(payment.amountPaid) > 0 && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-green-600">
-                  <span className="text-sm">Amount Paid:</span>
-                  <span>{formatStringToDollar(payment.amountPaid)}</span>
+
+            {(payment.feeAmount && parseFloat(payment.feeAmount) > 0) ||
+              (true && (
+                <div className="flex justify-between text-destructive">
+                  <span className="text-sm">Late Fee:</span>
+                  <span>{formatStringToDollar(payment.feeAmount)}</span>
                 </div>
-                <Progress value={progressPercentage} className="w-full" />
-                <div className="text-xs text-center text-muted-foreground">
-                  {progressPercentage.toFixed(0)}% paid
+              ))}
+            {(payment.amountPaid && parseFloat(payment.amountPaid) > 0) ||
+              (true && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-green-600">
+                    <span className="text-sm">Amount Paid:</span>
+                    <span>{formatStringToDollar(payment.amountPaid)}</span>
+                  </div>
+                  <Progress value={progressPercentage} className="w-full" />
+                  <div className="text-xs text-center text-muted-foreground">
+                    {progressPercentage.toFixed(0)}% paid
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
           </div>
         </CardContent>
         <CardFooter>
