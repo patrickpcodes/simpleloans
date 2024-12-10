@@ -13,10 +13,7 @@ import {
   getNextPaymentAmount,
 } from "@/utils/loanChecks";
 import { Mail, Phone, CalendarIcon } from "lucide-react";
-import {
-  formatDateStringToMonthDayYear,
-  formatDateToMonthDayYear,
-} from "@/utils/formatDateToDateOnly";
+import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 import { formatStringToDollar } from "@/utils/formatStringToDollar";
 export function DetailedCustomerDisplay({
   customerDetail,
