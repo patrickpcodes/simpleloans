@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { UpcomingPayment } from "@/types/UpcomingPayment";
 import UpcomingPaymentsTableView from "@/components/UpcomingPaymentsTableView";
 

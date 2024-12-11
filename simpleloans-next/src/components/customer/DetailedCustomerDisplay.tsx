@@ -4,7 +4,7 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from "../ui/card";
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { CustomerDetail } from "@/types/CustomerDetail";
 import {

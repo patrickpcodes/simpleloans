@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
 import { UpcomingPayment } from "@/types/UpcomingPayment";
 import {
   formatNumberToDollar,
@@ -19,11 +19,11 @@ import { useState } from "react";
 import { Payment } from "@/zod-schemas/payment";
 import { PaymentModal } from "./PaymentModal";
 
-const statusColors = {
-  pending: "bg-yellow-100 text-yellow-800",
-  overdue: "bg-red-100 text-red-800",
-  paid: "bg-green-100 text-green-800",
-};
+// const statusColors = {
+//   pending: "bg-yellow-100 text-yellow-800",
+//   overdue: "bg-red-100 text-red-800",
+//   paid: "bg-green-100 text-green-800",
+// };
 
 type Props = {
   upcomingPayments: UpcomingPayment[];
