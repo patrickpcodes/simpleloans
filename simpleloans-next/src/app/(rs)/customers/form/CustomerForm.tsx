@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { CustomerDetail } from "@/types/CustomerDetail";
 import { LoanDetail } from "@/types/LoanDetail";
 import { MultiLoanDisplay } from "@/components/loan/MultiLoanDisplay";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 type Props = {
   customerDetail?: CustomerDetail;
@@ -23,6 +24,20 @@ type Props = {
 export default function CustomerForm({ customerDetail }: Props) {
   const router = useRouter();
   const customer = customerDetail?.customer;
+
+  const { getPermission, getPermissions, isLoading, getUser } =
+    useKindeBrowserClient();
+
+  const isManager = !isLoading && getPermission("manager")?.isGranted;
+  const permObj = getPermissions();
+  const isAuthorized =
+    !isLoading &&
+    permObj.permissions.some((perm) => perm === "manager " || perm === "admin");
+  console.log("permissions", permObj);
+  console.log("isManager", isManager);
+  console.log("isAuthorized", isAuthorized);
+  const user = getUser();
+  console.log("user", user);
 
   const defaultValues: insertCustomerSchemaType = {
     id: customer?.id ?? 0,

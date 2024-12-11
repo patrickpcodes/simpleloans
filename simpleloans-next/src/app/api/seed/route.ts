@@ -4,6 +4,8 @@ import { loans, customers, payments, history } from "@/db/schema";
 import { LOAN_PAYMENT_FREQUENCIES } from "@/types/LoanPaymentFrequency";
 import { generatePayments } from "@/lib/queries/generatePayments";
 import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
+import { LOAN_STATUSES } from "@/types/LoanStatus";
+import { PAYMENT_METHOD } from "@/types/PaymentMethod";
 
 export async function POST() {
   try {
@@ -68,6 +70,8 @@ export async function POST() {
             initialBorrowedAmount: initialBorrowedAmount.toString(),
             initialDueAmount: initialDueAmount.toString(),
             // Random date in the next 30 days
+            loanStatus: LOAN_STATUSES[0],
+            defaultPaymentMethod: PAYMENT_METHOD[0],
             firstPaymentDate: formatDateToDateOnly(
               faker.date.between({
                 from: Date.now(),

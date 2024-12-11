@@ -1,12 +1,14 @@
 import { db } from "@/db";
 import { customers } from "@/db/schema";
 import { getCustomerData } from "@/lib/queries/getCustomerData";
+import { getNextPayments } from "@/lib/queries/getNextPayments";
 import { updateCustomer } from "@/lib/queries/updateCustomer";
 
 export async function GET() {
   try {
     // Fetch all customers from the database
     const allCustomers = await getCustomerData();
+    const testing = await getNextPayments();
     console.log("allCustomers", allCustomers);
     // Return the data as a JSON response
     return new Response(JSON.stringify(allCustomers), {

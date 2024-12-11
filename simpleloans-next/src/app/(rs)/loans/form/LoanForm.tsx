@@ -19,6 +19,8 @@ import { DateInputWithLabel } from "@/components/inputs/DateInputWithLabel";
 import { useRouter } from "next/navigation";
 import { SelectInputWithLabel } from "@/components/inputs/SelectInputWithLabel";
 import { formatDateToYYYYMMDD } from "@/utils/formatDateToDateOnly";
+import { LOAN_STATUSES } from "@/types/LoanStatus";
+import { PAYMENT_METHOD } from "@/types/PaymentMethod";
 
 type Props = {
   loan?: selectLoanSchemaType;
@@ -39,6 +41,8 @@ export default function LoanForm({ loan, customers, customerId }: Props) {
     paymentFrequency: loan?.paymentFrequency ?? LOAN_PAYMENT_FREQUENCIES[0],
     initialBorrowedAmount: loan?.initialBorrowedAmount ?? "0",
     initialDueAmount: loan?.initialDueAmount ?? "0",
+    loanStatus: loan?.loanStatus ?? LOAN_STATUSES[0],
+    defaultPaymentMethod: loan?.defaultPaymentMethod ?? PAYMENT_METHOD[0],
     firstPaymentDate:
       loan?.firstPaymentDate ??
       formatDateToYYYYMMDD(new Date(new Date().getDate() + 7)),
@@ -123,6 +127,37 @@ export default function LoanForm({ loan, customers, customerId }: Props) {
                 placeholder="Select Payment Frequency"
                 // onValueChange={(value) => form.setValue("paymentFrequency", value)}
                 selectProps={LOAN_PAYMENT_FREQUENCIES.map((freq, index) => ({
+                  key: `paymentFreq_${index}`,
+                  value: freq,
+                  displayString: freq,
+                }))}
+                disabled={loan?.id ? true : false}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <SelectInputWithLabel<insertLoanSchemaType>
+                fieldTitle="Loan Status"
+                nameInSchema="loanStatus"
+                placeholder="Select Loan Status"
+                // onValueChange={(value) => form.setValue("paymentFrequency", value)}
+                selectProps={LOAN_STATUSES.map((freq, index) => ({
+                  key: `paymentFreq_${index}`,
+                  value: freq,
+                  displayString: freq,
+                }))}
+                disabled={loan?.id ? true : false}
+              />
+            </div>
+            <div className="col-span-6">
+              <SelectInputWithLabel<insertLoanSchemaType>
+                fieldTitle="Default Payment Method"
+                nameInSchema="defaultPaymentMethod"
+                placeholder="Select Default Payment Methond"
+                // onValueChange={(value) => form.setValue("paymentFrequency", value)}
+                selectProps={PAYMENT_METHOD.map((freq, index) => ({
                   key: `paymentFreq_${index}`,
                   value: freq,
                   displayString: freq,

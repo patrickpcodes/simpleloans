@@ -17,6 +17,7 @@ import { formatDateToYYYYMMDD } from "@/utils/formatDateToDateOnly";
 import { SelectInputWithLabel } from "@/components/inputs/SelectInputWithLabel";
 import { PAYMENT_STATUSES } from "@/types/PaymentStatus";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
+import { PAYMENT_METHOD } from "@/types/PaymentMethod";
 // import { Input } from "postcss";
 
 type Props = {
@@ -34,6 +35,8 @@ export default function PaymentForm({ payment, onSubmit }: Props) {
     amountPaid: payment?.amountPaid ?? "0",
     feeAmount: payment?.feeAmount ?? "0",
     paymentStatus: payment.paymentStatus,
+    paymentMethod: payment.paymentMethod,
+    notes: payment?.notes ?? "",
     paymentDate: payment?.paymentDate ?? formatDateToYYYYMMDD(new Date()),
     dueDate: payment.dueDate,
   };
@@ -52,6 +55,16 @@ export default function PaymentForm({ payment, onSubmit }: Props) {
             nameInSchema="paymentStatus"
             placeholder="Payment Status"
             selectProps={PAYMENT_STATUSES.map((freq, index) => ({
+              key: `payment-status-${index}`,
+              value: freq,
+              displayString: freq,
+            }))}
+          />
+          <SelectInputWithLabel<insertPaymentSchemaType>
+            fieldTitle="Payment Method"
+            nameInSchema="paymentMethod"
+            placeholder="Payment Method"
+            selectProps={PAYMENT_METHOD.map((freq, index) => ({
               key: `payment-status-${index}`,
               value: freq,
               displayString: freq,

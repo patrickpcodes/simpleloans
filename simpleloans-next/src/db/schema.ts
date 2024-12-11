@@ -12,6 +12,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { LOAN_PAYMENT_FREQUENCIES } from "@/types/LoanPaymentFrequency";
 import { PAYMENT_STATUSES } from "@/types/PaymentStatus";
+import { LOAN_STATUSES } from "@/types/LoanStatus";
+import { PAYMENT_METHOD } from "@/types/PaymentMethod";
 
 export const customers = pgTable("customers", {
   id: serial("id").primaryKey(),
@@ -36,6 +38,9 @@ export const loanPaymentFrequencyEnum = pgEnum(
   "payment_frequency_enum",
   LOAN_PAYMENT_FREQUENCIES
 );
+export const loanStatusEnum = pgEnum("loan_status_enum", LOAN_STATUSES);
+
+export const paymentMethodEnum = pgEnum("payment_method_enum", PAYMENT_METHOD);
 
 export const loans = pgTable("loans", {
   id: serial("id").primaryKey(),
@@ -52,7 +57,8 @@ export const loans = pgTable("loans", {
     precision: 10,
     scale: 2,
   }).notNull(),
-  //TODO add a status field
+  loanStatus: loanStatusEnum("loan_status").notNull(),
+  defaultPaymentMethod: paymentMethodEnum("default_payment_method").notNull(),
   firstPaymentDate: varchar("first_payment_date").notNull(),
   notes: text("notes"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -79,6 +85,7 @@ export const payments = pgTable("payments", {
   }).notNull(),
   feeAmount: decimal("fee_amount", { precision: 10, scale: 2 }).notNull(),
   paymentStatus: paymentStatusesEnum("payment_status").notNull(),
+  paymentMethod: paymentMethodEnum("payment_method").notNull(),
   dueDate: varchar("due_date").notNull(),
   paymentDate: varchar("payment_date"),
   notes: text("notes"),

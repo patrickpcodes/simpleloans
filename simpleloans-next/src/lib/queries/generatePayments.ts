@@ -51,6 +51,7 @@ export function generatePayments(loan: Loan): PaymentInsert[] {
       amountPaid: "0",
       feeAmount: "0",
       paymentStatus: "Pending",
+      paymentMethod: loan.defaultPaymentMethod,
       notes: "",
       createdAt: new Date(),
       updatedAt: new Date(),
