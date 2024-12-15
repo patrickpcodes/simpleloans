@@ -6,24 +6,29 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import PaymentForm from "@/app/(rs)/payments/form/PaymentForm";
+import PaymentForm, {
+  PaymentPayTodayValues,
+} from "@/app/(rs)/payments/form/PaymentForm";
 import { Payment } from "@/zod-schemas/payment";
 
 interface StyledPaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   payment: Payment;
+  paymentPayTodayValues?: PaymentPayTodayValues;
 }
 
 export function PaymentModal({
   isOpen,
   onClose,
   payment,
+  paymentPayTodayValues,
 }: StyledPaymentModalProps) {
-  //   function onSubmit(data: PaymentFormValues) {
-  //     console.log(data);
-  //     onClose();
-  //   }
+  // function onSubmit(data: Payment) {
+  //   console.log("In Payment Modal");
+  //   console.log(data);
+  //   //onClose();
+  // }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -33,7 +38,10 @@ export function PaymentModal({
             Make a Payment
           </DialogTitle>
         </DialogHeader>
-        <PaymentForm payment={payment} />
+        <PaymentForm
+          payment={payment}
+          paymentPayTodayValues={paymentPayTodayValues}
+        />
       </DialogContent>
     </Dialog>
   );

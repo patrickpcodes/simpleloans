@@ -5,6 +5,8 @@ import {
   LogOut,
   Database,
   BadgeDollarSign,
+  HardDriveDownload,
+  Send,
 } from "lucide-react";
 import Link from "next/link";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
@@ -42,6 +44,12 @@ export function Header() {
         )}
 
         <div className="flex items-center">
+          <NavButton
+            href="/download"
+            label="Download"
+            icon={HardDriveDownload}
+          />
+          <NavButton href="/email" label="Email" icon={Send} />
           <NavButton href="/seeddata" label="Seed Data" icon={Database} />
 
           <NavButton href="/loans" label="Loans" icon={BadgeDollarSign} />

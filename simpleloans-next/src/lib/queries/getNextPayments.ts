@@ -7,7 +7,7 @@ export const getNextPayments = async () => {
     .select({
       customerId: customers.id,
       customerName: customers.name,
-      loanId: loans.id,
+      loan: loans,
       payment: payments,
       //   nextPaymentDueDate: payments.dueDate,
       //   nextPaymentDueAmount: payments.amountDue,

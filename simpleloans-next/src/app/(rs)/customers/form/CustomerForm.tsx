@@ -14,8 +14,8 @@ import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
 import { useRouter } from "next/navigation";
 import { CustomerDetail } from "@/types/CustomerDetail";
 import { LoanDetail } from "@/types/LoanDetail";
-import { MultiLoanDisplay } from "@/components/loan/MultiLoanDisplay";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { ModernLoanDisplay } from "@/components/loan/ModernLoanDisplay";
 
 type Props = {
   customerDetail?: CustomerDetail;
@@ -211,10 +211,19 @@ export default function CustomerForm({ customerDetail }: Props) {
       </Form>
       {JSON.stringify(customer)}
       {customer?.id && loanDetails && loanDetails.length > 0 && (
-        <MultiLoanDisplay
-          loanDetails={loanDetails}
-          onRowClick={handleRowClick}
-        />
+        <div className="py-1 my-4">
+          <div className="h-px bg-gray-300 w-full my-4" />
+          <h1 className="text-4xl font-bold">Loan Format : Modern</h1>
+          <div className="grid grid-cols-2 gap-2 my-2">
+            {loanDetails.map((loanDetail) => (
+              <ModernLoanDisplay
+                key={loanDetail.loan.id}
+                loanDetail={loanDetail}
+                onRowClick={handleRowClick}
+              />
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

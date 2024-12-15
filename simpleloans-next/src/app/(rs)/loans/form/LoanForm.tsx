@@ -33,6 +33,7 @@ export default function LoanForm({ loan, customers, customerId }: Props) {
   const router = useRouter();
   if (customerId) {
   }
+  console.log("loan", loan);
   // const router = useRouter();
   const defaultValues: insertLoanSchemaType = {
     id: loan?.id ?? 0,
@@ -60,10 +61,10 @@ export default function LoanForm({ loan, customers, customerId }: Props) {
     let method = "";
     if (data.id && data.id > 0) {
       method = "PUT";
-      return;
     } else {
       method = "POST";
     }
+    console.log("submit loan method", method);
     try {
       const response = await fetch("/api/loans", {
         method: method,
@@ -118,6 +119,7 @@ export default function LoanForm({ loan, customers, customerId }: Props) {
                   displayString: `${customer.id} - ${customer.name}`,
                 }))}
                 disabled={loan?.id ? true : false}
+                convertToNumber={true}
               />
             </div>
             <div className="col-span-6">

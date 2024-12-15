@@ -32,6 +32,7 @@ type Props<S> = {
   defaultValue?: string;
   placeholder: string;
   selectProps: SelectProps[];
+  convertToNumber?: boolean;
   disabled?: boolean;
 } & InputHTMLAttributes<HTMLInputElement>;
 
@@ -43,6 +44,7 @@ export function SelectInputWithLabel<S>({
   defaultValue,
   placeholder,
   selectProps,
+  convertToNumber = false,
   disabled = false,
 }: // ...props
 Props<S>) {
@@ -55,9 +57,14 @@ Props<S>) {
         <FormItem>
           <FormLabel>{fieldTitle}</FormLabel>
           <Select
+            value={field.value?.toString()} // Bind to field.value for controlled behavior
             onValueChange={(value) => {
-              const numericValue = Number(value); // Convert value to number
-              field.onChange(numericValue); // Update form state
+              console.log("in select value", value);
+              if (convertToNumber) {
+                field.onChange(Number(value));
+              } else {
+                field.onChange(value); // Update form state
+              }
               console.log(field);
               //   if (onValueChange) {
               //     onValueChange(numericValue); // Call custom callback

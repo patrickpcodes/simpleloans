@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { LoanDetail } from "@/types/LoanDetail";
-import { MultiLoanDisplay } from "@/components/loan/MultiLoanDisplay";
+import { ModernLoanDisplay } from "@/components/loan/ModernLoanDisplay";
 
 export default function Seed() {
   const [loanDetails, setLoanDetails] = useState<LoanDetail[]>([]);
@@ -48,12 +48,18 @@ export default function Seed() {
         Create New Loan
       </Button>
       {isLoading && <p>Loading...</p>}
-      <div className="h-px bg-gray-300 w-full my-4"></div>
       {loanDetails.length > 0 && (
-        <MultiLoanDisplay
-          loanDetails={loanDetails}
-          onRowClick={handleRowClick}
-        />
+        <div className="py-1 my-4">
+          <div className="grid grid-cols-2 gap-2 my-2">
+            {loanDetails.map((loanDetail) => (
+              <ModernLoanDisplay
+                key={loanDetail.loan.id}
+                loanDetail={loanDetail}
+                onRowClick={handleRowClick}
+              />
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

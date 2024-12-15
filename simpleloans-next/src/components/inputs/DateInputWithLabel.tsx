@@ -19,7 +19,6 @@ type Props<S> = {
   nameInSchema: keyof S & string;
   className?: string;
   description?: string;
-  disabled?: boolean;
 } & InputHTMLAttributes<HTMLInputElement>;
 
 export function DateInputWithLabel<S>({
@@ -27,8 +26,6 @@ export function DateInputWithLabel<S>({
   nameInSchema,
   className,
   description,
-  //TODO make sure its disabled
-  disabled = false,
 }: Props<S>) {
   const form = useFormContext();
 
@@ -47,7 +44,7 @@ export function DateInputWithLabel<S>({
     <FormField
       control={form.control}
       name={nameInSchema}
-      disabled={disabled}
+      // disabled={disabled}
       render={({ field: { value, onChange } }) => (
         <FormItem className="flex flex-col">
           <FormLabel>{fieldTitle}</FormLabel>
@@ -61,7 +58,7 @@ export function DateInputWithLabel<S>({
                   onChange(e.target.value);
                   console.log("I changed Date to ", value);
                 }}
-                readOnly={disabled}
+                // readOnly={disabled}
                 className={`w-[240px] ${className}`}
               />
             </FormControl>

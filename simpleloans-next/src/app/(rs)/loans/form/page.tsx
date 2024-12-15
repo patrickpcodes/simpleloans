@@ -3,7 +3,9 @@ import { getCustomers } from "@/lib/queries/getCustomers";
 import { getLoan } from "@/lib/queries/getLoan";
 import LoanForm from "./LoanForm";
 import { PaymentCard } from "@/components/PaymentCard";
-import { HealthItem, LoanDashboard } from "@/components/LoanDashboard";
+import { LoanDashboard } from "@/components/LoanDashboard";
+import { HistoryTimelineView } from "@/components/HistoryTimelineView";
+import { getHistoriesByItem } from "@/lib/queries/getHistoriesByItem";
 
 export async function generateMetadata({
   searchParams,
@@ -28,6 +30,7 @@ export default async function LoanFormPage({
     // Edit customer form
     if (loanId) {
       const result = await getLoan(parseInt(loanId));
+      const histories = await getHistoriesByItem("Loan", parseInt(loanId));
       if (!loanId) {
         return (
           <>
@@ -44,11 +47,7 @@ export default async function LoanFormPage({
           </>
         );
       }
-      const healthItems: HealthItem[] = [
-        { name: "Payment History", status: "green" },
-        { name: "Loan-to-Value", status: "yellow" },
-        { name: "Credit Score", status: "red" },
-      ];
+
       console.log(loanId);
       console.log(result.loan);
       return (
@@ -69,20 +68,7 @@ export default async function LoanFormPage({
                 />
               </div>
               <div className="col-span-6">
-                <LoanDashboard
-                  status="status"
-                  initialAmount={123}
-                  totalFees={456}
-                  currentAmount={789}
-                  paymentsLeft={10}
-                  nextPaymentDate={"2022-04-05"}
-                  nextPaymentAmount={123}
-                  expectedProfit={123}
-                  completionDate={"2022-04-05"}
-                  warningMessage="This loan has a high interest rate. Consider refinancing options."
-                  errorMessage="This loan is invalid, this is my error"
-                  healthItems={healthItems}
-                />
+                <LoanDashboard loan={result.loan} payments={result.payments} />
               </div>
             </div>
           </div>
@@ -99,6 +85,9 @@ export default async function LoanFormPage({
                 ))}
               </div>
             </div>
+          )}
+          {histories.length > 0 && (
+            <HistoryTimelineView histories={histories} />
           )}
         </div>
       );

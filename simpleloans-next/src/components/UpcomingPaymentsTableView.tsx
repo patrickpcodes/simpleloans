@@ -18,6 +18,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Payment } from "@/zod-schemas/payment";
 import { PaymentModal } from "./PaymentModal";
+import { PaymentPayTodayValues } from "@/app/(rs)/payments/form/PaymentForm";
+import { formatDateToYYYYMMDD } from "@/utils/formatDateToDateOnly";
 
 // const statusColors = {
 //   pending: "bg-yellow-100 text-yellow-800",
@@ -32,6 +34,9 @@ type Props = {
 export default function UpcomingPaymentsTableView({ upcomingPayments }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activePayment, setActivePayment] = useState<Payment | null>(null);
+  const [paymentPayTodayValues, setPaymentPayTodayValues] = useState<
+    PaymentPayTodayValues | undefined
+  >(undefined);
   console.log("format", formatNumberToDollar(1000));
   const router = useRouter();
   return (
@@ -39,10 +44,12 @@ export default function UpcomingPaymentsTableView({ upcomingPayments }: Props) {
       {isModalOpen && activePayment && (
         <PaymentModal
           payment={activePayment}
+          paymentPayTodayValues={paymentPayTodayValues}
           isOpen={isModalOpen}
           onClose={() => {
             setIsModalOpen(false);
             setActivePayment(null);
+            setPaymentPayTodayValues(undefined);
           }}
         />
       )}
@@ -90,12 +97,18 @@ export default function UpcomingPaymentsTableView({ upcomingPayments }: Props) {
                   <div className="flex space-x-2">
                     <Button
                       size="sm"
-                      onClick={() =>
+                      onClick={() => {
                         console.log(
                           "Accept payment",
                           upcomingPayment.payment.id
-                        )
-                      }
+                        );
+                        setActivePayment(upcomingPayment.payment);
+                        setPaymentPayTodayValues({
+                          amountPaid: upcomingPayment.payment.amountDue,
+                          paymentDate: formatDateToYYYYMMDD(new Date()),
+                        });
+                        setIsModalOpen(true);
+                      }}
                     >
                       Paid
                     </Button>

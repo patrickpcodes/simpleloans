@@ -6,71 +6,53 @@ import {
   Calendar,
   PiggyBank,
   AlertTriangle,
-  CheckCircle2,
-  XCircle,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
-
-export interface HealthItem {
-  name: string;
-  status: "red" | "yellow" | "green";
-}
+import { Payment } from "@/zod-schemas/payment";
+import { Loan } from "@/zod-schemas/loan";
+import { HealthItem, LoanDashboardHealthItem } from "./LoanDashboardHealthItem";
+import {
+  getLastPayment,
+  getNextPendingPayment,
+  getTotalFees,
+  getTotalPaid,
+  getTotalToBePaid,
+} from "@/utils/payments";
 
 interface LoanDashboardProps {
-  status: string;
-  initialAmount: number;
-  totalFees: number;
-  currentAmount: number;
-  paymentsLeft: number;
-  nextPaymentDate: string;
-  nextPaymentAmount: number;
-  expectedProfit: number;
-  completionDate: string;
-  warningMessage?: string;
-  errorMessage?: string;
-  healthItems: HealthItem[];
+  loan: Loan;
+  payments: Payment[];
 }
 
-export function LoanDashboard({
-  status,
-  initialAmount,
-  totalFees,
-  currentAmount,
-  paymentsLeft,
-  nextPaymentDate,
-  nextPaymentAmount,
-  expectedProfit,
-  completionDate,
-  warningMessage,
-  errorMessage,
-  healthItems,
-}: LoanDashboardProps) {
-  const getStatusColor = (status: "red" | "yellow" | "green") => {
-    switch (status) {
-      case "red":
-        return "bg-red-100 text-red-800 border-red-300";
-      case "yellow":
-        return "bg-yellow-100 text-yellow-800 border-yellow-300";
-      case "green":
-        return "bg-green-100 text-green-800 border-green-300";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-300";
-    }
-  };
+export function LoanDashboard({ loan, payments }: LoanDashboardProps) {
+  const status = loan.loanStatus;
+  const initialAmount = parseFloat(loan.initialBorrowedAmount);
+  const totalFees = getTotalFees(payments);
+  const remainingAmount = getTotalToBePaid(payments) - getTotalPaid(payments);
+  const paymentsLeft = payments.filter(
+    (payment) => payment.paymentStatus === "Pending"
+  ).length;
+  const nextPayment = getNextPendingPayment(payments);
+  const nextPaymentDate = nextPayment?.dueDate;
+  const nextPaymentAmount = nextPayment ? parseFloat(nextPayment.amountDue) : 0;
+  const expectedProfit = getTotalToBePaid(payments) - initialAmount;
+  // Get payment with the latest due date
+  const lastPayment = getLastPayment(payments);
+  const completionDate = lastPayment?.dueDate || "";
+  const warningMessage =
+    "This loan has a high interest rate. Consider refinancing options.";
+  const errorMessage = "This loan is invalid, this is my error";
 
-  const getStatusIcon = (status: "red" | "yellow" | "green") => {
-    switch (status) {
-      case "red":
-        return <XCircle className="h-6 w-6 text-red-500" />;
-      case "yellow":
-        return <AlertTriangle className="h-6 w-6 text-yellow-500" />;
-      case "green":
-        return <CheckCircle2 className="h-6 w-6 text-green-500" />;
-      default:
-        return null;
-    }
-  };
+  const healthItems: HealthItem[] = [
+    { title: "Payment History", message: "Test 1", status: "green" },
+    { title: "Loan-to-Value", message: "Test 1", status: "yellow" },
+    { title: "Credit Score", message: "Test 1", status: "red" },
+  ];
+  healthItems.push({
+    title: "Payment History",
+    message: "Test 1",
+    status: "green",
+  });
   return (
     <div className="w-full max-w-2xl space-y-4">
       <Card>
@@ -106,7 +88,7 @@ export function LoanDashboard({
                 Current Amount Due
               </span>
               <span className="text-lg font-semibold">
-                ${currentAmount.toFixed(2)}
+                ${remainingAmount.toFixed(2)}
               </span>
             </div>
           </div>
@@ -133,7 +115,9 @@ export function LoanDashboard({
               <div className="flex flex-col">
                 <span className="text-sm font-medium">Next Payment</span>
                 <span className="text-lg font-semibold">
-                  {formatDateStringToMonthDayYear(nextPaymentDate)}
+                  {nextPaymentDate
+                    ? formatDateStringToMonthDayYear(nextPaymentDate)
+                    : ""}
                 </span>
               </div>
             </div>
@@ -188,20 +172,11 @@ export function LoanDashboard({
         <CardContent>
           <div className="grid grid-cols-3 gap-4">
             {healthItems.map((item, index) => (
-              <Card
+              <LoanDashboardHealthItem
                 key={index}
-                className={`border ${getStatusColor(item.status)}`}
-              >
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    {getStatusIcon(item.status)}
-                    <Badge variant="outline" className="capitalize">
-                      {item.status}
-                    </Badge>
-                  </div>
-                  <h3 className="font-semibold text-sm">{item.name}</h3>
-                </CardContent>
-              </Card>
+                index={index.toString()}
+                healthItem={item}
+              />
             ))}
           </div>
         </CardContent>

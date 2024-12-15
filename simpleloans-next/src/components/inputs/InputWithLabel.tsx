@@ -58,6 +58,13 @@ export function InputWithLabel<S>({
                     : e.target.value
                 );
               }}
+              onBlur={(e) => {
+                // Custom onBlur handling
+                field.onBlur(); // Retain default onBlur behavior from react-hook-form
+                if (props.onBlur) {
+                  props.onBlur(e); // Call custom onBlur handler passed via props
+                }
+              }}
             />
           </FormControl>
 

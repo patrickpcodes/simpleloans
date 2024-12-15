@@ -17,36 +17,36 @@ type Props = {
 };
 
 export function CustomerTableView({ customers, onRowClick }: Props) {
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Id</TableHead>
-          <TableHead>Name</TableHead>
-          <TableHead>Phone</TableHead>
-          <TableHead>Birthday</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Notes</TableHead>
+  return(
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead>Id</TableHead>
+        <TableHead>Name</TableHead>
+        <TableHead>Phone</TableHead>
+        <TableHead>Birthday</TableHead>
+        <TableHead>Email</TableHead>
+        <TableHead>Notes</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      {customers.map((customer) => (
+        <TableRow
+          key={customer.id}
+          onClick={() => onRowClick(customer.id)}
+          className="cursor-pointer"
+        >
+          <TableCell>{customer.id}</TableCell>
+          <TableCell>{customer.name}</TableCell>
+          <TableCell>{customer.phone}</TableCell>
+          <TableCell>
+            {formatDateStringToMonthDayYear(customer.birthdate)}
+          </TableCell>
+          <TableCell>{customer.email}</TableCell>
+          <TableCell>{customer.notes}</TableCell>
         </TableRow>
-      </TableHeader>
-      <TableBody>
-        {customers.map((customer) => (
-          <TableRow
-            key={customer.id}
-            onClick={() => onRowClick(customer.id)}
-            className="cursor-pointer"
-          >
-            <TableCell>{customer.id}</TableCell>
-            <TableCell>{customer.name}</TableCell>
-            <TableCell>{customer.phone}</TableCell>
-            <TableCell>
-              {formatDateStringToMonthDayYear(customer.birthdate)}
-            </TableCell>
-            <TableCell>{customer.email}</TableCell>
-            <TableCell>{customer.notes}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
+      ))}
+    </TableBody>
+  </Table>)
 }
+
