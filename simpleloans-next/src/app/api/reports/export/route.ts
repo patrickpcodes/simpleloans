@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { db } from "@/db"; // Adjust this path to your Drizzle setup
 import { customers, history, loans, payments } from "@/db/schema"; // Adjust this path to your schema
 import JSZip from "jszip";
+import { Customer } from "@/types/Customer";
 
 export async function GET() {
   try {
-    function generateCsv(data) {
+    function generateCsv<T extends object>(data: T[]): string {
       // Generate CSV headers and rows
       const headers = Object.keys(data[0] || {}).join(",") + "\n";
       const rows = data.map((row) => Object.values(row).join(",")).join("\n");
@@ -13,7 +14,9 @@ export async function GET() {
       return csv;
     }
     // Fetch data from the `customers` table
-    const customerCsv = generateCsv(await db.select().from(customers));
+    const customerCsv = generateCsv(
+      (await db.select().from(customers)) as Customer[]
+    );
     const loanCsv = generateCsv(await db.select().from(loans));
     const paymentsCsv = generateCsv(await db.select().from(payments));
     const historyCsv = generateCsv(await db.select().from(history));

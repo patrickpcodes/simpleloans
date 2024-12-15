@@ -6,14 +6,11 @@ import {
   CardFooter,
 } from "../ui/card";
 import { CustomerDetail } from "@/types/CustomerDetail";
-import {
-  hasActiveLoan,
-  getNextPaymentAmount,
-  getNextPaymentDateForPendingPayments,
-} from "@/utils/loanChecks";
+import { hasActiveLoan } from "@/utils/loanChecks";
 import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 import { formatStringToDollar } from "@/utils/formatStringToDollar";
 import { Badge } from "@/components/ui/badge";
+import { getNextPendingPayment } from "@/utils/payments";
 
 export function ModernCustomerDisplay({
   customerDetail,
@@ -22,6 +19,9 @@ export function ModernCustomerDisplay({
   customerDetail: CustomerDetail;
   onRowClick: (id: number) => void;
 }) {
+  const nextPayment = getNextPendingPayment(
+    customerDetail.loansWithPayments[0].payments
+  );
   return (
     <div
       className="cursor-pointer" // Add a pointer cursor to indicate clickability
@@ -57,9 +57,7 @@ export function ModernCustomerDisplay({
                   </span>
                   <Badge variant="outline" className="ml-2">
                     Next Payment:
-                    {formatStringToDollar(
-                      getNextPaymentAmount(customerDetail.loansWithPayments)
-                    )}
+                    {formatStringToDollar(nextPayment?.amountDue || "0")}
                   </Badge>
                 </div>
               ) : (
@@ -77,11 +75,7 @@ export function ModernCustomerDisplay({
                 Next Payment Date
               </div>
               <div className="text-lg font-semibold">
-                {formatDateStringToMonthDayYear(
-                  getNextPaymentDateForPendingPayments(
-                    customerDetail.loansWithPayments[0].payments
-                  )
-                )}
+                {formatDateStringToMonthDayYear(nextPayment?.dueDate || "")}
               </div>
             </div>
           </CardFooter>

@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CustomerDetail } from "@/types/CustomerDetail";
-import { MultiCustomerDisplay } from "@/components/customer/MultiCustomerDisplay";
 import { useRouter } from "next/navigation";
+
+import { ModernCustomerDisplay } from "@/components/customer/ModernCustomerDisplay";
 
 export default function Seed() {
   const [customerList, setCustomers] = useState<CustomerDetail[]>([]);
@@ -84,10 +85,15 @@ export default function Seed() {
       </Button>
       {message && <p>{message}</p>}
       {customerList && (
-        <MultiCustomerDisplay
-          customerDetails={customerList}
-          onRowClick={handleRowClick}
-        />
+        <div className="grid grid-cols-2 gap-2 my-2">
+          {customerList.map((customerDetail) => (
+            <ModernCustomerDisplay
+              key={customerDetail.customer.id}
+              customerDetail={customerDetail}
+              onRowClick={handleRowClick}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

@@ -48,7 +48,6 @@ export default function Seed() {
       {isLoading && <p>Loading...</p>}
       {customerList.length > 0 && (
         <div>
-          <h1 className="text-4xl font-bold">Customer Format : Modern</h1>
           <div className="grid grid-cols-2 gap-2 my-2">
             {customerList.map((customerDetail) => (
               <ModernCustomerDisplay
