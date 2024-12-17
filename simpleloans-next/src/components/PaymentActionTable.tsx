@@ -34,7 +34,7 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
           }}
         />
       )}
-      <div className="flex">
+      {/* <div className="flex">
         Button Legend :
         <Button size="sm" variant="outline">
           <CheckCircle className="h-4 w-4" />
@@ -48,7 +48,7 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
           <Mail className="h-4 w-4" />
           Send Reminder
         </Button>
-      </div>
+      </div> */}
       <div className="space-y-4 ">
         {upcomingPayments.map((upcomingPayment) => (
           <div
@@ -73,7 +73,7 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
                 </div>
               </div>
             </div>
-            <div className="col-span-3 text-left">
+            <div className="col-span-2 text-left">
               <p className="font-semibold">
                 {formatStringToDollar(upcomingPayment.payment.amountDue)}
               </p>
@@ -90,11 +90,11 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
               Finishes: {upcomingPayment.payment.updatedAt?.toDateString()}
             </p>
           </div> */}
-            <div className="col-span-3 text-left">
+            <div className="col-span-2 text-left">
               <p className="text-sm text-muted-foreground">Last Reminder:</p>
               <p className="text-sm">{"test"}</p>
             </div>
-            <div className="col-span-3 flex gap-2">
+            <div className="col-span-5 flex gap-2">
               <Button
                 size="sm"
                 variant="outline"
@@ -109,6 +109,7 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
                 }}
               >
                 <CheckCircle className="h-4 w-4" />
+                Payment Made
               </Button>
               <Button
                 size="sm"
@@ -120,6 +121,7 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
                 }}
               >
                 <MoreHorizontal className="h-4 w-4" />
+                Update Details
               </Button>
               <Button
                 size="sm"
@@ -129,6 +131,7 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
                 }
               >
                 <Mail className="h-4 w-4" />
+                Send Reminder
               </Button>
             </div>
           </div>
