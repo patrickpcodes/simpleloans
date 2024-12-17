@@ -9,7 +9,6 @@ export async function GET() {
     // const email = "patrickpetropoulos@gmail.com";
     // Get the current Date and Time
     const now = new Date();
-    console.log("now", now);
     (async () => {
       const data: SendEmailV3.Body = {
         FromEmail: "info@patrickpetropoulos.com",
