@@ -7,12 +7,14 @@ export async function GET() {
       apiSecret: process.env.MJ_APIKEY_PRIVATE,
     });
     // const email = "patrickpetropoulos@gmail.com";
-
+    // Get the current Date and Time
+    const now = new Date();
+    console.log("now", now);
     (async () => {
       const data: SendEmailV3.Body = {
         FromEmail: "info@patrickpetropoulos.com",
         FromName: "Mailjet Pilot",
-        Subject: "Your email flight plan!",
+        Subject: "Your email flight plan! " + now.toISOString(),
         "Text-part":
           "Dear passenger, welcome to Mailjet! May the delivery force be with you!",
         "Html-part":

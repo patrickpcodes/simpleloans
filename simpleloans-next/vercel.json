@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/email/cron-task.js": {
+      "schedule": "0 * * * *"
+    }
+  }
+}
