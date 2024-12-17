@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/email/cron-task.js",
-      "schedule": "5/10 * * * *"
-    }
-  ]
-}
