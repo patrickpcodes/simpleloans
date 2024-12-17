@@ -1,7 +1,8 @@
 {
-  "functions": {
-    "api/email/cron-task.js": {
-      "schedule": "0 * * * *"
+  "crons": [
+    {
+      "path": "/api//email/cron-task.js",
+      "schedule": "5/10 * * * *"
     }
-  }
+  ]
 }
