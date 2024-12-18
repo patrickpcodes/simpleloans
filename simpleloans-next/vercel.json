@@ -1,3 +1,9 @@
 {
-  "buildCommand": "next build"
+  "buildCommand": "next build",
+  "crons": [
+    {
+      "path": "/api/email/",
+      "schedule": "5 14 * * *"
+    }
+  ]
 }
