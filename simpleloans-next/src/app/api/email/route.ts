@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, res: NextResponse) {
+export async function GET() {
   // if (
   //   req.headers.get("Authorization") !== `Bearer ${process.env.CRON_SECRET}`
   // ) {
@@ -27,6 +27,7 @@ export async function GET(request: Request, res: NextResponse) {
     // Perform your task logic here
     // res.status(200).json({ message: "Cron job executed successfully", data });
   } catch (error) {
+    console.log(error);
     return NextResponse.json({
       status: 500,
       message: "Cron job failed",
