@@ -10,9 +10,12 @@ export async function GET() {
     console.log("Cron job triggered at:", new Date().toISOString());
 
     // Call another internal API endpoint
-    const response = await fetch("/api/email/sendTest", {
-      method: "GET",
-    });
+    const response = await fetch(
+      "https://simpleloans.vercel.app/api/email/sendTest",
+      {
+        method: "GET",
+      }
+    );
 
     const data = await response.json();
     console.log("Response from other API:", data);

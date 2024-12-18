@@ -3,8 +3,8 @@ import { Client, SendEmailV3, LibraryResponse } from "node-mailjet";
 export async function GET() {
   try {
     const mailjet = new Client({
-      apiKey: process.env.MJ_APIKEY_PUBLIC,
-      apiSecret: process.env.MJ_APIKEY_PRIVATE,
+      apiKey: process.env.MJ_APIKEY_PUBLIC!,
+      apiSecret: process.env.MJ_APIKEY_PRIVATE!,
     });
     // const email = "patrickpetropoulos@gmail.com";
     // Get the current Date and Time
@@ -41,15 +41,16 @@ export async function GET() {
         //   },
         // ],
       };
-      console.log("data", data);
+      console.log("sending email data", data);
       const result: LibraryResponse<SendEmailV3.Response> = await mailjet
         .post("send", { version: "v3" })
         .request(data);
-      console.log("result body", JSON.stringify(result.body));
+      console.log("result body stringified", JSON.stringify(result.body));
       //   const { Status } = result.body.Messages[0];
       //   console.log("status", Status);
-      console.log(result.body);
+      console.log("result body", result.body);
     })();
+    console.log("mj api key public", process.env.MJ_APIKEY_PUBLIC);
     return new Response(
       JSON.stringify({
         message: `Sent email successfully!`,
