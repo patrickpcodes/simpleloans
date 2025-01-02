@@ -49,8 +49,8 @@ export function Header() {
             label="Download"
             icon={HardDriveDownload}
           />
-          <NavButton href="/email" label="Email" icon={Send} />
-          <NavButton href="/seeddata" label="Seed Data" icon={Database} />
+          {/* <NavButton href="/email" label="Email" icon={Send} /> */}
+          {/* <NavButton href="/seeddata" label="Seed Data" icon={Database} /> */}
 
           <NavButton href="/loans" label="Loans" icon={BadgeDollarSign} />
 

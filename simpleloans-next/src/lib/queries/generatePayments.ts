@@ -8,12 +8,10 @@ export function generatePayments(loan: Loan): PaymentInsert[] {
   if (loan.id === undefined) {
     throw new Error("Loan ID is required.");
   }
-  console.log("Generating payments for loan", loan);
   const payments: PaymentInsert[] = [];
   const paymentAmount =
     parseFloat(loan.initialDueAmount) / loan.numberOfPayments;
   const currentDate = new Date(loan.firstPaymentDate);
-  console.log("Loan Payment Frequency", loan.paymentFrequency);
   const daysToAdd = (() => {
     switch (loan.paymentFrequency) {
       case "Weekly":

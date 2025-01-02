@@ -1,5 +1,5 @@
 import { db } from "@/db"; // Assuming this is your Drizzle DB instance
-import { customers, loans, payments } from "@/db/schema";
+import { customers, emails, loans, payments } from "@/db/schema";
 import { eq, asc, and, sql } from "drizzle-orm";
 
 export const getNextPayments = async () => {
@@ -7,6 +7,8 @@ export const getNextPayments = async () => {
     .select({
       customerId: customers.id,
       customerName: customers.name,
+      customerEmail: customers.email,
+      lastReminderSent: emails.createdAt,
       loan: loans,
       payment: payments,
       //   nextPaymentDueDate: payments.dueDate,
@@ -30,12 +32,26 @@ export const getNextPayments = async () => {
         )
       )
     )
+    .leftJoin(
+      emails,
+      and(
+        eq(emails.loanId, loans.id),
+        eq(
+          emails.createdAt,
+          sql`(
+            SELECT MAX(e2.created_at)
+            FROM emails e2
+            WHERE e2.loan_id = loans.id
+          )`
+        )
+      )
+    )
     .where(
       and(eq(loans.loanStatus, "Active"), eq(payments.paymentStatus, "Pending"))
     )
-    .groupBy(customers.id, loans.id, payments.id)
+    .groupBy(customers.id, loans.id, payments.id, emails.createdAt)
     .orderBy(asc(payments.dueDate))
     .execute();
-  console.log("getNextPayment", results);
+  // console.log("getNextPayment", results);
   return results;
 };

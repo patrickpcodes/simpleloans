@@ -41,6 +41,7 @@ export function PaymentModal({
         <PaymentForm
           payment={payment}
           paymentPayTodayValues={paymentPayTodayValues}
+          onClose={onClose}
         />
       </DialogContent>
     </Dialog>

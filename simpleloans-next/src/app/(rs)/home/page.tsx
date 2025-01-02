@@ -55,9 +55,9 @@ export default function Home() {
         <Button onClick={() => router.push("/customers")}>Customers</Button>
         <Button onClick={() => router.push("/loans")}>Loans</Button>
       </div>
-      <div>
+      {/* <div>
         <Button onClick={() => fetchReport()}>Customer Report</Button>
-      </div>
+      </div> */}
       <h3>Upcoming Payments</h3>
       {upcomingPayments.length > 0 ? (
         <PaymentActionTable upcomingPayments={upcomingPayments} />

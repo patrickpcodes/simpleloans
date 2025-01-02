@@ -26,6 +26,20 @@ export function getTotalPaid(payments: Payment[]): number {
   );
 }
 
+export function getTotalToBePaidForPendingPayments(
+  payments: Payment[]
+): number {
+  console.log("payments", JSON.stringify(payments));
+  console.log("paymentCOunt", payments.length);
+  return payments
+    .filter((payment) => payment.paymentStatus === "Pending")
+    .reduce(
+      (acc, payment) =>
+        acc + parseFloat(payment.amountDue) + parseFloat(payment.feeAmount),
+      0
+    );
+}
+
 export function getNextPendingPayment(
   payments: Payment[]
 ): Payment | undefined {
@@ -39,8 +53,9 @@ export function getNextPendingPayment(
 
 export function getLastPayment(payments: Payment[]): Payment | undefined {
   return payments
+    .slice()
     .sort((a, b) => {
       return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
     })
-    .pop();
+    .slice(-1)[0];
 }

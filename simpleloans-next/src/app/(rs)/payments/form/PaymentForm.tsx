@@ -29,10 +29,15 @@ export type PaymentPayTodayValues = {
 type Props = {
   payment: Payment;
   paymentPayTodayValues?: PaymentPayTodayValues;
+  onClose: () => void;
   // onSubmit?: (payment: insertPaymentSchemaType) => void;
 };
 
-export default function PaymentForm({ payment, paymentPayTodayValues }: Props) {
+export default function PaymentForm({
+  payment,
+  paymentPayTodayValues,
+  onClose,
+}: Props) {
   const router = useRouter();
   const warningMessage = "This is a warning message";
   const defaultValues: insertPaymentSchemaType = {
@@ -110,6 +115,7 @@ export default function PaymentForm({ payment, paymentPayTodayValues }: Props) {
       // } else {
       //   router.push(`/loans/form?loanId=${result[0].id}`);
       // }
+      onClose();
     } catch (err) {
       console.error(err);
       // setError(err.message);

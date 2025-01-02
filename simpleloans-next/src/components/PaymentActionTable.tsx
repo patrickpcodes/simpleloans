@@ -7,7 +7,13 @@ import { useState } from "react";
 import { Payment } from "@/zod-schemas/payment";
 import { PaymentModal } from "./PaymentModal";
 import { PaymentPayTodayValues } from "@/app/(rs)/payments/form/PaymentForm";
-import { formatDateToYYYYMMDD } from "@/utils/formatDateToDateOnly";
+import {
+  formatDateStringToMonthDayYear,
+  formatDateToYYYYMMDD,
+} from "@/utils/formatDateToDateOnly";
+import { Email } from "@/types/Email";
+import { generateEmailHtml, generateEmailText } from "@/utils/emails";
+import { useRouter } from "next/navigation";
 
 type Props = {
   upcomingPayments: UpcomingPayment[];
@@ -19,6 +25,18 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
   const [paymentPayTodayValues, setPaymentPayTodayValues] = useState<
     PaymentPayTodayValues | undefined
   >(undefined);
+  const router = useRouter();
+  async function sendEmail(email: Email, loanId: number) {
+    const response = await fetch("/api/email/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, loanId }),
+    });
+    return response.json();
+  }
+
   console.log("format", formatNumberToDollar(1000));
   return (
     <div>
@@ -92,7 +110,7 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
           </div> */}
             <div className="col-span-2 text-left">
               <p className="text-sm text-muted-foreground">Last Reminder:</p>
-              <p className="text-sm">{"test"}</p>
+              <p className="text-sm">{upcomingPayment.lastReminderSent}</p>
             </div>
             <div className="col-span-5 flex gap-2">
               <Button
@@ -126,12 +144,44 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
               <Button
                 size="sm"
                 variant="secondary"
-                onClick={() =>
-                  console.log("Send email", upcomingPayment.payment.id)
-                }
+                onClick={() => {
+                  console.log("Send email", upcomingPayment.payment.id);
+                  const emailText = generateEmailText(
+                    upcomingPayment.customerName,
+                    upcomingPayment.payment.amountDue,
+                    upcomingPayment.payment.dueDate
+                  );
+                  const emailHtml = generateEmailHtml(
+                    upcomingPayment.customerName,
+                    upcomingPayment.payment.amountDue,
+                    upcomingPayment.payment.dueDate
+                  );
+
+                  const email: Email = {
+                    subject: "Payment Reminder at SimpleLoans" + Date.now(),
+                    toEmails: ["robobat91@gmail.com"], //FIXME TODO
+                    text: emailText,
+                    html: emailHtml,
+                    // html: `<p>This is a reminder to make your payment.  You have a payment due of ${formatStringToDollar(
+                    //   upcomingPayment.payment.amountDue
+                    // )} on ${formatDateStringToMonthDayYear(
+                    //   upcomingPayment.payment.dueDate
+                    // )}</p>`,
+                  };
+                  sendEmail(email, upcomingPayment.loan.id);
+                }}
               >
                 <Mail className="h-4 w-4" />
                 Send Reminder
+              </Button>
+              <Button
+                size={"sm"}
+                variant={"outline"}
+                onClick={() => {
+                  router.push(`/loans/form?loanId=${upcomingPayment.loan.id}`);
+                }}
+              >
+                Go To Loan
               </Button>
             </div>
           </div>

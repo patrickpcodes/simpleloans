@@ -9,7 +9,7 @@ import { PAYMENT_METHOD } from "@/types/PaymentMethod";
 
 export async function POST() {
   try {
-    const numToCreate = 2; // Number of customers to create
+    const numToCreate = 4; // Number of customers to create
     const customerIds = []; // Store created customer IDs
 
     // Generate and insert customers one at a time
@@ -17,7 +17,7 @@ export async function POST() {
       const newCustomer = await db
         .insert(customers)
         .values({
-          name: faker.name.fullName(),
+          name: faker.name.fullName() + "-PATRICKTEST",
           email: faker.internet.email(),
           phone: faker.phone.number(),
           birthdate: formatDateToDateOnly(faker.date.past({ years: 40 })), // Random birthdate in the past 30 years

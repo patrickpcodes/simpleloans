@@ -9,7 +9,7 @@ export async function GET() {
     // Fetch all customers from the database
     const allCustomers = await getCustomerData();
     // const testing = await getNextPayments();
-    console.log("allCustomers", allCustomers);
+    // console.log("allCustomers", allCustomers);
     // Return the data as a JSON response
     return new Response(JSON.stringify(allCustomers), {
       status: 200,

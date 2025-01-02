@@ -7,11 +7,32 @@ import { Customer } from "@/types/Customer";
 export async function GET() {
   try {
     function generateCsv<T extends object>(data: T[]): string {
-      // Generate CSV headers and rows
-      const headers = Object.keys(data[0] || {}).join(",") + "\n";
-      const rows = data.map((row) => Object.values(row).join(",")).join("\n");
-      const csv = headers + rows;
-      return csv;
+      if (data.length === 0) {
+        return ""; // Handle empty data gracefully
+      }
+
+      // Generate CSV headers
+      const headers = Object.keys(data[0]).join(",") + "\n";
+
+      // Generate CSV rows
+      const rows = data
+        .map((row) => {
+          return Object.values(row)
+            .map((value) => {
+              if (typeof value === "object" && value !== null) {
+                // Stringify objects or arrays
+                return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+              }
+              // Escape values with commas or quotes
+              return typeof value === "string"
+                ? `"${value.replace(/"/g, '""')}"`
+                : value;
+            })
+            .join(",");
+        })
+        .join("\n");
+
+      return headers + rows;
     }
     // Fetch data from the `customers` table
     const customerCsv = generateCsv(

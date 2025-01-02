@@ -96,6 +96,23 @@ export const payments = pgTable("payments", {
     .$onUpdate(() => new Date()),
 });
 
+export const emails = pgTable("emails", {
+  id: serial("id").primaryKey(),
+  loanId: integer("loan_id").references(() => loans.id),
+  subject: varchar("subject").notNull(),
+  emailText: text("email_text").notNull(),
+  emailHtml: text("email_html"),
+  to: text("to").notNull(),
+  cc: text("cc"),
+  bcc: text("bcc"),
+  sent: boolean("sent").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
 export const history = pgTable("history", {
   id: serial("id").primaryKey(),
   type: text("type").notNull(),

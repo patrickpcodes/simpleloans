@@ -37,7 +37,6 @@ export default function UpcomingPaymentsTableView({ upcomingPayments }: Props) {
   const [paymentPayTodayValues, setPaymentPayTodayValues] = useState<
     PaymentPayTodayValues | undefined
   >(undefined);
-  console.log("format", formatNumberToDollar(1000));
   const router = useRouter();
   return (
     <div>

@@ -48,8 +48,8 @@ export default async function LoanFormPage({
         );
       }
 
-      console.log(loanId);
-      console.log(result.loan);
+      // console.log(loanId);
+      // console.log(result.loan);
       return (
         <div>
           <div className="flex flex-col gap-1 sm:px-8">
@@ -93,7 +93,7 @@ export default async function LoanFormPage({
       );
     } else {
       if (customerId) {
-        console.log(customerId);
+        // console.log(customerId);
         return (
           <LoanForm customers={customers} customerId={parseInt(customerId)} />
         );

@@ -88,10 +88,10 @@ export function PaymentCard({ payment, paymentNumber }: Props) {
                   <span className="text-sm">Amount Paid:</span>
                   <span>{formatStringToDollar(payment.amountPaid)}</span>
                 </div>
-                <Progress value={progressPercentage} className="w-full" />
+                {/* <Progress value={progressPercentage} className="w-full" />
                 <div className="text-xs text-center text-muted-foreground">
                   {progressPercentage.toFixed(0)}% paid
-                </div>
+                </div> */}
               </div>
             }
           </div>

@@ -17,7 +17,9 @@ import {
   getTotalFees,
   getTotalPaid,
   getTotalToBePaid,
+  getTotalToBePaidForPendingPayments,
 } from "@/utils/payments";
+import { formatNumberToDollar } from "@/utils/formatStringToDollar";
 
 interface LoanDashboardProps {
   loan: Loan;
@@ -25,8 +27,10 @@ interface LoanDashboardProps {
 }
 
 export function LoanDashboard({ loan, payments }: LoanDashboardProps) {
+  console.log("loanPayments", JSON.stringify(payments));
   const status = loan.loanStatus;
   const initialAmount = parseFloat(loan.initialBorrowedAmount);
+  const initialDueAmount = parseFloat(loan.initialDueAmount);
   const totalFees = getTotalFees(payments);
   const remainingAmount = getTotalToBePaid(payments) - getTotalPaid(payments);
   const paymentsLeft = payments.filter(
@@ -42,6 +46,37 @@ export function LoanDashboard({ loan, payments }: LoanDashboardProps) {
   const warningMessage =
     "This loan has a high interest rate. Consider refinancing options.";
   const errorMessage = "This loan is invalid, this is my error";
+  const loanHealthItems: HealthItem[] = [];
+
+  //Check if all paid + future payments >= initialAmount + Fees
+  const totalPaid = getTotalPaid(payments);
+  console.log("totalPaid", totalPaid);
+  const totalToBePaidForPendingPayments =
+    getTotalToBePaidForPendingPayments(payments);
+  console.log(
+    "totalToBePaidForPendingPayments",
+    totalToBePaidForPendingPayments
+  );
+  const totalAmount = totalPaid + totalToBePaidForPendingPayments;
+  const isValid = totalAmount >= initialDueAmount + totalFees;
+  console.log("totalAmount", totalAmount);
+  console.log("initialDueAmount", initialDueAmount);
+  console.log("totalFees", totalFees);
+  console.log("isValid", isValid);
+  if (!isValid) {
+    const difference = totalAmount - (initialDueAmount + totalFees);
+    loanHealthItems.push({
+      title: "Future Payments are not correct",
+      message: `Total Paid + Future Payments add up to ${formatNumberToDollar(
+        totalAmount
+      )} but Initial Amount Due + Total Fees = ${formatNumberToDollar(
+        initialDueAmount + totalFees
+      )}.  You need to add ${formatNumberToDollar(
+        Math.abs(difference)
+      )} to Pending Payments to make this loan valid.`,
+      status: "red",
+    });
+  }
 
   const healthItems: HealthItem[] = [
     { title: "Payment History", message: "Test 1", status: "green" },
@@ -170,8 +205,8 @@ export function LoanDashboard({ loan, payments }: LoanDashboardProps) {
           <CardTitle className="text-lg font-semibold">Loan Health</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-4">
-            {healthItems.map((item, index) => (
+          <div className="grid grid-cols-1 gap-4">
+            {loanHealthItems.map((item, index) => (
               <LoanDashboardHealthItem
                 key={index}
                 index={index.toString()}
@@ -182,7 +217,7 @@ export function LoanDashboard({ loan, payments }: LoanDashboardProps) {
         </CardContent>
       </Card>
 
-      {warningMessage && (
+      {/* {warningMessage && (
         <Alert variant="default">
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Warning</AlertTitle>
@@ -196,7 +231,7 @@ export function LoanDashboard({ loan, payments }: LoanDashboardProps) {
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{errorMessage}</AlertDescription>
         </Alert>
-      )}
+      )} */}
     </div>
   );
 }
