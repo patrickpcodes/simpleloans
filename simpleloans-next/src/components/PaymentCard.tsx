@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+// import { Progress } from "@/components/ui/progress";
 import {
   formatStringToDollar,
   formatNumberToDollar,
@@ -29,9 +29,9 @@ export function PaymentCard({ payment, paymentNumber }: Props) {
   console.log(payment);
   const totalDue =
     parseFloat(payment.amountDue) + parseFloat(payment.feeAmount);
-  const progressPercentage = payment.amountPaid
-    ? (parseFloat(payment.amountPaid) / totalDue) * 100
-    : 0;
+  // const progressPercentage = payment.amountPaid
+  //   ? (parseFloat(payment.amountPaid) / totalDue) * 100
+  //   : 0;
 
   return (
     <div>

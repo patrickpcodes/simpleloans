@@ -29,7 +29,7 @@ export type PaymentPayTodayValues = {
 type Props = {
   payment: Payment;
   paymentPayTodayValues?: PaymentPayTodayValues;
-  onClose: () => void;
+  onClose?: () => void;
   // onSubmit?: (payment: insertPaymentSchemaType) => void;
 };
 
@@ -115,7 +115,7 @@ export default function PaymentForm({
       // } else {
       //   router.push(`/loans/form?loanId=${result[0].id}`);
       // }
-      onClose();
+      if (onClose) onClose();
     } catch (err) {
       console.error(err);
       // setError(err.message);

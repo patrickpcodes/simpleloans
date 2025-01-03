@@ -4,7 +4,6 @@ import { Email } from "@/types/Email";
 import { Client, SendEmailV3, LibraryResponse } from "node-mailjet";
 
 export async function POST(request: Request) {
-  console.log(request.json());
   const { email, loanId } = await request.json();
   if (!email.subject || !email.toEmails || !email.text) {
     return new Response(
@@ -13,10 +12,10 @@ export async function POST(request: Request) {
     );
   }
   const emailToSend: Email = {
-    email.subject,
-    email.toEmails,
-    email.text,
-    email.html,
+    subject: email.subject,
+    toEmails: email.toEmails,
+    text: email.text,
+    html: email.html,
   };
 
   try {
@@ -29,9 +28,11 @@ export async function POST(request: Request) {
       apiKey: process.env.MJ_APIKEY_PUBLIC,
       apiSecret: process.env.MJ_APIKEY_PRIVATE,
     });
-    const recipientList = email.toEmails.map((email) => ({ Email: email }));
+    const recipientList = emailToSend.toEmails.map((emailIn) => ({
+      Email: emailIn,
+    }));
     const data: SendEmailV3.Body = {
-      FromEmail: "patrickpetropoulos@protonmail.com",
+      FromEmail: "info@patrickpetropoulos.com",
       FromName: "SimpleLoans",
       Subject: email.subject,
       "Text-part": email.text,
@@ -51,10 +52,10 @@ export async function POST(request: Request) {
       .insert(emails)
       .values({
         loanId: loanId,
-        subject: subject,
-        emailText: text,
-        emailHtml: html || null,
-        to: toEmails.join(","),
+        subject: email.subject,
+        emailText: email.text,
+        emailHtml: email.html || null,
+        to: email.toEmails.join(","),
         sent: true,
       })
       .returning({ id: emails.id });

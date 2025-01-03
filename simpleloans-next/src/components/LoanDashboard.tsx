@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   BadgeDollarSign,
-  AlertCircle,
+  // AlertCircle,
   Calendar,
   PiggyBank,
-  AlertTriangle,
+  // AlertTriangle,
 } from "lucide-react";
 import { formatDateStringToMonthDayYear } from "@/utils/formatDateToDateOnly";
 import { Payment } from "@/zod-schemas/payment";
@@ -43,9 +43,9 @@ export function LoanDashboard({ loan, payments }: LoanDashboardProps) {
   // Get payment with the latest due date
   const lastPayment = getLastPayment(payments);
   const completionDate = lastPayment?.dueDate || "";
-  const warningMessage =
-    "This loan has a high interest rate. Consider refinancing options.";
-  const errorMessage = "This loan is invalid, this is my error";
+  // const warningMessage =
+  //   "This loan has a high interest rate. Consider refinancing options.";
+  // const errorMessage = "This loan is invalid, this is my error";
   const loanHealthItems: HealthItem[] = [];
 
   //Check if all paid + future payments >= initialAmount + Fees

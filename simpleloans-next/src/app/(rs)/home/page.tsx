@@ -30,6 +30,7 @@ export default function Home() {
       console.error("Failed to download customers CSV");
     }
   };
+  console.log("fetchReport", fetchReport);
   const fetchPaymentData = async () => {
     try {
       const response = await fetch("/api/payments/upcoming", {

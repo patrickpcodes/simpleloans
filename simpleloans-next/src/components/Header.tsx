@@ -3,10 +3,10 @@ import {
   HomeIcon,
   UsersRound,
   LogOut,
-  Database,
+  // Database,
   BadgeDollarSign,
   HardDriveDownload,
-  Send,
+  // Send,
 } from "lucide-react";
 import Link from "next/link";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";

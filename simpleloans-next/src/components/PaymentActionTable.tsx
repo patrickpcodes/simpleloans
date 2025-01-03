@@ -8,7 +8,7 @@ import { Payment } from "@/zod-schemas/payment";
 import { PaymentModal } from "./PaymentModal";
 import { PaymentPayTodayValues } from "@/app/(rs)/payments/form/PaymentForm";
 import {
-  formatDateStringToMonthDayYear,
+  // formatDateStringToMonthDayYear,
   formatDateToYYYYMMDD,
 } from "@/utils/formatDateToDateOnly";
 import { Email } from "@/types/Email";
@@ -168,7 +168,7 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
                     //   upcomingPayment.payment.dueDate
                     // )}</p>`,
                   };
-                  sendEmail(email, upcomingPayment.loan.id);
+                  sendEmail(email, upcomingPayment.loan.id ?? 0);
                 }}
               >
                 <Mail className="h-4 w-4" />
