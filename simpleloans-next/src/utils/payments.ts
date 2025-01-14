@@ -1,4 +1,5 @@
 import { Payment } from "@/zod-schemas/payment";
+import { PaymentFrequency } from "@/types/LoanPaymentFrequency";
 
 export function getTotalFees(payments: Payment[]): number {
   return payments.reduce(
@@ -58,4 +59,27 @@ export function getLastPayment(payments: Payment[]): Payment | undefined {
       return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
     })
     .slice(-1)[0];
+}
+
+export function getNextPaymentDate(
+  currentDate: Date,
+  frequency: PaymentFrequency
+): Date {
+  const nextDate = new Date(currentDate);
+
+  switch (frequency) {
+    case "Weekly":
+      nextDate.setDate(nextDate.getDate() + 7);
+      break;
+    case "Bi-Weekly":
+      nextDate.setDate(nextDate.getDate() + 14);
+      break;
+    case "Monthly":
+      nextDate.setDate(nextDate.getDate() + 30);
+      break;
+    default:
+      throw new Error("Invalid payment frequency");
+  }
+
+  return nextDate;
 }

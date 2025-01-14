@@ -3,6 +3,7 @@ import {
   HomeIcon,
   UsersRound,
   LogOut,
+  Info,
   // Database,
   BadgeDollarSign,
   HardDriveDownload,
@@ -56,7 +57,9 @@ export function Header() {
 
           <NavButton href="/customers" label="Customers" icon={UsersRound} />
 
-          <ModeToggle />
+          <NavButton href="/info" label="Info" icon={Info} />
+
+          {/* <ModeToggle /> */}
 
           <Button
             variant="ghost"

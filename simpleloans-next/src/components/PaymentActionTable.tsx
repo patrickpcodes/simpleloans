@@ -4,7 +4,6 @@ import { formatStringToDollar } from "@/utils/formatStringToDollar";
 import { CheckCircle, Mail, MoreHorizontal } from "lucide-react";
 import { formatNumberToDollar } from "@/utils/formatStringToDollar";
 import { useState } from "react";
-import { Payment } from "@/zod-schemas/payment";
 import { PaymentModal } from "./PaymentModal";
 import { PaymentPayTodayValues } from "@/app/(rs)/payments/form/PaymentForm";
 import {
@@ -12,8 +11,9 @@ import {
   formatDateToYYYYMMDD,
 } from "@/utils/formatDateToDateOnly";
 import { Email } from "@/types/Email";
-import { generateEmailHtml, generateEmailText } from "@/utils/emails";
+import { generateEmailText } from "@/utils/emails";
 import { useRouter } from "next/navigation";
+import { EmailModal } from "./EmailModal";
 
 type Props = {
   upcomingPayments: UpcomingPayment[];
@@ -21,11 +21,20 @@ type Props = {
 
 export function PaymentActionTable({ upcomingPayments }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activePayment, setActivePayment] = useState<Payment | null>(null);
+  const [activeUpcomingPayment, setActiveUpcomingPayment] = useState<
+    (typeof upcomingPayments)[0] | null
+  >(null);
+
   const [paymentPayTodayValues, setPaymentPayTodayValues] = useState<
     PaymentPayTodayValues | undefined
   >(undefined);
   const router = useRouter();
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [emailDetails, setEmailDetails] = useState<{
+    toEmail: string;
+    subject: string;
+    body: string;
+  }>({ toEmail: "", subject: "", body: "" });
   async function sendEmail(email: Email, loanId: number) {
     const response = await fetch("/api/email/send", {
       method: "POST",
@@ -40,15 +49,30 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
   console.log("format", formatNumberToDollar(1000));
   return (
     <div>
-      {isModalOpen && activePayment && (
+      {isModalOpen && activeUpcomingPayment && (
         <PaymentModal
-          payment={activePayment}
+          payment={activeUpcomingPayment.payment}
           paymentPayTodayValues={paymentPayTodayValues}
           isOpen={isModalOpen}
           onClose={() => {
             setIsModalOpen(false);
-            setActivePayment(null);
+            setActiveUpcomingPayment(null);
             setPaymentPayTodayValues(undefined);
+          }}
+        />
+      )}
+      {isEmailModalOpen && activeUpcomingPayment && (
+        <EmailModal
+          isOpen={isEmailModalOpen}
+          onClose={() => {
+            setIsEmailModalOpen(false);
+            setActiveUpcomingPayment(null);
+          }}
+          defaultToEmail={emailDetails.toEmail}
+          defaultSubject={emailDetails.subject}
+          defaultBody={emailDetails.body}
+          onSend={(email) => {
+            sendEmail(email, activeUpcomingPayment.loan.id ?? 0);
           }}
         />
       )}
@@ -118,7 +142,7 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
                 variant="outline"
                 onClick={() => {
                   console.log("Accept payment", upcomingPayment.payment.id);
-                  setActivePayment(upcomingPayment.payment);
+                  setActiveUpcomingPayment(upcomingPayment);
                   setPaymentPayTodayValues({
                     amountPaid: upcomingPayment.payment.amountDue,
                     paymentDate: formatDateToYYYYMMDD(new Date()),
@@ -134,7 +158,7 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
                 variant="outline"
                 onClick={() => {
                   console.log("Confirm details", upcomingPayment.payment.id);
-                  setActivePayment(upcomingPayment.payment);
+                  setActiveUpcomingPayment(upcomingPayment);
                   setIsModalOpen(true);
                 }}
               >
@@ -145,30 +169,19 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
                 size="sm"
                 variant="secondary"
                 onClick={() => {
-                  console.log("Send email", upcomingPayment.payment.id);
                   const emailText = generateEmailText(
                     upcomingPayment.customerName,
                     upcomingPayment.payment.amountDue,
                     upcomingPayment.payment.dueDate
                   );
-                  const emailHtml = generateEmailHtml(
-                    upcomingPayment.customerName,
-                    upcomingPayment.payment.amountDue,
-                    upcomingPayment.payment.dueDate
-                  );
 
-                  const email: Email = {
-                    subject: "Payment Reminder at SimpleLoans" + Date.now(),
-                    toEmails: ["robobat91@gmail.com"], //FIXME TODO
-                    text: emailText,
-                    html: emailHtml,
-                    // html: `<p>This is a reminder to make your payment.  You have a payment due of ${formatStringToDollar(
-                    //   upcomingPayment.payment.amountDue
-                    // )} on ${formatDateStringToMonthDayYear(
-                    //   upcomingPayment.payment.dueDate
-                    // )}</p>`,
-                  };
-                  sendEmail(email, upcomingPayment.loan.id ?? 0);
+                  setEmailDetails({
+                    toEmail: upcomingPayment.customerEmail || "",
+                    subject: "Payment Reminder at SimpleLoans " + Date.now(),
+                    body: emailText,
+                  });
+                  setActiveUpcomingPayment(upcomingPayment);
+                  setIsEmailModalOpen(true);
                 }}
               >
                 <Mail className="h-4 w-4" />

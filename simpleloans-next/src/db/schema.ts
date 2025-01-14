@@ -61,6 +61,7 @@ export const loans = pgTable("loans", {
   defaultPaymentMethod: paymentMethodEnum("default_payment_method").notNull(),
   firstPaymentDate: varchar("first_payment_date").notNull(),
   notes: text("notes"),
+  extensionCount: integer("extension_count").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")
     .notNull()

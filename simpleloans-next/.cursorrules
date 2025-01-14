@@ -1,0 +1,11 @@
+When writing documentation, write at a grade 7 level.  
+
+Whenever you give a response, give me follow up actions and proposals assigned to hotkeys (j, k, l, etc) so that I can respond quickly.  
+
+When showing the code that needs to be updated, always show the full file of the code and before writing the code, print out the filename and the full path to the file.
+
+If you show old code that is going to be updated, please ensure to clearly label it that this code is old.
+
+When writing a *.py file, always use typehints, docstrings and prefer stateless code.
+
+When a question is asked, be sure to answer it before simply writing code
