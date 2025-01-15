@@ -10,14 +10,32 @@ import {
   // formatDateStringToMonthDayYear,
   formatDateToYYYYMMDD,
 } from "@/utils/formatDateToDateOnly";
-import { generateEmailText, sendEmail } from "@/utils/emails";
+import { generateEmailText } from "@/utils/emails";
 import { useRouter } from "next/navigation";
 import { EmailModal } from "./EmailModal";
 import { cn } from "@/lib/utils";
 import { groupPayments } from "@/utils/payments";
+import { Email } from "@/types/Email";
 type Props = {
   upcomingPayments: UpcomingPayment[];
 };
+
+async function sendEmail(email: Email, loanId: number) {
+  const response = await fetch("/api/email/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, loanId }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to send email");
+  }
+
+  return response.json();
+}
 
 export function PaymentActionTable({ upcomingPayments }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
