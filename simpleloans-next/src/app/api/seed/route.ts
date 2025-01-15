@@ -9,7 +9,7 @@ import { PAYMENT_METHOD } from "@/types/PaymentMethod";
 
 export async function POST() {
   try {
-    const numToCreate = 4; // Number of customers to create
+    const numToCreate = 6; // Number of customers to create
     const customerIds = []; // Store created customer IDs
 
     // Generate and insert customers one at a time
@@ -75,7 +75,7 @@ export async function POST() {
             firstPaymentDate: formatDateToDateOnly(
               faker.date.between({
                 from: Date.now(),
-                to: Date.now() + 1000 * 60 * 60 * 24 * 30,
+                to: Date.now() + 1000 * 60 * 60 * 24 * 3,
               })
             ),
             notes: faker.lorem.sentence(),

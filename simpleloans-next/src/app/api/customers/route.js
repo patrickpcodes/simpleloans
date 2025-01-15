@@ -31,7 +31,7 @@ export async function GET() {
 export async function POST(req) {
   try {
     const data = await req.json();
-    console.log("in customer POST", date);
+    console.log("in customer POST", data);
     // Validate input
     if (!data.name || !data.email || !data.phone || !data.birthdate) {
       return new Response(

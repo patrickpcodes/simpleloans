@@ -19,9 +19,10 @@ export function ModernCustomerDisplay({
   customerDetail: CustomerDetail;
   onRowClick: (id: number) => void;
 }) {
-  const nextPayment = getNextPendingPayment(
-    customerDetail.loansWithPayments[0].payments
-  );
+  const nextPayment =
+    customerDetail.loansWithPayments.length > 0
+      ? getNextPendingPayment(customerDetail.loansWithPayments[0].payments)
+      : undefined;
   return (
     <div
       className="cursor-pointer" // Add a pointer cursor to indicate clickability

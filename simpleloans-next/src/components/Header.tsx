@@ -15,7 +15,7 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 import { Button } from "@/components/ui/button";
 import { NavButton } from "@/components/NavButton";
-import { ModeToggle } from "@/components/ModeToggle";
+// import { ModeToggle } from "@/components/ModeToggle";
 
 export function Header() {
   const { user } = useKindeBrowserClient();

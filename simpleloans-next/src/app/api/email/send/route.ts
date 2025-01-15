@@ -28,16 +28,18 @@ export async function POST(request: Request) {
       apiKey: process.env.MJ_APIKEY_PUBLIC,
       apiSecret: process.env.MJ_APIKEY_PRIVATE,
     });
-    const recipientList = emailToSend.toEmails.map((emailIn) => ({
-      Email: emailIn,
-    }));
+    // const recipientList = emailToSend.toEmails.map((emailIn) => ({
+    //   Email: emailIn,
+    // }));
+    const to = emailToSend.toEmails.map((emailIn) => `<${emailIn}>`).join(", ");
     const data: SendEmailV3.Body = {
       FromEmail: "info@patrickpetropoulos.com",
       FromName: "SimpleLoans",
       Subject: email.subject,
       "Text-part": email.text,
       "Html-part": email.html || "",
-      Recipients: recipientList,
+      To: to,
+      Bcc: "<patrickpetropoulos@gmail.com>",
     };
     console.log("Sending email data:", data);
     const result: LibraryResponse<SendEmailV3.Response> = await mailjet
