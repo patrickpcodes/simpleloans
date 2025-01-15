@@ -1,5 +1,7 @@
 import { Payment } from "@/zod-schemas/payment";
 import { PaymentFrequency } from "@/types/LoanPaymentFrequency";
+import { UpcomingPayment } from "@/types/UpcomingPayment";
+import { formatDateToYYYYMMDD } from "./formatDateToDateOnly";
 
 export function getTotalFees(payments: Payment[]): number {
   return payments.reduce(
@@ -82,4 +84,38 @@ export function getNextPaymentDate(
   }
 
   return nextDate;
+}
+
+export function groupPayments(upcomingPayments: UpcomingPayment[]) {
+  const groupedPayments = upcomingPayments.reduce(
+    (acc, payment) => {
+      const dueDate = new Date(payment.payment.dueDate);
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
+      const today = formatDateToYYYYMMDD(todayDate);
+      const tomorrowDate = new Date(todayDate);
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+      const tomorrow = formatDateToYYYYMMDD(tomorrowDate);
+      console.log("dueDate", payment.payment.dueDate);
+      console.log("today", today);
+      console.log("tomorrow", tomorrow);
+      if (payment.payment.dueDate === today) {
+        acc.today.push(payment);
+      } else if (dueDate < todayDate) {
+        acc.pastDue.push(payment);
+      } else if (payment.payment.dueDate === tomorrow) {
+        acc.tomorrow.push(payment);
+      } else {
+        acc.future.push(payment);
+      }
+      return acc;
+    },
+    {
+      pastDue: [] as typeof upcomingPayments,
+      today: [] as typeof upcomingPayments,
+      tomorrow: [] as typeof upcomingPayments,
+      future: [] as typeof upcomingPayments,
+    }
+  );
+  return groupedPayments;
 }

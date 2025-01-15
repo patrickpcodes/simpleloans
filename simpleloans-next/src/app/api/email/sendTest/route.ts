@@ -1,4 +1,18 @@
-import { Client, SendEmailV3, LibraryResponse } from "node-mailjet";
+import { Email } from "@/types/Email";
+import { generateEmailText } from "@/utils/emails";
+import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
+import { groupPayments } from "@/utils/payments";
+
+async function sendEmail(email: Email, loanId: number) {
+  const response = await fetch("/api/email/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, loanId }),
+  });
+  return response.json();
+}
 
 export async function GET() {
   try {
@@ -7,35 +21,76 @@ export async function GET() {
         "Mailjet API keys are missing from environment variables."
       );
     }
+    try {
+      const response = await fetch("/api/payments/upcoming", {
+        method: "GET", // Ensure the method is GET
+      });
+      const data = await response.json();
+      console.log("data", data);
+      const groupedPayments = groupPayments(data);
+      const now = new Date();
+      groupedPayments.today.map(async (today) => {
+        const emailText = generateEmailText(
+          today.customerName,
+          today.payment.amountDue,
+          today.payment.dueDate
+        );
+        const emailToSend: Email = {
+          subject: `Reminder for Upcoming Payment : ${formatDateToDateOnly(
+            now
+          )}`,
+          toEmails: [today.customerEmail],
+          text: emailText,
+          html: "",
+        };
+        await sendEmail(emailToSend, today.loan.id ?? 0);
+      });
+      groupedPayments.tomorrow.map(async (today) => {
+        const emailText = generateEmailText(
+          today.customerName,
+          today.payment.amountDue,
+          today.payment.dueDate
+        );
+        const emailToSend: Email = {
+          subject: `Reminder for Upcoming Payment : ${formatDateToDateOnly(
+            now
+          )}`,
+          toEmails: [today.customerEmail],
+          text: emailText,
+          html: "",
+        };
+        await sendEmail(emailToSend, today.loan.id ?? 0);
+      });
+      return new Response(
+        JSON.stringify({ message: "Sent email successfully!" }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+    }
 
-    const mailjet = new Client({
-      apiKey: process.env.MJ_APIKEY_PUBLIC,
-      apiSecret: process.env.MJ_APIKEY_PRIVATE,
-    });
+    // const mailjet = new Client({
+    //   apiKey: process.env.MJ_APIKEY_PUBLIC,
+    //   apiSecret: process.env.MJ_APIKEY_PRIVATE,
+    // });
 
-    const now = new Date();
-    const data: SendEmailV3.Body = {
-      FromEmail: "info@patrickpetropoulos.com",
-      FromName: "Mailjet Pilot",
-      Subject: `Your email flight plan! ${now.toISOString()}`,
-      "Text-part":
-        "Dear passenger, welcome to Mailjet! May the delivery force be with you!",
-      "Html-part":
-        '<h3>Dear passenger, welcome to <a href="https://www.mailjet.com/">Mailjet</a>!<br />May the delivery force be with you!',
-      Recipients: [{ Email: "robobat91@gmail.com" }],
-    };
+    // const data: SendEmailV3.Body = {
+    //   FromEmail: "info@patrickpetropoulos.com",
+    //   FromName: "Mailjet Pilot",
+    //   Subject: `Your email flight plan! ${now.toISOString()}`,
+    //   "Text-part":
+    //     "Dear passenger, welcome to Mailjet! May the delivery force be with you!",
+    //   "Html-part":
+    //     '<h3>Dear passenger, welcome to <a href="https://www.mailjet.com/">Mailjet</a>!<br />May the delivery force be with you!',
+    //   Recipients: [{ Email: "robobat91@gmail.com" }],
+    // };
 
-    console.log("Sending email data:", data);
-    const result: LibraryResponse<SendEmailV3.Response> = await mailjet
-      .post("send", { version: "v3" })
-      .request(data);
+    // console.log("Sending email data:", data);
+    // const result: LibraryResponse<SendEmailV3.Response> = await mailjet
+    //   .post("send", { version: "v3" })
+    //   .request(data);
 
-    console.log("Email sent successfully:", JSON.stringify(result.body));
-
-    return new Response(
-      JSON.stringify({ message: "Sent email successfully!" }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
+    // console.log("Email sent successfully:", JSON.stringify(result.body));
   } catch (e: unknown) {
     if (e instanceof Error) {
       console.error("Error sending email:", e.message);
