@@ -10,8 +10,7 @@ import {
   // formatDateStringToMonthDayYear,
   formatDateToYYYYMMDD,
 } from "@/utils/formatDateToDateOnly";
-import { Email } from "@/types/Email";
-import { generateEmailText } from "@/utils/emails";
+import { generateEmailText, sendEmail } from "@/utils/emails";
 import { useRouter } from "next/navigation";
 import { EmailModal } from "./EmailModal";
 import { cn } from "@/lib/utils";
@@ -172,18 +171,6 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
       </div>
     );
   };
-
-  async function sendEmail(email: Email, loanId: number) {
-    const response = await fetch("/api/email/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, loanId }),
-    });
-    return response.json();
-  }
-
   console.log("format", formatNumberToDollar(1000));
   return (
     <div>

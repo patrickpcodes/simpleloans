@@ -1,18 +1,9 @@
+import { getNextPayments } from "@/lib/queries/getNextPayments";
 import { Email } from "@/types/Email";
-import { generateEmailText } from "@/utils/emails";
+import { UpcomingPayment } from "@/types/UpcomingPayment";
+import { generateEmailText, sendEmail } from "@/utils/emails";
 import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
 import { groupPayments } from "@/utils/payments";
-
-async function sendEmail(email: Email, loanId: number) {
-  const response = await fetch("/api/email/send", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, loanId }),
-  });
-  return response.json();
-}
 
 export async function GET() {
   try {
@@ -22,12 +13,21 @@ export async function GET() {
       );
     }
     try {
-      const response = await fetch("/api/payments/upcoming", {
-        method: "GET", // Ensure the method is GET
-      });
-      const data = await response.json();
-      console.log("data", data);
-      const groupedPayments = groupPayments(data);
+      const rawUpcomingPayments = await getNextPayments();
+
+      // Transform the data to match UpcomingPayment type
+      const upcomingPayments: UpcomingPayment[] = rawUpcomingPayments
+        .filter((payment) => payment.loan && payment.payment) // Filter out null loans/payments
+        .map((payment) => ({
+          ...payment,
+          lastReminderSent:
+            (payment.lastReminderSent &&
+              formatDateToDateOnly(payment.lastReminderSent)) ??
+            "",
+          loan: payment.loan!, // We know it's not null from the filter
+          payment: payment.payment!, // We know it's not null from the filter
+        }));
+      const groupedPayments = groupPayments(upcomingPayments);
       const now = new Date();
       groupedPayments.today.map(async (today) => {
         const emailText = generateEmailText(
@@ -66,7 +66,7 @@ export async function GET() {
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
     } catch (error) {
-      console.error("Error fetching customers:", error);
+      console.error("Error fetching upcoming payments:", error);
     }
 
     // const mailjet = new Client({
