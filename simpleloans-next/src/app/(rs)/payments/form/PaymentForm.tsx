@@ -182,7 +182,7 @@ export default function PaymentForm({
           />
         </div>
         <div>
-          {warningMessage && (
+          {false && warningMessage && (
             <Alert variant="default">
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle>Warning</AlertTitle>
