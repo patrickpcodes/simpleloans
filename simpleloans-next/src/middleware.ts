@@ -15,6 +15,8 @@ export const config = {
     "/customers",
     "/loans",
     "/seeddata",
+    "/",
+    "/api",
     /*
      * Match all request paths except for the ones starting with:
      * - api (API routes)

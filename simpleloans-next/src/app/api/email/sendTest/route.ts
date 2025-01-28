@@ -28,14 +28,14 @@ async function sendEmail(email: Email, loanId: number) {
   const to = emailToSend.toEmails.map((emailIn) => `<${emailIn}>`).join(", ");
   console.log(to);
   const data: SendEmailV3.Body = {
-    FromEmail: "info@patrickpetropoulos.com",
+    FromEmail: "info@simpleloans500.com",
     FromName: "SimpleLoans",
     Subject: email.subject,
     "Text-part": email.text,
     "Html-part": email.html || "",
     //FIXME
     To: "patrickpetropoulos@protonmail.com",
-    Bcc: "<patrickpetropoulos@gmail.com>, <stevenkawar@hotmail.com>",
+    Bcc: "<patrickpetropoulos@gmail.com>", //, <stevenkawar@hotmail.com>",
   };
   console.log("Sending email data:", data);
   const result: LibraryResponse<SendEmailV3.Response> = await mailjet
