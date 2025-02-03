@@ -7,6 +7,7 @@ import {
   // Database,
   BadgeDollarSign,
   HardDriveDownload,
+  Send,
   // Send,
 } from "lucide-react";
 import Link from "next/link";
@@ -50,7 +51,7 @@ export function Header() {
             label="Download"
             icon={HardDriveDownload}
           />
-          {/* <NavButton href="/email" label="Email" icon={Send} /> */}
+          <NavButton href="/email" label="Email" icon={Send} />
           {/* <NavButton href="/seeddata" label="Seed Data" icon={Database} /> */}
 
           <NavButton href="/loans" label="Loans" icon={BadgeDollarSign} />
