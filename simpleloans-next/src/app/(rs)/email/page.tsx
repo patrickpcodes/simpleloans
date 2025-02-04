@@ -9,15 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
+import { formatDateStringToDateOnly } from "@/utils/formatDateToDateOnly";
 
 interface RecentEmail {
   id: number;
   loanId: number;
   subject: string;
   to: string;
+  cc: string;
+  bcc: string;
   sent: boolean;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export default function Email() {
@@ -33,6 +35,7 @@ export default function Email() {
       const response = await fetch("/api/email/recent");
       if (!response.ok) throw new Error("Failed to fetch emails");
       const data = await response.json();
+      console.log("recent emails", data);
       setRecentEmails(data);
     } catch (error) {
       console.error("Error fetching recent emails:", error);
@@ -56,6 +59,7 @@ export default function Email() {
             <TableRow>
               <TableHead>Date Sent</TableHead>
               <TableHead>To</TableHead>
+              <TableHead>BCC</TableHead>
               <TableHead>Subject</TableHead>
               <TableHead>Loan ID</TableHead>
               <TableHead>Status</TableHead>
@@ -64,8 +68,11 @@ export default function Email() {
           <TableBody>
             {recentEmails.map((email) => (
               <TableRow key={email.id}>
-                <TableCell>{formatDateToDateOnly(email.createdAt)}</TableCell>
+                <TableCell>
+                  {formatDateStringToDateOnly(email.createdAt)}
+                </TableCell>
                 <TableCell>{email.to}</TableCell>
+                <TableCell>{email.bcc}</TableCell>
                 <TableCell>{email.subject}</TableCell>
                 <TableCell>{email.loanId}</TableCell>
                 <TableCell>

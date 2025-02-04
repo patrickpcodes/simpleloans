@@ -3,8 +3,9 @@ import { updatePayment } from "@/lib/queries/updatePayment";
 export async function PUT(req) {
   console.log("in payment PUT");
   try {
-    const payment = await req.json();
+    const { user, payment } = await req.json();
     console.log("payment", payment);
+    console.log("user in api", user);
     if (!payment.id) {
       return new Response(
         JSON.stringify({ error: "Payment ID is required!" }),
@@ -14,7 +15,7 @@ export async function PUT(req) {
         }
       );
     }
-    await updatePayment(payment, "p@p.com", "Patrick");
+    await updatePayment(payment, user.email, user.name);
     return new Response(
       JSON.stringify({ message: "Payment added successfully!" }),
       {

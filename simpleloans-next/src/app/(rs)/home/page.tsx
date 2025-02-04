@@ -1,6 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+// import { useRouter } from "next/navigation";
+// import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { UpcomingPayment } from "@/types/UpcomingPayment";
 import { PaymentActionTable } from "@/components/PaymentActionTable";
@@ -10,8 +10,8 @@ import { PaymentActionTable } from "@/components/PaymentActionTable";
 // };
 
 export default function Home() {
-  const router = useRouter();
-  const [shouldRefresh, setShouldRefresh] = useState(false); // State to trigger re-fetch
+  // const router = useRouter();
+  // const [isLoading, setIsLoading] = useState(true);
   const [upcomingPayments, setUpcomingPayments] = useState<UpcomingPayment[]>(
     []
   );
@@ -33,29 +33,32 @@ export default function Home() {
   console.log("fetchReport", fetchReport);
   const fetchPaymentData = async () => {
     try {
+      // setIsLoading(true);
       const response = await fetch("/api/payments/upcoming", {
-        method: "GET", // Ensure the method is GET
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+        },
       });
       const data = await response.json();
-      console.log("data", data);
       setUpcomingPayments(data);
     } catch (error) {
-      console.error("Error fetching customers:", error);
+      console.error("Error fetching payments:", error);
+    } finally {
+      // setIsLoading(false);
     }
   };
+
   useEffect(() => {
     fetchPaymentData();
-    if (shouldRefresh) {
-      setShouldRefresh(false); // Reset refresh state after fetching
-    }
-  }, [shouldRefresh]);
+  }, []);
   return (
     <div>
       <h2>Home Page</h2>
-      <div>
+      {/* <div>
         <Button onClick={() => router.push("/customers")}>Customers</Button>
         <Button onClick={() => router.push("/loans")}>Loans</Button>
-      </div>
+      </div> */}
       {/* <div>
         <Button onClick={() => fetchReport()}>Customer Report</Button>
       </div> */}

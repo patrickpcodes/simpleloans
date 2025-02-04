@@ -77,11 +77,11 @@ export async function POST(req) {
 export async function PUT(req) {
   console.log("in customer PUT");
   try {
-    const data = await req.json();
-    console.log("in customer PUT", data);
+    const { user, customer } = await req.json();
+    console.log("in customer PUT", customer);
 
     // Validate input
-    if (!data.id) {
+    if (!customer.id) {
       return new Response(
         JSON.stringify({ error: "Customer ID is required for updates." }),
         {
@@ -90,7 +90,7 @@ export async function PUT(req) {
         }
       );
     }
-    const result = await updateCustomer(data, "p@p.com", "Patrick");
+    const result = await updateCustomer(customer, user.email, user.name);
 
     return new Response(JSON.stringify(result), {
       status: 200,

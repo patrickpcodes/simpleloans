@@ -21,6 +21,8 @@ import { SelectInputWithLabel } from "@/components/inputs/SelectInputWithLabel";
 import { formatDateToYYYYMMDD } from "@/utils/formatDateToDateOnly";
 import { LOAN_STATUSES } from "@/types/LoanStatus";
 import { PAYMENT_METHOD } from "@/types/PaymentMethod";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { getUserInfo } from "@/utils/kinde";
 
 type Props = {
   loan?: selectLoanSchemaType;
@@ -31,6 +33,7 @@ type Props = {
 
 export default function LoanForm({ loan, customers, customerId }: Props) {
   const router = useRouter();
+  const { getUser } = useKindeBrowserClient();
   if (customerId) {
   }
   console.log("loan", loan);
@@ -56,22 +59,25 @@ export default function LoanForm({ loan, customers, customerId }: Props) {
     defaultValues,
   });
 
-  async function submitForm(data: insertLoanSchemaType) {
-    console.log("submit", data);
+  async function submitForm(loan: insertLoanSchemaType) {
+    console.log("submit", loan);
     let method = "";
-    if (data.id && data.id > 0) {
+    if (loan.id && loan.id > 0) {
       method = "PUT";
     } else {
       method = "POST";
     }
     console.log("submit loan method", method);
     try {
+      const user = getUserInfo(getUser);
+      // Create request body based on method
+      const requestBody = method === "PUT" ? { loan, user } : loan;
       const response = await fetch("/api/loans", {
         method: method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(requestBody),
       });
       if (!response.ok) {
         throw new Error("Failed to save loan");
@@ -82,7 +88,7 @@ export default function LoanForm({ loan, customers, customerId }: Props) {
       console.log(result);
 
       if (method == "PUT") {
-        router.push(`/loans/form?loanId=${data.id}`);
+        router.push(`/loans/form?loanId=${loan.id}`);
       } else {
         router.push(`/loans/form?loanId=${result[0].id}`);
       }

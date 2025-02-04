@@ -16,28 +16,36 @@ import { CustomerDetail } from "@/types/CustomerDetail";
 import { LoanDetail } from "@/types/LoanDetail";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { ModernLoanDisplay } from "@/components/loan/ModernLoanDisplay";
+import { getUserInfo } from "@/utils/kinde";
 
 type Props = {
   customerDetail?: CustomerDetail;
 };
 
 export default function CustomerForm({ customerDetail }: Props) {
+  // Add delete handler
+  const handleDelete = async () => {
+    if (!customer?.id) return;
+
+    try {
+      const response = await fetch(`/api/customers/${customer.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete customer");
+      }
+
+      router.push("/home");
+    } catch (error) {
+      console.error("Error deleting customer:", error);
+    }
+  };
+
   const router = useRouter();
   const customer = customerDetail?.customer;
 
-  const { getPermission, getPermissions, isLoading, getUser } =
-    useKindeBrowserClient();
-
-  const isManager = !isLoading && getPermission("manager")?.isGranted;
-  const permObj = getPermissions();
-  const isAuthorized =
-    !isLoading &&
-    permObj.permissions.some((perm) => perm === "manager " || perm === "admin");
-  console.log("permissions", permObj);
-  console.log("isManager", isManager);
-  console.log("isAuthorized", isAuthorized);
-  const user = getUser();
-  console.log("user", user);
+  const { getUser } = useKindeBrowserClient();
 
   const defaultValues: insertCustomerSchemaType = {
     id: customer?.id ?? 0,
@@ -56,23 +64,26 @@ export default function CustomerForm({ customerDetail }: Props) {
     defaultValues,
   });
 
-  async function submitForm(data: insertCustomerSchemaType) {
+  async function submitForm(customer: insertCustomerSchemaType) {
     let method = "";
-    if (data.id) {
+    if (customer.id) {
       method = "PUT";
     } else {
       method = "POST";
     }
     //TODO add TOAST for Errors
-    console.log("about to submit form", data, method);
-    console.log("data stringified", JSON.stringify(data));
+    console.log("about to submit form", customer, method);
+    console.log("data stringified", JSON.stringify(customer));
     try {
+      const user = getUserInfo(getUser);
+      // Create request body based on method
+      const requestBody = method === "PUT" ? { customer, user } : customer;
       const response = await fetch("/api/customers", {
         method: method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -84,7 +95,7 @@ export default function CustomerForm({ customerDetail }: Props) {
       console.log(result);
 
       if (method == "PUT") {
-        router.push(`/customers/form?customerId=${data.id}`);
+        router.push(`/customers/form?customerId=${customer.id}`);
       } else {
         router.push(`/customers/form?customerId=${result[0].id}`);
       }
@@ -204,6 +215,15 @@ export default function CustomerForm({ customerDetail }: Props) {
                 }
               >
                 Create New Loan
+              </Button>
+            )}
+            {customer?.id && (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => handleDelete()}
+              >
+                Delete Customer
               </Button>
             )}
           </div>

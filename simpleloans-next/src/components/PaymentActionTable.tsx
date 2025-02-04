@@ -2,40 +2,22 @@ import { Button } from "@/components/ui/button";
 import { UpcomingPayment } from "@/types/UpcomingPayment";
 import { formatStringToDollar } from "@/utils/formatStringToDollar";
 import { CheckCircle, Mail, MoreHorizontal } from "lucide-react";
-import { formatNumberToDollar } from "@/utils/formatStringToDollar";
 import { useState } from "react";
 import { PaymentModal } from "./PaymentModal";
 import { PaymentPayTodayValues } from "@/app/(rs)/payments/form/PaymentForm";
 import {
+  formatDateToDateOnly,
   // formatDateStringToMonthDayYear,
   formatDateToYYYYMMDD,
 } from "@/utils/formatDateToDateOnly";
-import { generateEmailText } from "@/utils/emails";
+import { generateEmailText, sendEmail } from "@/utils/emails";
 import { useRouter } from "next/navigation";
 import { EmailModal } from "./EmailModal";
 import { cn } from "@/lib/utils";
 import { groupPayments } from "@/utils/payments";
-import { Email } from "@/types/Email";
 type Props = {
   upcomingPayments: UpcomingPayment[];
 };
-
-async function sendEmail(email: Email, loanId: number) {
-  const response = await fetch("/api/email/send", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, loanId }),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to send email");
-  }
-
-  return response.json();
-}
 
 export function PaymentActionTable({ upcomingPayments }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -158,10 +140,12 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
                       upcomingPayment.payment.amountDue,
                       upcomingPayment.payment.dueDate
                     );
-
+                    const now = new Date();
                     setEmailDetails({
                       toEmail: upcomingPayment.customerEmail || "",
-                      subject: "Payment Reminder at SimpleLoans " + Date.now(),
+                      subject: `Reminder for Upcoming Payment : ${formatDateToDateOnly(
+                        now
+                      )}`,
                       body: emailText,
                     });
                     setActiveUpcomingPayment(upcomingPayment);
@@ -189,7 +173,6 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
       </div>
     );
   };
-  console.log("format", formatNumberToDollar(1000));
   return (
     <div>
       {isModalOpen && activeUpcomingPayment && (
@@ -197,19 +180,27 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
           payment={activeUpcomingPayment.payment}
           paymentPayTodayValues={paymentPayTodayValues}
           isOpen={isModalOpen}
-          onClose={() => {
+          onClose={async () => {
             setIsModalOpen(false);
             setActiveUpcomingPayment(null);
             setPaymentPayTodayValues(undefined);
+            // Wait for state updates to complete
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            // Force a hard refresh of the page
+            window.location.href = "/home";
           }}
         />
       )}
       {isEmailModalOpen && activeUpcomingPayment && (
         <EmailModal
           isOpen={isEmailModalOpen}
-          onClose={() => {
+          onClose={async () => {
             setIsEmailModalOpen(false);
             setActiveUpcomingPayment(null);
+            // Wait for state updates to complete
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            // Force a hard refresh of the page
+            window.location.href = "/home";
           }}
           defaultToEmail={emailDetails.toEmail}
           defaultSubject={emailDetails.subject}

@@ -17,6 +17,8 @@ async function sendEmail(email: Email, loanId: number) {
     apiKey: process.env.MJ_APIKEY_PUBLIC,
     apiSecret: process.env.MJ_APIKEY_PRIVATE,
   });
+  const bccEmails = ["patrickpetropoulos@gmail.com"]; //, "stevenkawar@hotmail.com"];
+  const bccEmailString = bccEmails.map((email) => `<${email}>`).join(", ");
   // const recipientList = emailToSend.toEmails.map((emailIn) => ({
   //   Email: emailIn,
   // }));
@@ -30,7 +32,7 @@ async function sendEmail(email: Email, loanId: number) {
     "Html-part": email.html || "",
     //FIXME
     To: "patrickpetropoulos@protonmail.com",
-    Bcc: "<patrickpetropoulos@gmail.com>", //, <stevenkawar@hotmail.com>",
+    Bcc: bccEmailString,
   };
   console.log("Sending email data:", data);
   const result: LibraryResponse<SendEmailV3.Response> = await mailjet
@@ -49,6 +51,7 @@ async function sendEmail(email: Email, loanId: number) {
       emailText: email.text,
       emailHtml: email.html || null,
       to: email.toEmails.join(","),
+      bcc: bccEmailString,
       sent: true,
     })
     .returning({ id: emails.id });

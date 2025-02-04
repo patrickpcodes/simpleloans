@@ -5,7 +5,7 @@ import { and, gte, sql } from "drizzle-orm";
 export async function GET() {
   try {
     const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 27);
 
     const recentEmails = await db
       .select({
@@ -13,6 +13,8 @@ export async function GET() {
         loanId: emails.loanId,
         subject: emails.subject,
         to: emails.to,
+        cc: emails.cc,
+        bcc: emails.bcc,
         sent: emails.sent,
         createdAt: emails.createdAt,
       })

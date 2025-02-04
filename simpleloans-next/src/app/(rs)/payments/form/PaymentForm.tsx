@@ -19,6 +19,8 @@ import { PAYMENT_STATUSES } from "@/types/PaymentStatus";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
 import { PAYMENT_METHOD } from "@/types/PaymentMethod";
 import { useRouter } from "next/navigation";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { getUserInfo } from "@/utils/kinde";
 // import { Input } from "postcss";
 
 export type PaymentPayTodayValues = {
@@ -39,6 +41,7 @@ export default function PaymentForm({
   onClose,
 }: Props) {
   const router = useRouter();
+  const { getUser } = useKindeBrowserClient();
   const warningMessage = "This is a warning message";
   const defaultValues: insertPaymentSchemaType = {
     id: payment?.id ?? 0,
@@ -84,12 +87,14 @@ export default function PaymentForm({
     console.log("formValues", form.getValues());
     // Add your custom logic here, e.g., validation or calculations
   }
-  async function submitForm(data: insertPaymentSchemaType) {
+  async function submitForm(payment: insertPaymentSchemaType) {
     if (form.getValues("paymentStatus") == "Pending") {
       return;
     }
+    const user = getUserInfo(getUser);
+
     let method = "";
-    if (data.id && data.id > 0) {
+    if (payment.id && payment.id > 0) {
       method = "PUT";
     } else {
       method = "POST";
@@ -100,7 +105,7 @@ export default function PaymentForm({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ user, payment }),
       });
       if (!response.ok) {
         throw new Error("Failed to save payment");
@@ -123,6 +128,10 @@ export default function PaymentForm({
       console.log("finally");
       // setLoading(false);
     }
+    console.log("after finally before refresh");
+    router.refresh();
+
+    console.log("after finally after refresh");
   }
 
   return (

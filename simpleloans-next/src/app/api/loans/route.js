@@ -78,9 +78,9 @@ export async function POST(req) {
 export async function PUT(req) {
   console.log("in loan PUT");
   try {
-    const data = await req.json();
-    console.log("in loan PUT", data);
-    if (!data.id) {
+    const { user, loan } = await req.json();
+    console.log("in loan PUT", loan);
+    if (!loan.id) {
       return new Response(
         JSON.stringify({ error: "Loan ID is required for updates." }),
         {
@@ -89,7 +89,7 @@ export async function PUT(req) {
         }
       );
     }
-    const result = await updateLoan(data, "p@p.com", "Patrick");
+    const result = await updateLoan(loan, user.email, user.name);
 
     return new Response(JSON.stringify(result), {
       status: 200,

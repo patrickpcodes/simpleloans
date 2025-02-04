@@ -27,7 +27,7 @@ export const formatDateStringToDateOnly = (date: string) => {
 export const formatDateToYYYYMMDD = (date: Date) => {
   // console.log("date string", date);
   const utcDate = new Date(date);
-  console.log("format date", formatInTimeZone(utcDate, "UTC", "yyyy-MM-dd"));
+  // console.log("format date", formatInTimeZone(utcDate, "UTC", "yyyy-MM-dd"));
   return formatInTimeZone(utcDate, "UTC", "yyyy-MM-dd");
 };
 

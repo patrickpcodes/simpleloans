@@ -96,9 +96,9 @@ export function groupPayments(upcomingPayments: UpcomingPayment[]) {
       const tomorrowDate = new Date(todayDate);
       tomorrowDate.setDate(tomorrowDate.getDate() + 1);
       const tomorrow = formatDateToYYYYMMDD(tomorrowDate);
-      console.log("dueDate", payment.payment.dueDate);
-      console.log("today", today);
-      console.log("tomorrow", tomorrow);
+      // console.log("dueDate", payment.payment.dueDate);
+      // console.log("today", today);
+      // console.log("tomorrow", tomorrow);
       if (payment.payment.dueDate === today) {
         acc.today.push(payment);
       } else if (dueDate < todayDate) {
