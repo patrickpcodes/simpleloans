@@ -28,8 +28,12 @@ export default function CustomerForm({ customerDetail }: Props) {
     if (!customer?.id) return;
 
     try {
-      const response = await fetch(`/api/customers/${customer.id}`, {
+      const response = await fetch("/api/customers", {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ customerId: customer.id }),
       });
 
       if (!response.ok) {

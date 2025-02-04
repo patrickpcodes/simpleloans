@@ -59,7 +59,7 @@ export default function Email() {
             <TableRow>
               <TableHead>Date Sent</TableHead>
               <TableHead>To</TableHead>
-              <TableHead>BCC</TableHead>
+              {/* <TableHead>BCC</TableHead> */}
               <TableHead>Subject</TableHead>
               <TableHead>Loan ID</TableHead>
               <TableHead>Status</TableHead>
@@ -72,7 +72,7 @@ export default function Email() {
                   {formatDateStringToDateOnly(email.createdAt)}
                 </TableCell>
                 <TableCell>{email.to}</TableCell>
-                <TableCell>{email.bcc}</TableCell>
+                {/* <TableCell>{email.bcc}</TableCell> */}
                 <TableCell>{email.subject}</TableCell>
                 <TableCell>{email.loanId}</TableCell>
                 <TableCell>

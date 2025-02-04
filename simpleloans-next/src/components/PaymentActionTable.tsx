@@ -6,6 +6,7 @@ import { useState } from "react";
 import { PaymentModal } from "./PaymentModal";
 import { PaymentPayTodayValues } from "@/app/(rs)/payments/form/PaymentForm";
 import {
+  formatDateStringToDateOnly,
   formatDateToDateOnly,
   // formatDateStringToMonthDayYear,
   formatDateToYYYYMMDD,
@@ -100,7 +101,9 @@ export function PaymentActionTable({ upcomingPayments }: Props) {
               </div>
               <div className="col-span-2 text-left">
                 <p className="text-sm text-muted-foreground">Last Reminder:</p>
-                <p className="text-sm">{upcomingPayment.lastReminderSent}</p>
+                <p className="text-sm">
+                  {formatDateStringToDateOnly(upcomingPayment.lastReminderSent)}
+                </p>
               </div>
               <div className="col-span-5 flex gap-2">
                 <Button

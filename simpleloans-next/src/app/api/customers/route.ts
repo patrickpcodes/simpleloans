@@ -1,8 +1,10 @@
 import { db } from "@/db";
-import { customers } from "@/db/schema";
+import { customers, emails, loans, payments } from "@/db/schema";
 import { getCustomerData } from "@/lib/queries/getCustomerData";
 // import { getNextPayments } from "@/lib/queries/getNextPayments";
 import { updateCustomer } from "@/lib/queries/updateCustomer";
+import { eq } from "drizzle-orm";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -28,7 +30,7 @@ export async function GET() {
 }
 
 // POST: Create a new customer
-export async function POST(req) {
+export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
     console.log("in customer POST", data);
@@ -74,7 +76,7 @@ export async function POST(req) {
 }
 
 // PUT: Update an existing customer
-export async function PUT(req) {
+export async function PUT(req: NextRequest) {
   console.log("in customer PUT");
   try {
     const { user, customer } = await req.json();
@@ -104,6 +106,58 @@ export async function PUT(req) {
         status: 500,
         headers: { "Content-Type": "application/json" },
       }
+    );
+  }
+}
+export async function DELETE(request: NextRequest) {
+  const body = await request.json();
+  const customerId = body.customerId;
+
+  if (!customerId) {
+    return NextResponse.json({ error: "Invalid customer ID" }, { status: 400 });
+  }
+  console.log("in delete customers");
+
+  if (!customerId) {
+    return Response.json({ error: "Invalid customer ID" }, { status: 400 });
+  }
+
+  try {
+    // 1. Get all loans for this customer
+    const customerLoans = await db
+      .select({ id: loans.id })
+      .from(loans)
+      .where(eq(loans.customerId, customerId));
+
+    const loanIds = customerLoans.map((loan) => loan.id);
+
+    // 2. Delete all emails associated with customer's loans
+    if (loanIds.length > 0) {
+      for (const loanId of loanIds) {
+        await db.delete(emails).where(eq(emails.loanId, loanId));
+      }
+    }
+
+    // 3. Delete all history records
+    // await db.delete(histories).where(eq(histories.customerId, customerId));
+
+    // 4. Delete all payments associated with customer's loans
+    for (const loanId of loanIds) {
+      await db.delete(payments).where(eq(payments.loanId, loanId));
+    }
+
+    // 5. Delete all loans
+    await db.delete(loans).where(eq(loans.customerId, customerId));
+
+    // 6. Finally, delete the customer
+    await db.delete(customers).where(eq(customers.id, customerId));
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting customer:", error);
+    return Response.json(
+      { error: "Failed to delete customer" },
+      { status: 500 }
     );
   }
 }
