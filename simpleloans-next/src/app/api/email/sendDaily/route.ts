@@ -4,8 +4,11 @@ import { UpcomingPayment } from "@/types/UpcomingPayment";
 import { generateEmailText, sendEmail } from "@/utils/emails";
 import { formatDateToDateOnly } from "@/utils/formatDateToDateOnly";
 import { groupPayments } from "@/utils/payments";
+import { NextResponse } from "next/server";
 
 export async function GET() {
+  console.log("In sendDaily");
+  console.log("Cron job triggered at:", new Date().toISOString());
   try {
     if (!process.env.MJ_APIKEY_PUBLIC || !process.env.MJ_APIKEY_PRIVATE) {
       throw new Error(
@@ -64,20 +67,26 @@ export async function GET() {
         };
         await sendEmail(emailToSend, today.loan.id ?? 0);
       });
-      return new Response(
-        JSON.stringify({ message: "Sent email successfully!" }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      );
+      return NextResponse.json({
+        status: 200,
+        message: "Cron job executed successfully",
+      });
     } catch (error) {
       console.error("Error fetching upcoming payments:", error);
+      return NextResponse.json({
+        status: 500,
+        message: "Cron job failed, Error fetching upcoming payments",
+        //error: error.message,
+      });
     }
   } catch (e: unknown) {
     if (e instanceof Error) {
       console.error("Error sending email:", e.message);
-      return new Response(
-        JSON.stringify({ message: "Failed to send email.", error: e.message }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
-      );
+      return NextResponse.json({
+        status: 500,
+        message: "Cron job failed, Failed to send email",
+        //error: error.message,
+      });
     }
   }
 }
