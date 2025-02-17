@@ -7,6 +7,7 @@ async function sendEmail(email: Email, loanId: number) {
   if (!process.env.MJ_APIKEY_PUBLIC || !process.env.MJ_APIKEY_PRIVATE) {
     throw new Error("Mailjet API keys are missing from environment variables.");
   }
+  console.log("in send email api endpoint");
   const emailToSend: Email = {
     subject: email.subject,
     toEmails: email.toEmails,
