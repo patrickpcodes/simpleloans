@@ -70,7 +70,7 @@ export async function sendEmail(email: Email, loanId: number) {
     if (!data || typeof data !== "object") {
       throw new Error("Invalid response format from email API");
     }
-
+    console.log("Email was send successfully", data);
     return data;
   } catch (error) {
     console.error("Send Email Error:", error);
