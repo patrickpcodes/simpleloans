@@ -28,7 +28,8 @@ export async function GET() {
           payment: payment.payment!, // We know it's not null from the filter
         }));
       const groupedPayments = groupPayments(upcomingPayments);
-      console.log("groupedPayments", groupedPayments);
+      console.log("groupedPayments Today", groupedPayments.today);
+      console.log("I am in sendTest about to send the email");
       const now = new Date();
       groupedPayments.today.map(async (today) => {
         const emailText = generateEmailText(
@@ -46,6 +47,7 @@ export async function GET() {
         };
         await sendEmail(emailToSend, today.loan.id ?? 0);
       });
+      console.log("groupedPayments Tomorrow", groupedPayments.tomorrow);
       groupedPayments.tomorrow.map(async (today) => {
         const emailText = generateEmailText(
           today.customerName,

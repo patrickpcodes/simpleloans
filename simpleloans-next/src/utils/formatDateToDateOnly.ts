@@ -1,7 +1,7 @@
 import { formatInTimeZone } from "date-fns-tz";
 
 export const formatDateToDateOnly = (date: Date) => {
-  console.log("in formatDateToDateOnly : date", date);
+  // console.log("in formatDateToDateOnly : date", date);
 
   // Format the date to YYYY-MM-DD
   return date.toISOString().split("T")[0];
