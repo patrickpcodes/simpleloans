@@ -31,6 +31,7 @@ const BASE_URL = process.env.VERCEL_URL
 
 export async function sendEmail(email: Email, loanId: number) {
   console.log("sending email from url", BASE_URL);
+  console.log("sending email, email data", email);
   const response = await fetch(`${BASE_URL}/api/email/send`, {
     method: "POST",
     headers: {

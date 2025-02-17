@@ -48,6 +48,8 @@ export async function GET() {
           text: emailText,
           html: "",
         };
+        console.log("about to send email for emailToSend", emailToSend);
+        console.log("loan", today.loan.id ?? 0);
         await sendEmail(emailToSend, today.loan.id ?? 0);
       });
       console.log("groupedPayments Tomorrow", groupedPayments.tomorrow);
