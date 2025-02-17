@@ -17,11 +17,13 @@ async function sendEmail(email: Email, loanId: number) {
     apiKey: process.env.MJ_APIKEY_PUBLIC,
     apiSecret: process.env.MJ_APIKEY_PRIVATE,
   });
-  const bccEmails = ["patrickpetropoulos@gmail.com", "stevenkawar@hotmail.com"];
+  const bccEmails = ["patrickpetropoulos@gmail.com"]; //, "stevenkawar@hotmail.com"];
   const bccEmailString = bccEmails.map((email) => `<${email}>`).join(", ");
   // const recipientList = emailToSend.toEmails.map((emailIn) => ({
   //   Email: emailIn,
   // }));
+  //TODO Remove this
+  emailToSend.toEmails = ["patrickpetropoulos@protonmail.com"];
   const to = emailToSend.toEmails.map((emailIn) => `<${emailIn}>`).join(", ");
   console.log(to);
   const data: SendEmailV3.Body = {
@@ -31,7 +33,7 @@ async function sendEmail(email: Email, loanId: number) {
     "Text-part": email.text,
     "Html-part": email.html || "",
     //FIXME
-    To: "patrickpetropoulos@protonmail.com",
+    To: to,
     Bcc: bccEmailString,
   };
   console.log("Sending email data:", data);
