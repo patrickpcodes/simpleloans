@@ -32,18 +32,46 @@ const BASE_URL = process.env.VERCEL_URL
 export async function sendEmail(email: Email, loanId: number) {
   console.log("sending email from url", BASE_URL);
   console.log("sending email, email data", email);
-  const response = await fetch(`${BASE_URL}/api/email/send`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, loanId }),
-  });
+  try {
+    const response = await fetch(`${BASE_URL}/api/email/send`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, loanId }),
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to send email");
+    // Add response validation
+    if (!response.ok) {
+      const text = await response.text(); // Get the raw response text
+      console.error("Email API Error Response:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: text,
+      });
+      throw new Error(
+        `Email API error: ${response.status} ${response.statusText}`
+      );
+    }
+
+    // Try to parse JSON response safely
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      console.error("Failed to parse JSON response:", await response.text());
+      console.log("error", e);
+      throw new Error("Invalid JSON response from email API");
+    }
+
+    // Validate the response data
+    if (!data || typeof data !== "object") {
+      throw new Error("Invalid response format from email API");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Send Email Error:", error);
+    throw error; // Re-throw to handle it in the calling function
   }
-
-  return response.json();
 }
