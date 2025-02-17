@@ -30,6 +30,7 @@ const BASE_URL = process.env.VERCEL_URL
   : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export async function sendEmail(email: Email, loanId: number) {
+  console.log("vercel url", process.env.VERCEL_URL);
   console.log("sending email from url", BASE_URL);
   console.log("sending email, email data", email);
   try {
