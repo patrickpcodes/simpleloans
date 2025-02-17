@@ -13,7 +13,7 @@ export async function GET() {
       ? `https://${process.env.VERCEL_URL}`
       : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     // Call another internal API endpoint
-    const response = await fetch(`{BASE_URL}/api/email/sendTest`, {
+    const response = await fetch(`${BASE_URL}/api/email/sendTest`, {
       method: "GET",
     });
 
