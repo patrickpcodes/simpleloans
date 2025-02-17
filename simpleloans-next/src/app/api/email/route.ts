@@ -9,13 +9,13 @@ export async function GET() {
   try {
     console.log("Cron job triggered at:", new Date().toISOString());
 
+    const BASE_URL = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     // Call another internal API endpoint
-    const response = await fetch(
-      "https://simpleloans.vercel.app/api/email/sendTest",
-      {
-        method: "GET",
-      }
-    );
+    const response = await fetch(`{BASE_URL}/api/email/sendTest`, {
+      method: "GET",
+    });
 
     const data = await response.json();
     console.log("Response from other API:", data);
