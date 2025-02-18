@@ -18,7 +18,7 @@ async function sendEmail(email: Email, loanId: number) {
     apiKey: process.env.MJ_APIKEY_PUBLIC,
     apiSecret: process.env.MJ_APIKEY_PRIVATE,
   });
-  const bccEmails = ["patrickpetropoulos@gmail.com"]; //, "stevenkawar@hotmail.com"];
+  const bccEmails = ["patrickpetropoulos@gmail.com", "stevenkawar@hotmail.com"];
   const bccEmailString = bccEmails.map((email) => `<${email}>`).join(", ");
   // const recipientList = emailToSend.toEmails.map((emailIn) => ({
   //   Email: emailIn,
