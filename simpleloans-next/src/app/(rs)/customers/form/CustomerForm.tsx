@@ -45,7 +45,7 @@ export default function CustomerForm({ customerDetail }: Props) {
       console.error("Error deleting customer:", error);
     }
   };
-
+  console.log(handleDelete);
   const router = useRouter();
   const customer = customerDetail?.customer;
 
