@@ -88,9 +88,9 @@ export default function PaymentForm({
     // Add your custom logic here, e.g., validation or calculations
   }
   async function submitForm(payment: insertPaymentSchemaType) {
-    if (form.getValues("paymentStatus") == "Pending") {
-      return;
-    }
+    // if (form.getValues("paymentStatus") == "Pending") {
+    //   return;
+    // }
     const user = getUserInfo(getUser);
 
     let method = "";

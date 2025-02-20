@@ -221,7 +221,7 @@ export default function CustomerForm({ customerDetail }: Props) {
                 Create New Loan
               </Button>
             )}
-            {customer?.id && (
+            {/* {customer?.id && (
               <Button
                 type="button"
                 variant="destructive"
@@ -229,7 +229,7 @@ export default function CustomerForm({ customerDetail }: Props) {
               >
                 Delete Customer
               </Button>
-            )}
+            )} */}
           </div>
         </form>
       </Form>

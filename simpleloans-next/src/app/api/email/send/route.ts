@@ -59,6 +59,7 @@ async function sendEmail(email: Email, loanId: number) {
     })
     .returning({ id: emails.id });
   console.log("newEmail", newEmail);
+  return result.body;
 }
 
 export async function POST(request: Request) {
@@ -70,10 +71,12 @@ export async function POST(request: Request) {
     );
   }
   try {
-    await sendEmail(email, loanId);
+    const response = await sendEmail(email, loanId);
     return new Response(
-      JSON.stringify({ message: "Sent email successfully!" }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({
+        message: "Sent email successfully!",
+        response: response,
+      })
     );
   } catch (e: unknown) {
     if (e instanceof Error) {
